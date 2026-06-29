@@ -16,21 +16,17 @@
 |Qty		Item						Source									|
 |---------------------------------------------------------------------------------------------------------------------------------------|
 |1		Hosyond 2.8" ESP32-S3 Display			https://www.amazon.com/dp/B0FKG7WRWV?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|1		ESP32-S3 Supermini Development Board		https://www.amazon.com/dp/B0D47HBFDY?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|2		FrSky M7 Hall Sensor Gimbal			https://www.amazon.com/dp/B073PPTH1C?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|1		HiLetgo ESP32 LoRa V3 SX1262 0.96		https://www.amazon.com/gp/product/B07FYWFH4C/ref=ewc_pr_img_2?smid=	|
-|		inch OLED Display Development Board		A30QSGOJR8LMXA&psc=1							|
-|1		MCP23017 IO Expansion Board			https://www.amazon.com/gp/product/B08DFNR2JW/ref=ewc_pr_img_1?smid=	|
-|								A31G33MT63S07E&psc=1							|
+|2		Mini Pushbutton Power Switch			https://www.pololu.com/product/2808					|
+|2		Radio Master Pocket X5 Gimbals			https://www.fruugo.us/radiomaster-pocket-radio-transmitter-x5-replaceme	|
+|								nt-gimbals/p-307085345-687785683					|
 |1		MP1584EN Mini Buck Converter DC-DC 3A		https://www.amazon.com/dp/B0DC3N7PMY?ref=ppx_yo2ov_dt_b_fed_asin_title	|
 |1		MT3608 DC to DC Step Up Boost Converter		https://www.amazon.com/dp/B0DSZ9G3ZS/ref=sspa_dk_hqp_detail_aax_0?psc=	|
 |								1&sp_csd=d2lkZ2V0TmFtZT1zcF9ocXBfc2hhcmVk				|
+|1		PCF8575 IO Expansion Board			https://www.amazon.com/dp/B0F2M5Y2LK?ref=ppx_yo2ov_dt_b_fed_asin_title	|
 |2		JST MX 1.25mm 4 Pin Male Connector		https://www.amazon.com/dp/B0FSZJTQKQ?ref=ppx_yo2ov_dt_b_fed_asin_title	|
 |								&th=1									|
-|1		5-Channel Navigation Button Switch Module	https://www.amazon.com/dp/B0D8T4YQ3Y?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|1		TPS2113A Power Multiplexer Carrier with USB	https://www.pololu.com/product/2596					|
-|		Micro-B Connector													|
-|1		3600mAh Lithium Polymer Battery			https://www.amazon.com/YTKavq-3600mAh-Battery-Rechargeable-Connector/dp	|
+|1		5-Channel Navigation Button Switch Module	https://www.amazon.com/dp/B0D8T4YQ3Y?ref=ppx_yo2ov_dt_b_fed_asin_title	|						|
+|1		3,000mAh Lithium Polymer Battery		https://www.amazon.com/YTKavq-3600mAh-Battery-Rechargeable-Connector/dp	|
 |								/B08TTQ3PWT/ref=sr_1_1?crid=2CQJRB58QQLGW&dib=eyJ2IjoiMSJ9.n9yeCi6NzEJ3	|
 |								hD0ceLljFy6-wyO3nz-gFsvsAqpme6EgbiHp2zFb20yixI0C5z7L7Iluxy7F8jhHPuaoDN-	|
 |								m1jLpwyLirwMfkVd8CDKCkqE5sk3rcH1FzgkKNvy-KL_pXCDiUoKF9HLPSeoTeS_GsomF9	|
@@ -38,6 +34,9 @@
 |								0r7FZIny8Zc.NQ8r1z_ITbAhZCPfBiFbQt_Egn72p50ASO21K2ShytE&dib_tag=se&keyw	|
 |								ords=3600mah%2Blipo&qid=1778048277&s=electronics&sprefix=3600mah%2Blipo	|
 |								%2Celectronics%2C265&sr=1-1&th=1					|
+|1		RadioMaster Pocket ELRS Module			https://radiomasterrc.com/products/elrs-module-for-zorro-and-tx12-mark-	|
+|								ii									|
+|1		RPSMA to IPEX adapter				https://www.amazon.com/dp/B0931SL6LG?ref=ppx_yo2ov_dt_b_fed_asin_title	|
 |---------------------------------------------------------------------------------------------------------------------------------------|
 |						||||	HOSYOND 2.8" ESP32-S3 Display	||||						|
 |---------------------------------------------------------------------------------------------------------------------------------------|

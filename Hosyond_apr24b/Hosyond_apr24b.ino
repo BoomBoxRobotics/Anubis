@@ -18,6 +18,7 @@
 #include "anubis_rgb565.h"
 #include "menu_icons_rgb565.h"
 #include "cave_johnson_startup_audio.h"
+#include "dungeon_run_assets_rgb565.h"
 
   #define EEPROM_SIZE 1024
   #define MIX_STORAGE_VERSION 3
@@ -73,6 +74,10 @@
   SCREEN_MIXING,
   SCREEN_DISPLAY_SETTINGS,
   SCREEN_TIMER,
+  SCREEN_GAMES_MENU,
+  SCREEN_20Q_GAME,
+  SCREEN_ASTEROIDS_GAME,
+  SCREEN_DUNGEON_RUN,
   SCREEN_SPACE_GAME
   };
 
@@ -140,6 +145,20 @@
   BTN_TIMER_KEY,
   BTN_DRONE_ARM,
   BTN_GAME,
+  BTN_GAME_BATTLEZONE,
+  BTN_GAME_20Q,
+  BTN_GAME_ASTEROIDS,
+  BTN_GAME_INVADERS,
+  BTN_GAME_SNAKE,
+  BTN_GAME_MAZE_CHASE,
+  BTN_GAME_STAR_SWARM,
+  BTN_GAME_MISSILE_DEFENSE,
+  BTN_GAME_DUNGEON_RUN,
+  BTN_GAME_SCROLL_SHOOTER,
+  BTN_20Q_YES,
+  BTN_20Q_NO,
+  BTN_20Q_UNSURE,
+  BTN_20Q_RESTART,
   BTN_OPTION_2,
   BTN_OPTION_3,
   BTN_OPTION_4,
@@ -340,7 +359,8 @@ enum StickCalibrationState {
   KEYBOARD_TARGET_MODEL_NAME,
   KEYBOARD_TARGET_OTA_STA_SSID,
   KEYBOARD_TARGET_OTA_STA_PASSWORD,
-  KEYBOARD_TARGET_OTA_AP_SSID
+  KEYBOARD_TARGET_OTA_AP_SSID,
+  KEYBOARD_TARGET_20Q_LEARN
   };
 
   enum EspNowLinkFlags : uint8_t {
@@ -441,6 +461,36 @@ enum StickCalibrationState {
   float y;
   float radius;
   bool pyramid;
+  };
+
+  struct TwentyQCandidate {
+  const char *name;
+  const char *category;
+  int8_t answers[20];
+  };
+
+  struct TwentyQLearnedCandidate {
+  char name[28];
+  int8_t answers[20];
+  };
+
+  struct AsteroidsRock {
+  float x;
+  float y;
+  float vx;
+  float vy;
+  float radius;
+  uint8_t size;
+  bool active;
+  };
+
+  struct AsteroidsBullet {
+  float x;
+  float y;
+  float vx;
+  float vy;
+  unsigned long expiresAt;
+  bool active;
   };
 
   ModelData models[MAX_MODELS];
@@ -1015,6 +1065,48 @@ enum StickCalibrationState {
   #define GAME_BTN_W 48
   #define GAME_BTN_H 48
 
+  #define GAME_MENU_BTN_X 20
+  #define GAME_MENU_BTN_W 200
+  #define GAME_MENU_BTN_H 42
+  #define GAME_MENU_BATTLEZONE_Y 58
+  #define GAME_MENU_20Q_Y 108
+  #define GAME_MENU_ASTEROIDS_Y 158
+  #define GAME_MENU_INVADERS_Y 208
+  #define GAME_MENU_PAGE_BTN_X 130
+  #define GAME_MENU_PAGE_BTN_Y BACK_BTN_Y
+  #define GAME_MENU_PAGE_BTN_W 100
+  #define GAME_MENU_PAGE_BTN_H BACK_BTN_H
+  #define GAME_MENU_ITEMS_PER_PAGE 4
+  #define TWENTYQ_MAX_QUESTIONS 20
+  #define TWENTYQ_MAX_LEARNED 8
+  #define TWENTYQ_LEARNED_NAME_LEN 28
+  #define TWENTYQ_PREF_NAMESPACE "twentyq"
+  #define TWENTYQ_PREF_COUNT_KEY "count"
+  #define TWENTYQ_ANSWER_COUNT 3
+  #define TWENTYQ_BACK_X 8
+  #define TWENTYQ_BACK_Y 6
+  #define TWENTYQ_BACK_W 56
+  #define TWENTYQ_BACK_H 20
+  #define TWENTYQ_PANEL_X 12
+  #define TWENTYQ_PANEL_Y 58
+  #define TWENTYQ_PANEL_W 216
+  #define TWENTYQ_PANEL_H 142
+  #define TWENTYQ_BTN_Y 218
+  #define TWENTYQ_BTN_W 68
+  #define TWENTYQ_BTN_H 38
+  #define TWENTYQ_YES_X 10
+  #define TWENTYQ_UNSURE_X 86
+  #define TWENTYQ_NO_X 162
+  #define TWENTYQ_RESTART_X 42
+  #define TWENTYQ_RESTART_Y 264
+  #define TWENTYQ_RESTART_W 156
+  #define TWENTYQ_RESTART_H 32
+  #define TWENTYQ_FEEDBACK_Y 218
+  #define TWENTYQ_FEEDBACK_W 92
+  #define TWENTYQ_FEEDBACK_H 38
+  #define TWENTYQ_CORRECT_X 22
+  #define TWENTYQ_WRONG_X 126
+
   #define DISPLAY_SETTINGS_ROW_X 12
   #define DISPLAY_SETTINGS_ROW_W 216
   #define DISPLAY_SETTINGS_ROW_H 42
@@ -1050,7 +1142,7 @@ enum StickCalibrationState {
   #define SPACE_EXIT_H 20
   #define SPACE_FRAME_INTERVAL_MS 33
   #define BZ_VIEW_TOP (SPACE_STATUS_H + 2)
-  #define BZ_VIEW_BOTTOM (SPACE_CONTROL_Y - 8)
+  #define BZ_VIEW_BOTTOM 312
   #define BZ_HORIZON_Y ((BZ_VIEW_TOP + BZ_VIEW_BOTTOM) / 2)
   #define BZ_FOV_SCALE 110.0f
   #define BZ_PLAYER_SPEED 0.055f
@@ -1066,6 +1158,57 @@ enum StickCalibrationState {
   #define BZ_ENEMY_UFO 2
   #define BZ_MISSILE_SPEED 1.35f
   #define BZ_MISSILE_TURN 0.06f
+
+  #define ASTEROIDS_EXIT_X 8
+  #define ASTEROIDS_EXIT_Y 6
+  #define ASTEROIDS_EXIT_W 56
+  #define ASTEROIDS_EXIT_H 20
+  #define ASTEROIDS_STATUS_H 28
+  #define ASTEROIDS_VIEW_TOP (ASTEROIDS_STATUS_H + 2)
+  #define ASTEROIDS_VIEW_BOTTOM 318
+  #define ASTEROIDS_FRAME_INTERVAL_MS 33
+  #define ASTEROIDS_MAX_ROCKS 10
+  #define ASTEROIDS_MAX_BULLETS 5
+  #define ASTEROIDS_SHIP_RADIUS 7.0f
+  #define ASTEROIDS_TURN_SPEED 0.085f
+  #define ASTEROIDS_THRUST 0.115f
+  #define ASTEROIDS_DRAG 0.992f
+  #define ASTEROIDS_BULLET_SPEED 4.2f
+  #define ASTEROIDS_BULLET_TTL_MS 850UL
+  #define ASTEROIDS_FIRE_COOLDOWN_MS 190UL
+  #define ASTEROIDS_RESPAWN_MS 1200UL
+
+  #define DUNGEON_EXIT_X 8
+  #define DUNGEON_EXIT_Y 6
+  #define DUNGEON_EXIT_W 56
+  #define DUNGEON_EXIT_H 20
+  #define DUNGEON_STATUS_H 28
+  #define DUNGEON_HUD_H 21
+  #define DUNGEON_HUD_Y (320 - DUNGEON_HUD_H)
+  #define DUNGEON_HUD_FACE_X 97
+  #define DUNGEON_HUD_FACE_Y (DUNGEON_HUD_Y + 1)
+  #define DUNGEON_VIEW_TOP (DUNGEON_STATUS_H + 2)
+  #define DUNGEON_VIEW_BOTTOM DUNGEON_HUD_Y
+  #define DUNGEON_VIEW_H (DUNGEON_VIEW_BOTTOM - DUNGEON_VIEW_TOP)
+  #define DUNGEON_FRAME_INTERVAL_MS 33
+  #define DUNGEON_RAY_STEP 2
+  #define DUNGEON_RAY_COUNT (240 / DUNGEON_RAY_STEP)
+  #define DUNGEON_MAP_W 12
+  #define DUNGEON_MAP_H 12
+  #define DUNGEON_FOV 1.0471976f
+  #define DUNGEON_MOVE_SPEED 0.069f
+  #define DUNGEON_STRAFE_SPEED 0.069f
+  #define DUNGEON_TURN_SPEED 0.065f
+  #define DUNGEON_FIRE_COOLDOWN_MS 220
+  #define DUNGEON_FIRE_ANIM_MS 210
+  #define DUNGEON_MUZZLE_FLASH_MS 70
+  #define DUNGEON_GUN_X 42
+  #define DUNGEON_GUN_Y (DUNGEON_VIEW_BOTTOM - 132)
+  #define DUNGEON_GUN_W 156
+  #define DUNGEON_GUN_H 132
+  #define DUNGEON_PISTOL_MUZZLE_SRC_X 84
+  #define DUNGEON_PISTOL_FLASH_CENTER_X 20
+  #define DUNGEON_IMPACT_MS 130
 
   #define BACK_TEXT_OFFSET 50
 
@@ -1352,6 +1495,58 @@ enum StickCalibrationState {
   bool spaceGameOver = false;
   bool spaceWaveCleared = false;
   bool spaceGameStarted = false;
+  AsteroidsRock asteroidsRocks[ASTEROIDS_MAX_ROCKS];
+  AsteroidsBullet asteroidsBullets[ASTEROIDS_MAX_BULLETS];
+  float asteroidsShipX = 120.0f;
+  float asteroidsShipY = 174.0f;
+  float asteroidsShipVX = 0.0f;
+  float asteroidsShipVY = 0.0f;
+  float asteroidsShipHeading = -1.5707963f;
+  int asteroidsScore = 0;
+  int asteroidsLives = 3;
+  int asteroidsLevel = 1;
+  bool asteroidsGameOver = false;
+  bool asteroidsStarted = false;
+  unsigned long lastAsteroidsFrameTime = 0;
+  unsigned long lastAsteroidsShotTime = 0;
+  unsigned long asteroidsInvulnerableUntil = 0;
+  float dungeonPlayerX = 2.5f;
+  float dungeonPlayerY = 2.5f;
+  float dungeonPlayerHeading = 1.5707963f;
+  unsigned long lastDungeonFrameTime = 0;
+  unsigned long lastDungeonShotTime = 0;
+  unsigned long dungeonMuzzleFlashUntil = 0;
+  int dungeonHealth = 100;
+  int dungeonAmmo = 50;
+  bool dungeonStarted = false;
+  bool dungeonFrameDirty = true;
+  bool dungeonStatusDirty = true;
+  bool dungeonGunDirty = true;
+  bool dungeonMuzzleWasVisible = false;
+  bool dungeonWeaponAnimWasVisible = false;
+  bool dungeonRestoreWeaponBackdrop = false;
+  bool dungeonImpactWasVisible = false;
+  unsigned long dungeonImpactUntil = 0;
+  bool dungeonPreserveIdlePistol = false;
+  bool dungeonIdlePistolMaskReady = false;
+  int16_t dungeonIdlePistolMinX[DUNGEON_RUN_PISTOL_IDLE_H];
+  int16_t dungeonIdlePistolMaxX[DUNGEON_RUN_PISTOL_IDLE_H];
+  int lastDungeonDrawnHealth = -1;
+  int lastDungeonDrawnAmmo = -1;
+  int gamesMenuPage = 0;
+  int twentyQQuestionIndex = 0;
+  int8_t twentyQUserAnswers[TWENTYQ_MAX_QUESTIONS] = { 0 };
+  bool twentyQGuessReady = false;
+  bool twentyQNeedsRedraw = true;
+  int twentyQBestCandidate = 0;
+  int twentyQSecondCandidate = 0;
+  int twentyQBestScore = 0;
+  int twentyQSecondScore = 0;
+  bool twentyQAnsweredFeedback = false;
+  bool twentyQLearnedLastRound = false;
+  bool twentyQDuplicateLastRound = false;
+  TwentyQLearnedCandidate twentyQLearnedCandidates[TWENTYQ_MAX_LEARNED];
+  int twentyQLearnedCount = 0;
   int selectedMixIndex = 0;
   int selectedMixPage = MIX_PAGE_PRESET;
   unsigned long mixPageToggleLockedUntil = 0;
@@ -1443,6 +1638,29 @@ enum StickCalibrationState {
   void drawOtaSettingsDynamic();
   void drawDisplaySettingsStatic();
   void drawDisplaySettingsDynamic();
+  void drawGamesMenuScreen();
+  void resetTwentyQGame();
+  void drawTwentyQScreen();
+  void handleTwentyQTouch(int x, int y);
+  void handleTwentyQAnswer(int8_t answer);
+  void updateTwentyQGuess();
+  void drawGameExitButton(int x, int y, int w, int h, const char *label, bool pressed, bool selected);
+  void loadTwentyQLearnedCandidates();
+  void saveTwentyQLearnedCandidates();
+  void saveTwentyQLearnedAnswer(const char *name);
+  bool twentyQNameMatches(const char *a, const char *b);
+  bool isTwentyQDuplicateAnswer(const char *name);
+  const char* getTwentyQCandidateName(int index);
+  const char* getTwentyQCandidateCategory(int index);
+  int8_t getTwentyQCandidateAnswer(int index, int question);
+  void drawWrappedCenteredText(const char *text, int x, int y, int w, int lineH, int maxLines, uint16_t fg, uint16_t bg);
+  int gamesMenuPageCount();
+  int getGameMenuIndexForButton(ButtonID button);
+  ButtonID getGameMenuButtonForIndex(int index);
+  const char* getGameMenuLabelForIndex(int index);
+  bool isGameMenuButton(ButtonID button);
+  void selectGameMenuPage(int page);
+  void activateGameMenuButton(ButtonID button);
   void drawDisplaySettingsRow(int y, const char* label, const char* valueText,
                               bool minusPressed, bool minusSelected,
                               bool plusPressed, bool plusSelected,
@@ -1518,6 +1736,14 @@ enum StickCalibrationState {
   void drawEscChannelSetupScreen();
   void drawSpaceGameStatic();
   void drawSpaceGameDynamic();
+  void resetAsteroidsGame();
+  void updateAsteroidsGame(unsigned long now, bool firePressed, bool exitPressed);
+  void handleAsteroidsTouch(int x, int y);
+  void drawAsteroidsStatic();
+  void drawAsteroidsDynamic();
+  void fireAsteroidsBullet();
+  void spawnAsteroidsWave();
+  void wrapAsteroidsPoint(float &x, float &y);
   void drawTankBars(int x, int y, int w, int h, float left, float right);
   void drawTankAuxBars(int x, int y, int w, int h, float turret, float weapon);
   void drawCarBars(int x, int y, int w, int h, float steering, float throttle);
@@ -1742,6 +1968,15 @@ enum StickCalibrationState {
   void moveSpacePlayer(int delta);
   void fireSpacePlayerBullet();
   void fireSpaceEnemyBullet();
+  void resetDungeonRun();
+  void updateDungeonRun(unsigned long now, bool firePressed, bool exitPressed);
+  void handleDungeonRunTouch(int x, int y);
+  void fireDungeonWeapon();
+  void drawDungeonRunSpriteKeyed(int x, int y, int w, int h, const uint16_t *data);
+  void drawDungeonRunHudNumber(int value, int x, int y, int digits);
+  void drawDungeonRunHud();
+  void drawDungeonRunStatic();
+  void drawDungeonRunDynamic();
   bool spaceEnemiesRemaining();
 
   uint8_t getMixSource(const MixData &mix) {
@@ -3969,6 +4204,9 @@ void getKeyboardKeyRect(int row, int col, int &x, int &y, int &w, int &h) {
 }
 
 int getKeyboardMaxLength() {
+  if (keyboardTarget == KEYBOARD_TARGET_20Q_LEARN) {
+    return TWENTYQ_LEARNED_NAME_LEN - 1;
+  }
   if (keyboardTarget == KEYBOARD_TARGET_OTA_STA_SSID) {
     return OTA_STA_SSID_STORAGE_BYTES;
   }
@@ -3982,6 +4220,17 @@ int getKeyboardMaxLength() {
 }
 
 void applyKeyboardBufferToTarget() {
+  if (keyboardTarget == KEYBOARD_TARGET_20Q_LEARN) {
+    if (keyboardBuffer.length() > 0) {
+      saveTwentyQLearnedAnswer(keyboardBuffer.c_str());
+      twentyQAnsweredFeedback = true;
+      twentyQNeedsRedraw = true;
+      fullRedraw = true;
+      uiNeedsRedraw = true;
+    }
+    return;
+  }
+
   if (keyboardTarget == KEYBOARD_TARGET_MODEL_NAME) {
     if (keyboardBuffer.length() > 0) {
       saveKeyboardBufferToModelSlot();
@@ -4258,13 +4507,15 @@ void logPartitionInfo(const char *label, const esp_partition_t *partition) {
 bool isOtaKeyboardTarget(KeyboardTarget target) {
   return target == KEYBOARD_TARGET_OTA_STA_SSID ||
          target == KEYBOARD_TARGET_OTA_STA_PASSWORD ||
-         target == KEYBOARD_TARGET_OTA_AP_SSID;
+         target == KEYBOARD_TARGET_OTA_AP_SSID ||
+         target == KEYBOARD_TARGET_20Q_LEARN;
 }
 
 const char* getKeyboardTargetLabel(KeyboardTarget target) {
   if (target == KEYBOARD_TARGET_OTA_STA_SSID) return "WiFi SSID";
   if (target == KEYBOARD_TARGET_OTA_STA_PASSWORD) return "Home Pass";
   if (target == KEYBOARD_TARGET_OTA_AP_SSID) return "AP Name";
+  if (target == KEYBOARD_TARGET_20Q_LEARN) return "Correct Answer";
   return "Text";
 }
 
@@ -7249,7 +7500,11 @@ bool hasEspNowHeaderSignal(unsigned long now) {
 }
 
 void updateTopBarDirtyState(unsigned long now) {
-  if (currentScreen == SCREEN_SPLASH || currentScreen == SCREEN_SPACE_GAME) return;
+  if (currentScreen == SCREEN_SPLASH ||
+      currentScreen == SCREEN_SPACE_GAME ||
+      currentScreen == SCREEN_20Q_GAME ||
+      currentScreen == SCREEN_ASTEROIDS_GAME ||
+      currentScreen == SCREEN_DUNGEON_RUN) return;
 
   static bool initialized = false;
   static ProtocolType lastProtocol = PROTOCOL_ELRS;
@@ -7375,6 +7630,7 @@ void setup() {
   loadEspNowReceiverOutputModes();
   loadOtaSettings();
   loadReceiverBindings();
+  loadTwentyQLearnedCandidates();
   applyDisplayBacklight();
   if (displaySettingsRepaired) {
     saveDisplaySettings();
@@ -7570,6 +7826,18 @@ void loop() {
   if (currentScreen == SCREEN_SPACE_GAME) {
     updateSpaceGame(now, left, right, select, down);
     if (left || right || select || down) {
+      userActive = true;
+    }
+  }
+  else if (currentScreen == SCREEN_DUNGEON_RUN) {
+    updateDungeonRun(now, select, down);
+    if (select || down) {
+      userActive = true;
+    }
+  }
+  else if (currentScreen == SCREEN_ASTEROIDS_GAME) {
+    updateAsteroidsGame(now, select, down);
+    if (select || down) {
       userActive = true;
     }
   }
@@ -7962,11 +8230,130 @@ void loop() {
       else if (selectedButton == BTN_MODEL) setScreen(SCREEN_MODEL_SETTINGS);
       else if (selectedButton == BTN_DISPLAY_SETTINGS) setScreen(SCREEN_DISPLAY_SETTINGS);
       else if (selectedButton == BTN_TX_UPDATE) setScreen(SCREEN_TX_UPDATE);
-      else if (selectedButton == BTN_GAME) setScreen(SCREEN_SPACE_GAME);
+      else if (selectedButton == BTN_GAME) setScreen(SCREEN_GAMES_MENU);
 
       selectedButton = BTN_NONE;
       didInput = true;
       userActive = true;
+    }
+  }
+
+  else if (currentScreen == SCREEN_GAMES_MENU) {
+    if (down || up || left || right || select) dpadFocusVisible = true;
+
+    if (down || up) {
+      ButtonID order[GAME_MENU_ITEMS_PER_PAGE + 2];
+      int orderCount = 0;
+      int firstIndex = gamesMenuPage * GAME_MENU_ITEMS_PER_PAGE;
+      for (int i = 0; i < GAME_MENU_ITEMS_PER_PAGE; i++) {
+        ButtonID button = getGameMenuButtonForIndex(firstIndex + i);
+        if (button != BTN_NONE) order[orderCount++] = button;
+      }
+      order[orderCount++] = BTN_PAGE_NAV;
+      order[orderCount++] = BTN_BACK;
+      selectedButton = cycleButtonOrder(selectedButton, order, orderCount, down);
+      fullRedraw = true;
+      uiNeedsRedraw = true;
+      didInput = true;
+      userActive = true;
+    }
+
+    if (left || right) {
+      selectGameMenuPage(gamesMenuPage + (right ? 1 : -1));
+      didInput = true;
+      userActive = true;
+    }
+
+    if (select) {
+      activateGameMenuButton(selectedButton);
+      didInput = true;
+      userActive = true;
+    }
+  }
+
+  else if (currentScreen == SCREEN_20Q_GAME) {
+    if (down || up || left || right || select) dpadFocusVisible = true;
+
+    if (twentyQGuessReady) {
+      if (twentyQAnsweredFeedback) {
+        if (up || down || left || right) {
+          selectedButton = (selectedButton == BTN_BACK) ? BTN_20Q_RESTART : BTN_BACK;
+          twentyQNeedsRedraw = true;
+          uiNeedsRedraw = true;
+          didInput = true;
+          userActive = true;
+        }
+        if (select) {
+          if (selectedButton == BTN_BACK) setScreen(SCREEN_GAMES_MENU);
+          else resetTwentyQGame();
+          fullRedraw = true;
+          uiNeedsRedraw = true;
+          didInput = true;
+          userActive = true;
+        }
+      } else {
+        if (left || right) {
+          const ButtonID order[] = { BTN_20Q_YES, BTN_20Q_NO };
+          selectedButton = cycleButtonOrder(selectedButton, order, 2, right);
+          twentyQNeedsRedraw = true;
+          uiNeedsRedraw = true;
+          didInput = true;
+          userActive = true;
+        }
+        if (up || down) {
+          selectedButton = (selectedButton == BTN_BACK) ? BTN_20Q_YES : BTN_BACK;
+          twentyQNeedsRedraw = true;
+          uiNeedsRedraw = true;
+          didInput = true;
+          userActive = true;
+        }
+        if (select) {
+          if (selectedButton == BTN_BACK) {
+            setScreen(SCREEN_GAMES_MENU);
+          } else if (selectedButton == BTN_20Q_YES) {
+            twentyQAnsweredFeedback = true;
+            twentyQLearnedLastRound = false;
+            selectedButton = BTN_20Q_RESTART;
+          } else {
+            keyboardTarget = KEYBOARD_TARGET_20Q_LEARN;
+            keyboardBuffer = "";
+            keyboardActive = true;
+            keyboardLowercase = false;
+            keyboardNeedsRedraw = true;
+            kbCursorRow = 1;
+            kbCursorCol = 0;
+          }
+          twentyQNeedsRedraw = true;
+          fullRedraw = true;
+          uiNeedsRedraw = true;
+          didInput = true;
+          userActive = true;
+        }
+      }
+    } else {
+      if (left || right) {
+        const ButtonID order[] = { BTN_20Q_YES, BTN_20Q_UNSURE, BTN_20Q_NO };
+        selectedButton = cycleButtonOrder(selectedButton, order, 3, right);
+        twentyQNeedsRedraw = true;
+        uiNeedsRedraw = true;
+        didInput = true;
+        userActive = true;
+      }
+      if (up || down) {
+        selectedButton = (selectedButton == BTN_BACK) ? BTN_20Q_YES : BTN_BACK;
+        twentyQNeedsRedraw = true;
+        uiNeedsRedraw = true;
+        didInput = true;
+        userActive = true;
+      }
+      if (select) {
+        if (selectedButton == BTN_BACK) setScreen(SCREEN_GAMES_MENU);
+        else if (selectedButton == BTN_20Q_YES) handleTwentyQAnswer(1);
+        else if (selectedButton == BTN_20Q_NO) handleTwentyQAnswer(-1);
+        else handleTwentyQAnswer(0);
+        didInput = true;
+        userActive = true;
+      }
     }
   }
 
@@ -9379,6 +9766,26 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
       }
       drawSpaceGameDynamic();
     }
+    else if (currentScreen == SCREEN_20Q_GAME) {
+      if (fullRedraw || twentyQNeedsRedraw) {
+        drawTwentyQScreen();
+        fullRedraw = false;
+      }
+    }
+    else if (currentScreen == SCREEN_ASTEROIDS_GAME) {
+      if (fullRedraw) {
+        drawAsteroidsStatic();
+        fullRedraw = false;
+      }
+      drawAsteroidsDynamic();
+    }
+    else if (currentScreen == SCREEN_DUNGEON_RUN) {
+      if (fullRedraw) {
+        drawDungeonRunStatic();
+        fullRedraw = false;
+      }
+      drawDungeonRunDynamic();
+    }
     else {
 
       if (fullRedraw) {
@@ -9386,6 +9793,14 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
         switch (currentScreen) {
           case SCREEN_MENU:
           drawMenuScreen();
+          break;
+
+          case SCREEN_GAMES_MENU:
+          drawGamesMenuScreen();
+          break;
+
+          case SCREEN_20Q_GAME:
+          drawTwentyQScreen();
           break;
 
           case SCREEN_CONTROLLER_SETTINGS:
@@ -9541,6 +9956,9 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
       if (currentScreen == SCREEN_TIMER) {
       drawTimerDynamic();
       }
+      if (currentScreen == SCREEN_20Q_GAME && twentyQNeedsRedraw) {
+      drawTwentyQScreen();
+      }
     }
 
     tft.endWrite();
@@ -9564,7 +9982,10 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
 
   if (topBarNeedsRedraw &&
       currentScreen != SCREEN_SPLASH &&
-      currentScreen != SCREEN_SPACE_GAME) {
+      currentScreen != SCREEN_SPACE_GAME &&
+      currentScreen != SCREEN_20Q_GAME &&
+      currentScreen != SCREEN_ASTEROIDS_GAME &&
+      currentScreen != SCREEN_DUNGEON_RUN) {
     tft.startWrite();
     drawTopBarDynamic();
     tft.endWrite();
@@ -11080,6 +11501,570 @@ void drawGameMenuButton() {
     -1);
 }
 
+struct GameMenuEntry {
+  const char *label;
+  ButtonID button;
+};
+
+const GameMenuEntry gameMenuEntries[] = {
+  {"Battlezone", BTN_GAME_BATTLEZONE},
+  {"20Q", BTN_GAME_20Q},
+  {"Asteroids", BTN_GAME_ASTEROIDS},
+  {"Invaders", BTN_GAME_INVADERS},
+  {"Snake", BTN_GAME_SNAKE},
+  {"Maze Chase", BTN_GAME_MAZE_CHASE},
+  {"Star Swarm", BTN_GAME_STAR_SWARM},
+  {"Missile Defense", BTN_GAME_MISSILE_DEFENSE},
+  {"Dungeon Run", BTN_GAME_DUNGEON_RUN},
+  {"Scrolling Shooter", BTN_GAME_SCROLL_SHOOTER}
+};
+const int gameMenuEntryCount = sizeof(gameMenuEntries) / sizeof(gameMenuEntries[0]);
+const int gameMenuRowY[GAME_MENU_ITEMS_PER_PAGE] = {
+  GAME_MENU_BATTLEZONE_Y,
+  GAME_MENU_20Q_Y,
+  GAME_MENU_ASTEROIDS_Y,
+  GAME_MENU_INVADERS_Y
+};
+
+int gamesMenuPageCount() {
+  return (gameMenuEntryCount + GAME_MENU_ITEMS_PER_PAGE - 1) / GAME_MENU_ITEMS_PER_PAGE;
+}
+
+int getGameMenuIndexForButton(ButtonID button) {
+  for (int i = 0; i < gameMenuEntryCount; i++) {
+    if (gameMenuEntries[i].button == button) return i;
+  }
+  return -1;
+}
+
+ButtonID getGameMenuButtonForIndex(int index) {
+  if (index < 0 || index >= gameMenuEntryCount) return BTN_NONE;
+  return gameMenuEntries[index].button;
+}
+
+const char* getGameMenuLabelForIndex(int index) {
+  if (index < 0 || index >= gameMenuEntryCount) return "";
+  return gameMenuEntries[index].label;
+}
+
+bool isGameMenuButton(ButtonID button) {
+  return getGameMenuIndexForButton(button) >= 0;
+}
+
+void selectGameMenuPage(int page) {
+  int pageCount = max(1, gamesMenuPageCount());
+  gamesMenuPage = page % pageCount;
+  if (gamesMenuPage < 0) gamesMenuPage += pageCount;
+
+  int firstIndex = gamesMenuPage * GAME_MENU_ITEMS_PER_PAGE;
+  selectedButton = getGameMenuButtonForIndex(firstIndex);
+  if (selectedButton == BTN_NONE) selectedButton = BTN_BACK;
+  fullRedraw = true;
+  uiNeedsRedraw = true;
+}
+
+void activateGameMenuButton(ButtonID button) {
+  if (button == BTN_BACK) {
+    setScreen(SCREEN_MENU);
+    selectedButton = BTN_NONE;
+    return;
+  }
+
+  if (button == BTN_PAGE_NAV) {
+    selectGameMenuPage(gamesMenuPage + 1);
+    return;
+  }
+
+  if (button == BTN_GAME_BATTLEZONE) {
+    setScreen(SCREEN_SPACE_GAME);
+    selectedButton = BTN_NONE;
+    return;
+  }
+
+  if (button == BTN_GAME_20Q) {
+    setScreen(SCREEN_20Q_GAME);
+    selectedButton = BTN_NONE;
+    return;
+  }
+
+  if (button == BTN_GAME_ASTEROIDS) {
+    setScreen(SCREEN_ASTEROIDS_GAME);
+    selectedButton = BTN_NONE;
+    return;
+  }
+
+  if (button == BTN_GAME_DUNGEON_RUN) {
+    setScreen(SCREEN_DUNGEON_RUN);
+    selectedButton = BTN_NONE;
+    return;
+  }
+
+  if (isGameMenuButton(button)) {
+    dpadFocusVisible = true;
+    fullRedraw = true;
+    uiNeedsRedraw = true;
+  }
+}
+
+void drawGamesMenuScreen() {
+  tft.fillScreen(COLOR_BG);
+
+  drawButtonBubble(
+    BACK_BTN_X, BACK_BTN_Y,
+    BACK_BTN_W, BACK_BTN_H,
+    "BACK",
+    pressedButton == BTN_BACK,
+    dpadFocusVisible && selectedButton == BTN_BACK,
+    BACK_TEXT_OFFSET);
+
+  drawButtonBubble(GAME_MENU_PAGE_BTN_X, GAME_MENU_PAGE_BTN_Y,
+                   GAME_MENU_PAGE_BTN_W, GAME_MENU_PAGE_BTN_H,
+                   "PAGE",
+                   pressedButton == BTN_PAGE_NAV,
+                   dpadFocusVisible && selectedButton == BTN_PAGE_NAV,
+                   40);
+
+  tft.drawFastHLine(0, FOOTER_Y - 5, 240, COLOR_ACCENT);
+  tft.setTextFont(2);
+  tft.setTextColor(COLOR_TEXT, COLOR_BG);
+  char title[24];
+  snprintf(title, sizeof(title), "Games %d/%d", gamesMenuPage + 1, gamesMenuPageCount());
+  tft.drawCentreString(title, 120, 30, 2);
+
+  int firstIndex = gamesMenuPage * GAME_MENU_ITEMS_PER_PAGE;
+  for (int row = 0; row < GAME_MENU_ITEMS_PER_PAGE; row++) {
+    int entryIndex = firstIndex + row;
+    if (entryIndex >= gameMenuEntryCount) break;
+
+    const char *label = getGameMenuLabelForIndex(entryIndex);
+    ButtonID button = getGameMenuButtonForIndex(entryIndex);
+    int textOffset = 86;
+    if (strlen(label) > 12) textOffset = 42;
+    else if (strlen(label) > 9) textOffset = 58;
+
+    drawButtonBubble(GAME_MENU_BTN_X, gameMenuRowY[row],
+                     GAME_MENU_BTN_W, GAME_MENU_BTN_H,
+                     label,
+                     pressedButton == button,
+                     dpadFocusVisible && selectedButton == button,
+                     textOffset);
+  }
+
+  if (isGameMenuButton(selectedButton) &&
+      selectedButton != BTN_GAME_BATTLEZONE &&
+      selectedButton != BTN_GAME_20Q &&
+      selectedButton != BTN_GAME_ASTEROIDS &&
+      selectedButton != BTN_GAME_DUNGEON_RUN) {
+    tft.setTextColor(COLOR_ACCENT_HI, COLOR_BG);
+    tft.drawCentreString("Coming soon", 120, 258, 2);
+  }
+}
+
+void drawGameExitButton(int x, int y, int w, int h, const char *label, bool pressed, bool selected) {
+  int drawY = y + (pressed ? 1 : 0);
+  uint16_t fill = selected ? COLOR_ACCENT : COLOR_PANEL;
+  uint16_t text = selected ? COLOR_BG : COLOR_TEXT;
+  tft.fillRoundRect(x, drawY, w, h, 6, fill);
+  tft.drawRoundRect(x, drawY, w, h, 6, COLOR_ACCENT);
+  if (selected) tft.drawRoundRect(x - 1, drawY - 1, w + 2, h + 2, 7, COLOR_ACCENT_HI);
+  tft.setTextFont(2);
+  tft.setTextColor(text, fill);
+  tft.drawCentreString(label, x + (w / 2), drawY + 3, 2);
+}
+
+const char *twentyQQuestions[TWENTYQ_MAX_QUESTIONS] = {
+  "Is it or was it alive?",
+  "Is it human?",
+  "Is it an animal?",
+  "Is it a plant?",
+  "Is it known for science or invention?",
+  "Is it known for music or performance?",
+  "Is it from ancient history?",
+  "Is it a non-living natural material?",
+  "Is it metallic?",
+  "Is it clear, sparkly, or used in jewelry?",
+  "Does it live in water?",
+  "Can it fly?",
+  "Is it commonly kept as a pet?",
+  "Does it have flowers?",
+  "Is it a tree?",
+  "Does it live in dry desert places?",
+  "Is it usually larger than a person?",
+  "Is it associated with writing or literature?",
+  "Is it usually yellow or gold colored?",
+  "Is it soft or furry?"
+};
+
+const TwentyQCandidate twentyQCandidates[] = {
+  {"Albert Einstein", "famous person", { 1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Cleopatra",       "famous person", { 1, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"William Shakespeare", "famous person", { 1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1}},
+  {"Elvis Presley",   "famous person", { 1, 1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Amelia Earhart",  "famous person", { 1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Gold",            "mineral",       {-1,-1,-1,-1,-1,-1,-1, 1, 1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1}},
+  {"Diamond",         "mineral",       {-1,-1,-1,-1,-1,-1,-1, 1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Quartz",          "mineral",       {-1,-1,-1,-1,-1,-1,-1, 1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Copper",          "mineral",       {-1,-1,-1,-1,-1,-1,-1, 1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Cat",             "animal",        { 1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1, 1}},
+  {"Dolphin",         "animal",        { 1,-1, 1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 0,-1,-1,-1}},
+  {"Eagle",           "animal",        { 1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Octopus",         "animal",        { 1,-1, 1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1}},
+  {"Rose",            "plant",         { 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1}},
+  {"Oak tree",        "plant",         { 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1, 1,-1,-1,-1}},
+  {"Sunflower",       "plant",         { 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-1}},
+  {"Cactus",          "plant",         { 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0,-1, 1,-1,-1,-1,-1}}
+};
+
+const int twentyQCandidateCount = sizeof(twentyQCandidates) / sizeof(twentyQCandidates[0]);
+
+int getTwentyQTotalCandidateCount() {
+  return twentyQCandidateCount + twentyQLearnedCount;
+}
+
+const char* getTwentyQCandidateName(int index) {
+  if (index < twentyQCandidateCount) return twentyQCandidates[index].name;
+  int learnedIndex = index - twentyQCandidateCount;
+  if (learnedIndex >= 0 && learnedIndex < twentyQLearnedCount) return twentyQLearnedCandidates[learnedIndex].name;
+  return "something mysterious";
+}
+
+const char* getTwentyQCandidateCategory(int index) {
+  if (index < twentyQCandidateCount) return twentyQCandidates[index].category;
+  return "learned answer";
+}
+
+int8_t getTwentyQCandidateAnswer(int index, int question) {
+  if (question < 0 || question >= TWENTYQ_MAX_QUESTIONS) return 0;
+  if (index < twentyQCandidateCount) return twentyQCandidates[index].answers[question];
+  int learnedIndex = index - twentyQCandidateCount;
+  if (learnedIndex >= 0 && learnedIndex < twentyQLearnedCount) return twentyQLearnedCandidates[learnedIndex].answers[question];
+  return 0;
+}
+
+bool twentyQNameMatches(const char *a, const char *b) {
+  if (a == nullptr || b == nullptr) return false;
+  String left = String(a);
+  String right = String(b);
+  left.trim();
+  right.trim();
+  left.toLowerCase();
+  right.toLowerCase();
+  return left.length() > 0 && left == right;
+}
+
+bool isTwentyQDuplicateAnswer(const char *name) {
+  if (name == nullptr || strlen(name) == 0) return false;
+  for (int i = 0; i < getTwentyQTotalCandidateCount(); i++) {
+    if (twentyQNameMatches(name, getTwentyQCandidateName(i))) return true;
+  }
+  return false;
+}
+
+void loadTwentyQLearnedCandidates() {
+  Preferences preferences;
+  twentyQLearnedCount = 0;
+  if (!preferences.begin(TWENTYQ_PREF_NAMESPACE, true)) return;
+
+  int storedCount = constrain((int)preferences.getUChar(TWENTYQ_PREF_COUNT_KEY, 0), 0, TWENTYQ_MAX_LEARNED);
+  for (int i = 0; i < storedCount; i++) {
+    char nameKey[6];
+    char answerKey[6];
+    snprintf(nameKey, sizeof(nameKey), "n%d", i);
+    snprintf(answerKey, sizeof(answerKey), "a%d", i);
+
+    String name = preferences.getString(nameKey, "");
+    if (name.length() == 0) continue;
+
+    memset(&twentyQLearnedCandidates[twentyQLearnedCount], 0, sizeof(TwentyQLearnedCandidate));
+    strncpy(twentyQLearnedCandidates[twentyQLearnedCount].name, name.c_str(), TWENTYQ_LEARNED_NAME_LEN - 1);
+    size_t bytesRead = preferences.getBytes(answerKey, twentyQLearnedCandidates[twentyQLearnedCount].answers, TWENTYQ_MAX_QUESTIONS);
+    if (bytesRead < TWENTYQ_MAX_QUESTIONS) {
+      memset(twentyQLearnedCandidates[twentyQLearnedCount].answers, 0, TWENTYQ_MAX_QUESTIONS);
+    }
+    twentyQLearnedCount++;
+  }
+  preferences.end();
+}
+
+void saveTwentyQLearnedCandidates() {
+  Preferences preferences;
+  if (!preferences.begin(TWENTYQ_PREF_NAMESPACE, false)) return;
+
+  preferences.putUChar(TWENTYQ_PREF_COUNT_KEY, (uint8_t)twentyQLearnedCount);
+  for (int i = 0; i < TWENTYQ_MAX_LEARNED; i++) {
+    char nameKey[6];
+    char answerKey[6];
+    snprintf(nameKey, sizeof(nameKey), "n%d", i);
+    snprintf(answerKey, sizeof(answerKey), "a%d", i);
+    if (i < twentyQLearnedCount) {
+      preferences.putString(nameKey, twentyQLearnedCandidates[i].name);
+      preferences.putBytes(answerKey, twentyQLearnedCandidates[i].answers, TWENTYQ_MAX_QUESTIONS);
+    } else {
+      preferences.remove(nameKey);
+      preferences.remove(answerKey);
+    }
+  }
+  preferences.end();
+}
+
+void saveTwentyQLearnedAnswer(const char *name) {
+  if (name == nullptr || strlen(name) == 0) return;
+  twentyQLearnedLastRound = false;
+  twentyQDuplicateLastRound = false;
+
+  if (isTwentyQDuplicateAnswer(name)) {
+    twentyQDuplicateLastRound = true;
+    return;
+  }
+
+  int target = twentyQLearnedCount;
+  if (target >= TWENTYQ_MAX_LEARNED) {
+    for (int i = 1; i < TWENTYQ_MAX_LEARNED; i++) {
+      twentyQLearnedCandidates[i - 1] = twentyQLearnedCandidates[i];
+    }
+    target = TWENTYQ_MAX_LEARNED - 1;
+  } else {
+    twentyQLearnedCount++;
+  }
+
+  memset(&twentyQLearnedCandidates[target], 0, sizeof(TwentyQLearnedCandidate));
+  strncpy(twentyQLearnedCandidates[target].name, name, TWENTYQ_LEARNED_NAME_LEN - 1);
+  for (int i = 0; i < TWENTYQ_MAX_QUESTIONS; i++) {
+    twentyQLearnedCandidates[target].answers[i] = twentyQUserAnswers[i];
+  }
+  saveTwentyQLearnedCandidates();
+  twentyQLearnedLastRound = true;
+}
+
+void resetTwentyQGame() {
+  twentyQQuestionIndex = 0;
+  for (int i = 0; i < TWENTYQ_MAX_QUESTIONS; i++) twentyQUserAnswers[i] = 0;
+  twentyQGuessReady = false;
+  twentyQAnsweredFeedback = false;
+  twentyQLearnedLastRound = false;
+  twentyQDuplicateLastRound = false;
+  twentyQBestCandidate = 0;
+  twentyQSecondCandidate = 0;
+  twentyQBestScore = 0;
+  twentyQSecondScore = 0;
+  twentyQNeedsRedraw = true;
+  selectedButton = BTN_20Q_YES;
+}
+
+void updateTwentyQGuess() {
+  twentyQBestCandidate = 0;
+  twentyQSecondCandidate = 0;
+  twentyQBestScore = -32768;
+  twentyQSecondScore = -32768;
+
+  int totalCandidates = max(1, getTwentyQTotalCandidateCount());
+  for (int item = 0; item < totalCandidates; item++) {
+    int score = 0;
+    for (int q = 0; q < twentyQQuestionIndex && q < TWENTYQ_MAX_QUESTIONS; q++) {
+      int8_t userAnswer = twentyQUserAnswers[q];
+      if (userAnswer == 0) continue;
+      int8_t candidateAnswer = getTwentyQCandidateAnswer(item, q);
+      if (candidateAnswer == 0) score += 1;
+      else if (candidateAnswer == userAnswer) score += 3;
+      else score -= 2;
+    }
+
+    if (score > twentyQBestScore) {
+      twentyQSecondScore = twentyQBestScore;
+      twentyQSecondCandidate = twentyQBestCandidate;
+      twentyQBestScore = score;
+      twentyQBestCandidate = item;
+    } else if (score > twentyQSecondScore) {
+      twentyQSecondScore = score;
+      twentyQSecondCandidate = item;
+    }
+  }
+}
+
+void handleTwentyQAnswer(int8_t answer) {
+  if (twentyQGuessReady) return;
+  if (twentyQQuestionIndex < TWENTYQ_MAX_QUESTIONS) {
+    twentyQUserAnswers[twentyQQuestionIndex] = answer;
+    twentyQQuestionIndex++;
+  }
+  updateTwentyQGuess();
+  if (twentyQQuestionIndex >= TWENTYQ_MAX_QUESTIONS ||
+      (twentyQQuestionIndex >= 10 && (twentyQBestScore - twentyQSecondScore) >= 14)) {
+    twentyQGuessReady = true;
+    selectedButton = BTN_20Q_YES;
+  }
+  twentyQNeedsRedraw = true;
+  fullRedraw = true;
+  uiNeedsRedraw = true;
+}
+
+void drawWrappedCenteredText(const char *text, int x, int y, int w, int lineH, int maxLines, uint16_t fg, uint16_t bg) {
+  char buffer[180];
+  strncpy(buffer, text, sizeof(buffer) - 1);
+  buffer[sizeof(buffer) - 1] = '\0';
+
+  tft.setTextFont(2);
+  tft.setTextColor(fg, bg);
+
+  char line[80] = "";
+  int lineCount = 0;
+  char *token = strtok(buffer, " ");
+  while (token != nullptr && lineCount < maxLines) {
+    char testLine[80];
+    if (line[0] == '\0') snprintf(testLine, sizeof(testLine), "%s", token);
+    else snprintf(testLine, sizeof(testLine), "%s %s", line, token);
+
+    if (tft.textWidth(testLine) > w && line[0] != '\0') {
+      tft.drawCentreString(line, x + (w / 2), y + (lineCount * lineH), 2);
+      lineCount++;
+      snprintf(line, sizeof(line), "%s", token);
+    } else {
+      snprintf(line, sizeof(line), "%s", testLine);
+    }
+    token = strtok(nullptr, " ");
+  }
+
+  if (line[0] != '\0' && lineCount < maxLines) {
+    tft.drawCentreString(line, x + (w / 2), y + (lineCount * lineH), 2);
+  }
+}
+
+void drawTwentyQScreen() {
+  tft.fillScreen(COLOR_BG);
+  drawGameExitButton(TWENTYQ_BACK_X, TWENTYQ_BACK_Y, TWENTYQ_BACK_W, TWENTYQ_BACK_H,
+                     "BACK", pressedButton == BTN_BACK, dpadFocusVisible && selectedButton == BTN_BACK);
+
+  tft.setTextFont(2);
+  tft.setTextColor(COLOR_TEXT, COLOR_BG);
+  tft.drawCentreString("20 QUESTIONS", 120, 32, 2);
+
+  drawGradientControl(TWENTYQ_PANEL_X, TWENTYQ_PANEL_Y, TWENTYQ_PANEL_W, TWENTYQ_PANEL_H,
+                      14, COLOR_PANEL, COLOR_ACCENT);
+
+  if (twentyQGuessReady) {
+    updateTwentyQGuess();
+    tft.setTextColor(COLOR_ACCENT_HI, COLOR_PANEL);
+    tft.drawCentreString("I THINK IT IS...", 120, TWENTYQ_PANEL_Y + 16, 2);
+    tft.setTextColor(COLOR_TEXT, COLOR_PANEL);
+    drawWrappedCenteredText(getTwentyQCandidateName(twentyQBestCandidate),
+                            TWENTYQ_PANEL_X + 10, TWENTYQ_PANEL_Y + 50,
+                            TWENTYQ_PANEL_W - 20, 22, 3, COLOR_TEXT, COLOR_PANEL);
+    tft.setTextColor(COLOR_ACCENT_HI, COLOR_PANEL);
+    tft.drawCentreString(getTwentyQCandidateCategory(twentyQBestCandidate), 120, TWENTYQ_PANEL_Y + 116, 2);
+
+    if (twentyQAnsweredFeedback) {
+      tft.setTextColor(COLOR_TEXT, COLOR_BG);
+      const char *feedbackText = "Tiny oracle victory.";
+      if (twentyQDuplicateLastRound) {
+        feedbackText = "Oh, darn, I should have guessed that one!";
+      } else if (twentyQLearnedLastRound) {
+        feedbackText = "I never would have guessed that, but you wont fool me again";
+      }
+      drawWrappedCenteredText(feedbackText, 10, 210, 220, 18, 3, COLOR_TEXT, COLOR_BG);
+      drawButtonBubble(TWENTYQ_RESTART_X, TWENTYQ_RESTART_Y,
+                       TWENTYQ_RESTART_W, TWENTYQ_RESTART_H,
+                       "PLAY AGAIN",
+                       pressedButton == BTN_20Q_RESTART,
+                       dpadFocusVisible && selectedButton == BTN_20Q_RESTART,
+                       -1);
+    } else {
+      tft.setTextColor(COLOR_TEXT, COLOR_BG);
+      tft.drawCentreString("Was I correct?", 120, 210, 2);
+      drawButtonBubble(TWENTYQ_CORRECT_X, TWENTYQ_FEEDBACK_Y,
+                       TWENTYQ_FEEDBACK_W, TWENTYQ_FEEDBACK_H,
+                       "YES",
+                       pressedButton == BTN_20Q_YES,
+                       dpadFocusVisible && selectedButton == BTN_20Q_YES,
+                       -1);
+      drawButtonBubble(TWENTYQ_WRONG_X, TWENTYQ_FEEDBACK_Y,
+                       TWENTYQ_FEEDBACK_W, TWENTYQ_FEEDBACK_H,
+                       "NO",
+                       pressedButton == BTN_20Q_NO,
+                       dpadFocusVisible && selectedButton == BTN_20Q_NO,
+                       -1);
+    }
+  } else {
+    char progress[28];
+    snprintf(progress, sizeof(progress), "Question %d of %d", twentyQQuestionIndex + 1, TWENTYQ_MAX_QUESTIONS);
+    tft.setTextColor(COLOR_ACCENT_HI, COLOR_PANEL);
+    tft.drawCentreString(progress, 120, TWENTYQ_PANEL_Y + 14, 2);
+    drawWrappedCenteredText(twentyQQuestions[twentyQQuestionIndex],
+                            TWENTYQ_PANEL_X + 10, TWENTYQ_PANEL_Y + 48,
+                            TWENTYQ_PANEL_W - 20, 24, 4, COLOR_TEXT, COLOR_PANEL);
+
+    drawButtonBubble(TWENTYQ_YES_X, TWENTYQ_BTN_Y, TWENTYQ_BTN_W, TWENTYQ_BTN_H,
+                     "YES", pressedButton == BTN_20Q_YES,
+                     dpadFocusVisible && selectedButton == BTN_20Q_YES, -1);
+    drawButtonBubble(TWENTYQ_UNSURE_X, TWENTYQ_BTN_Y, TWENTYQ_BTN_W, TWENTYQ_BTN_H,
+                     "UNSURE", pressedButton == BTN_20Q_UNSURE,
+                     dpadFocusVisible && selectedButton == BTN_20Q_UNSURE, -1);
+    drawButtonBubble(TWENTYQ_NO_X, TWENTYQ_BTN_Y, TWENTYQ_BTN_W, TWENTYQ_BTN_H,
+                     "NO", pressedButton == BTN_20Q_NO,
+                     dpadFocusVisible && selectedButton == BTN_20Q_NO, -1);
+  }
+
+  twentyQNeedsRedraw = false;
+}
+
+void handleTwentyQTouch(int x, int y) {
+  if (isInside(x, y, TWENTYQ_BACK_X, TWENTYQ_BACK_Y, TWENTYQ_BACK_W, TWENTYQ_BACK_H)) {
+    queueScreenButton(BTN_BACK, SCREEN_GAMES_MENU);
+    return;
+  }
+  if (waitingForRelease) return;
+
+  if (twentyQGuessReady) {
+    if (twentyQAnsweredFeedback &&
+        isInside(x, y, TWENTYQ_RESTART_X, TWENTYQ_RESTART_Y, TWENTYQ_RESTART_W, TWENTYQ_RESTART_H)) {
+      pressedButton = BTN_20Q_RESTART;
+      waitingForRelease = true;
+      resetTwentyQGame();
+      fullRedraw = true;
+      uiNeedsRedraw = true;
+    } else if (!twentyQAnsweredFeedback &&
+               isInside(x, y, TWENTYQ_CORRECT_X, TWENTYQ_FEEDBACK_Y, TWENTYQ_FEEDBACK_W, TWENTYQ_FEEDBACK_H)) {
+      pressedButton = BTN_20Q_YES;
+      selectedButton = BTN_20Q_RESTART;
+      waitingForRelease = true;
+      twentyQAnsweredFeedback = true;
+      twentyQLearnedLastRound = false;
+      twentyQNeedsRedraw = true;
+      fullRedraw = true;
+      uiNeedsRedraw = true;
+    } else if (!twentyQAnsweredFeedback &&
+               isInside(x, y, TWENTYQ_WRONG_X, TWENTYQ_FEEDBACK_Y, TWENTYQ_FEEDBACK_W, TWENTYQ_FEEDBACK_H)) {
+      pressedButton = BTN_20Q_NO;
+      waitingForRelease = true;
+      keyboardTarget = KEYBOARD_TARGET_20Q_LEARN;
+      keyboardBuffer = "";
+      keyboardActive = true;
+      keyboardLowercase = false;
+      keyboardNeedsRedraw = true;
+      kbCursorRow = 1;
+      kbCursorCol = 0;
+      uiNeedsRedraw = true;
+    }
+    return;
+  }
+
+  if (isInside(x, y, TWENTYQ_YES_X, TWENTYQ_BTN_Y, TWENTYQ_BTN_W, TWENTYQ_BTN_H)) {
+    pressedButton = BTN_20Q_YES;
+    selectedButton = BTN_20Q_YES;
+    waitingForRelease = true;
+    handleTwentyQAnswer(1);
+  } else if (isInside(x, y, TWENTYQ_UNSURE_X, TWENTYQ_BTN_Y, TWENTYQ_BTN_W, TWENTYQ_BTN_H)) {
+    pressedButton = BTN_20Q_UNSURE;
+    selectedButton = BTN_20Q_UNSURE;
+    waitingForRelease = true;
+    handleTwentyQAnswer(0);
+  } else if (isInside(x, y, TWENTYQ_NO_X, TWENTYQ_BTN_Y, TWENTYQ_BTN_W, TWENTYQ_BTN_H)) {
+    pressedButton = BTN_20Q_NO;
+    selectedButton = BTN_20Q_NO;
+    waitingForRelease = true;
+    handleTwentyQAnswer(-1);
+  }
+}
+
 void drawDisplaySettingsRow(int y, const char* label, const char* valueText,
                             bool minusPressed, bool minusSelected,
                             bool plusPressed, bool plusSelected,
@@ -11396,7 +12381,7 @@ void fireSpaceEnemyBullet() {
 void updateSpaceGame(unsigned long now, bool leftPressed, bool rightPressed, bool firePressed, bool exitPressed) {
   if (currentScreen != SCREEN_SPACE_GAME) return;
   if (exitPressed) {
-    setScreen(SCREEN_MENU);
+    setScreen(SCREEN_GAMES_MENU);
     return;
   }
 
@@ -11411,17 +12396,20 @@ void updateSpaceGame(unsigned long now, bool leftPressed, bool rightPressed, boo
     return;
   }
 
-  if (leftPressed || rightPressed || firePressed) {
+  (void)leftPressed;
+  (void)rightPressed;
+
+  if (fabs(inputChannels[0]) > 0.08f ||
+      fabs(inputChannels[1]) > 0.08f ||
+      firePressed) {
     spaceGameStarted = true;
   }
 
-  // Battlezone mode uses the same "single-stick tank" feel:
-  // RX steers, RY moves forward/reverse.
-  float turnInput = outputChannels[0];
-  float throttleInput = outputChannels[1];
+  // Battlezone always uses raw one-stick tank controls, independent of the
+  // active model's drive type, mixes, rates, expo, or reverses.
+  float turnInput = inputChannels[0];      // RX = left/right turn
+  float throttleInput = inputChannels[1];  // RY = forward/reverse
 
-  if (leftPressed && !rightPressed) turnInput -= 0.9f;
-  if (rightPressed && !leftPressed) turnInput += 0.9f;
   turnInput = constrain(turnInput, -1.0f, 1.0f);
   throttleInput = constrain(throttleInput, -1.0f, 1.0f);
 
@@ -11597,7 +12585,7 @@ void updateSpaceGame(unsigned long now, bool leftPressed, bool rightPressed, boo
 
 void handleSpaceGameTouch(int x, int y) {
   if (isInside(x, y, SPACE_EXIT_X, SPACE_EXIT_Y, SPACE_EXIT_W, SPACE_EXIT_H)) {
-    queueScreenButton(BTN_BACK, SCREEN_MENU);
+    queueScreenButton(BTN_BACK, SCREEN_GAMES_MENU);
     return;
   }
 
@@ -11608,21 +12596,9 @@ void handleSpaceGameTouch(int x, int y) {
     return;
   }
 
-  if (isInside(x, y, SPACE_LEFT_BTN_X, SPACE_CONTROL_Y, SPACE_CTRL_BTN_W, SPACE_CTRL_BTN_H)) {
-    spaceGameStarted = true;
-    moveSpacePlayer(-1);
-    waitingForRelease = true;
-  }
-  else if (isInside(x, y, SPACE_RIGHT_BTN_X, SPACE_CONTROL_Y, SPACE_CTRL_BTN_W, SPACE_CTRL_BTN_H)) {
-    spaceGameStarted = true;
-    moveSpacePlayer(1);
-    waitingForRelease = true;
-  }
-  else {
-    spaceGameStarted = true;
-    fireSpacePlayerBullet();
-    waitingForRelease = true;
-  }
+  spaceGameStarted = true;
+  fireSpacePlayerBullet();
+  waitingForRelease = true;
 
   uiNeedsRedraw = true;
 }
@@ -11632,16 +12608,10 @@ void drawSpaceGameStatic() {
   tft.setTextFont(2);
   tft.setTextColor(COLOR_TEXT, COLOR_BG);
 
-  drawButtonBubble(SPACE_EXIT_X, SPACE_EXIT_Y, SPACE_EXIT_W, SPACE_EXIT_H, "EXIT", false, false, -1);
+  drawGameExitButton(SPACE_EXIT_X, SPACE_EXIT_Y, SPACE_EXIT_W, SPACE_EXIT_H, "EXIT", false, false);
 
   tft.drawFastHLine(0, SPACE_STATUS_H, 240, COLOR_ACCENT);
   tft.drawString("BATTLEZONE", 72, 8, 2);
-
-  drawButtonBubble(SPACE_LEFT_BTN_X, SPACE_CONTROL_Y, SPACE_CTRL_BTN_W, SPACE_CTRL_BTN_H, "TURN-", false, false, -1);
-  drawButtonBubble(SPACE_FIRE_BTN_X, SPACE_CONTROL_Y, SPACE_CTRL_BTN_W, SPACE_CTRL_BTN_H, "FIRE", false, false, -1);
-  drawButtonBubble(SPACE_RIGHT_BTN_X, SPACE_CONTROL_Y, SPACE_CTRL_BTN_W, SPACE_CTRL_BTN_H, "TURN+", false, false, -1);
-
-  tft.drawFastHLine(0, SPACE_CONTROL_Y - 6, 240, COLOR_ACCENT);
 }
 
 void drawSpaceGameDynamic() {
@@ -11778,15 +12748,861 @@ void drawSpaceGameDynamic() {
     tft.drawCentreString("GAME OVER", 120, 132, 4);
     tft.setTextColor(COLOR_TEXT, COLOR_BG);
     tft.drawCentreString("SELECT to restart", 120, 174, 2);
-    tft.drawCentreString("DOWN exits to Menu", 120, 192, 2);
+    tft.drawCentreString("DOWN exits to Games", 120, 192, 2);
   } else if (spaceWaveCleared) {
     tft.setTextColor(COLOR_SIG, COLOR_BG);
     tft.drawCentreString("WAVE CLEAR", 120, 132, 4);
   } else if (!spaceGameStarted) {
     tft.setTextColor(COLOR_TEXT, COLOR_BG);
-    tft.drawCentreString("Right stick tank mode", 120, 248, 2);
-    tft.drawCentreString("SELECT fires", 120, 266, 2);
+    tft.drawCentreString("RX turn  RY drive", 120, 264, 2);
+    tft.drawCentreString("Tap screen to fire", 120, 282, 2);
   }
+}
+
+void wrapAsteroidsPoint(float &x, float &y) {
+  if (x < 0.0f) x += 240.0f;
+  if (x >= 240.0f) x -= 240.0f;
+  float h = ASTEROIDS_VIEW_BOTTOM - ASTEROIDS_VIEW_TOP;
+  if (y < ASTEROIDS_VIEW_TOP) y += h;
+  if (y >= ASTEROIDS_VIEW_BOTTOM) y -= h;
+}
+
+int findFreeAsteroidsRock() {
+  for (int i = 0; i < ASTEROIDS_MAX_ROCKS; i++) {
+    if (!asteroidsRocks[i].active) return i;
+  }
+  return -1;
+}
+
+int countActiveAsteroidsRocks() {
+  int count = 0;
+  for (int i = 0; i < ASTEROIDS_MAX_ROCKS; i++) {
+    if (asteroidsRocks[i].active) count++;
+  }
+  return count;
+}
+
+void addAsteroidsRock(float x, float y, uint8_t size) {
+  int slot = findFreeAsteroidsRock();
+  if (slot < 0) return;
+  AsteroidsRock &rock = asteroidsRocks[slot];
+  rock.active = true;
+  rock.x = x;
+  rock.y = y;
+  rock.size = size;
+  rock.radius = (size == 3) ? 20.0f : ((size == 2) ? 14.0f : 8.0f);
+  float angle = random(0, 628) / 100.0f;
+  float speed = ((size == 3) ? 0.62f : ((size == 2) ? 0.88f : 1.15f)) + (asteroidsLevel * 0.035f);
+  rock.vx = cosf(angle) * speed;
+  rock.vy = sinf(angle) * speed;
+}
+
+void spawnAsteroidsWave() {
+  for (int i = 0; i < ASTEROIDS_MAX_ROCKS; i++) asteroidsRocks[i].active = false;
+  for (int i = 0; i < ASTEROIDS_MAX_BULLETS; i++) asteroidsBullets[i].active = false;
+
+  int rockCount = min(ASTEROIDS_MAX_ROCKS, asteroidsLevel + 3);
+  for (int i = 0; i < rockCount; i++) {
+    float x = (random(0, 2) == 0) ? random(0, 45) : random(195, 240);
+    float y = random(ASTEROIDS_VIEW_TOP + 12, ASTEROIDS_VIEW_BOTTOM - 12);
+    addAsteroidsRock(x, y, 3);
+  }
+}
+
+void resetAsteroidsShip(bool safeRespawn) {
+  asteroidsShipX = 120.0f;
+  asteroidsShipY = (ASTEROIDS_VIEW_TOP + ASTEROIDS_VIEW_BOTTOM) * 0.5f;
+  asteroidsShipVX = 0.0f;
+  asteroidsShipVY = 0.0f;
+  asteroidsShipHeading = -1.5707963f;
+  asteroidsInvulnerableUntil = safeRespawn ? (millis() + ASTEROIDS_RESPAWN_MS) : 0;
+}
+
+void resetAsteroidsGame() {
+  asteroidsScore = 0;
+  asteroidsLives = 3;
+  asteroidsLevel = 1;
+  asteroidsGameOver = false;
+  asteroidsStarted = false;
+  lastAsteroidsFrameTime = millis();
+  lastAsteroidsShotTime = 0;
+  resetAsteroidsShip(false);
+  spawnAsteroidsWave();
+}
+
+void fireAsteroidsBullet() {
+  unsigned long now = millis();
+  if (now - lastAsteroidsShotTime < ASTEROIDS_FIRE_COOLDOWN_MS) return;
+  for (int i = 0; i < ASTEROIDS_MAX_BULLETS; i++) {
+    if (!asteroidsBullets[i].active) {
+      AsteroidsBullet &bullet = asteroidsBullets[i];
+      bullet.active = true;
+      bullet.x = asteroidsShipX + cosf(asteroidsShipHeading) * 9.0f;
+      bullet.y = asteroidsShipY + sinf(asteroidsShipHeading) * 9.0f;
+      bullet.vx = asteroidsShipVX + cosf(asteroidsShipHeading) * ASTEROIDS_BULLET_SPEED;
+      bullet.vy = asteroidsShipVY + sinf(asteroidsShipHeading) * ASTEROIDS_BULLET_SPEED;
+      bullet.expiresAt = now + ASTEROIDS_BULLET_TTL_MS;
+      lastAsteroidsShotTime = now;
+      return;
+    }
+  }
+}
+
+void splitAsteroidsRock(int index) {
+  if (index < 0 || index >= ASTEROIDS_MAX_ROCKS || !asteroidsRocks[index].active) return;
+  AsteroidsRock rock = asteroidsRocks[index];
+  asteroidsRocks[index].active = false;
+  asteroidsScore += (rock.size == 3) ? 20 : ((rock.size == 2) ? 50 : 100);
+  if (rock.size > 1) {
+    addAsteroidsRock(rock.x + 3.0f, rock.y - 3.0f, rock.size - 1);
+    addAsteroidsRock(rock.x - 3.0f, rock.y + 3.0f, rock.size - 1);
+  }
+}
+
+void updateAsteroidsGame(unsigned long now, bool firePressed, bool exitPressed) {
+  if (currentScreen != SCREEN_ASTEROIDS_GAME) return;
+  if (exitPressed) {
+    setScreen(SCREEN_GAMES_MENU);
+    return;
+  }
+
+  if (asteroidsGameOver) {
+    if (firePressed) resetAsteroidsGame();
+    uiNeedsRedraw = true;
+    return;
+  }
+
+  if (firePressed) {
+    asteroidsStarted = true;
+    fireAsteroidsBullet();
+  }
+
+  if (now - lastAsteroidsFrameTime < ASTEROIDS_FRAME_INTERVAL_MS) return;
+  lastAsteroidsFrameTime = now;
+
+  float turnInput = constrain(inputChannels[0], -1.0f, 1.0f);
+  float thrustInput = constrain(inputChannels[1], -1.0f, 1.0f);
+  if (fabs(turnInput) > 0.10f || fabs(thrustInput) > 0.10f) asteroidsStarted = true;
+
+  asteroidsShipHeading += turnInput * ASTEROIDS_TURN_SPEED;
+  if (thrustInput > 0.12f) {
+    asteroidsShipVX += cosf(asteroidsShipHeading) * ASTEROIDS_THRUST * thrustInput;
+    asteroidsShipVY += sinf(asteroidsShipHeading) * ASTEROIDS_THRUST * thrustInput;
+  }
+  asteroidsShipVX = constrain(asteroidsShipVX * ASTEROIDS_DRAG, -3.2f, 3.2f);
+  asteroidsShipVY = constrain(asteroidsShipVY * ASTEROIDS_DRAG, -3.2f, 3.2f);
+  asteroidsShipX += asteroidsShipVX;
+  asteroidsShipY += asteroidsShipVY;
+  wrapAsteroidsPoint(asteroidsShipX, asteroidsShipY);
+
+  for (int i = 0; i < ASTEROIDS_MAX_BULLETS; i++) {
+    if (!asteroidsBullets[i].active) continue;
+    AsteroidsBullet &bullet = asteroidsBullets[i];
+    bullet.x += bullet.vx;
+    bullet.y += bullet.vy;
+    wrapAsteroidsPoint(bullet.x, bullet.y);
+    if (now >= bullet.expiresAt) bullet.active = false;
+  }
+
+  for (int i = 0; i < ASTEROIDS_MAX_ROCKS; i++) {
+    if (!asteroidsRocks[i].active) continue;
+    asteroidsRocks[i].x += asteroidsRocks[i].vx;
+    asteroidsRocks[i].y += asteroidsRocks[i].vy;
+    wrapAsteroidsPoint(asteroidsRocks[i].x, asteroidsRocks[i].y);
+  }
+
+  for (int b = 0; b < ASTEROIDS_MAX_BULLETS; b++) {
+    if (!asteroidsBullets[b].active) continue;
+    for (int r = 0; r < ASTEROIDS_MAX_ROCKS; r++) {
+      if (!asteroidsRocks[r].active) continue;
+      float dx = asteroidsBullets[b].x - asteroidsRocks[r].x;
+      float dy = asteroidsBullets[b].y - asteroidsRocks[r].y;
+      float hitR = asteroidsRocks[r].radius + 2.0f;
+      if ((dx * dx) + (dy * dy) <= hitR * hitR) {
+        asteroidsBullets[b].active = false;
+        splitAsteroidsRock(r);
+        break;
+      }
+    }
+  }
+
+  if (now > asteroidsInvulnerableUntil) {
+    for (int r = 0; r < ASTEROIDS_MAX_ROCKS; r++) {
+      if (!asteroidsRocks[r].active) continue;
+      float dx = asteroidsShipX - asteroidsRocks[r].x;
+      float dy = asteroidsShipY - asteroidsRocks[r].y;
+      float hitR = asteroidsRocks[r].radius + ASTEROIDS_SHIP_RADIUS;
+      if ((dx * dx) + (dy * dy) <= hitR * hitR) {
+        asteroidsLives--;
+        if (asteroidsLives <= 0) {
+          asteroidsGameOver = true;
+        } else {
+          resetAsteroidsShip(true);
+        }
+        break;
+      }
+    }
+  }
+
+  if (!asteroidsGameOver && countActiveAsteroidsRocks() == 0) {
+    asteroidsLevel++;
+    resetAsteroidsShip(true);
+    spawnAsteroidsWave();
+  }
+
+  uiNeedsRedraw = true;
+}
+
+void handleAsteroidsTouch(int x, int y) {
+  if (isInside(x, y, ASTEROIDS_EXIT_X, ASTEROIDS_EXIT_Y, ASTEROIDS_EXIT_W, ASTEROIDS_EXIT_H)) {
+    queueScreenButton(BTN_BACK, SCREEN_GAMES_MENU);
+    return;
+  }
+  if (asteroidsGameOver) {
+    resetAsteroidsGame();
+  } else {
+    asteroidsStarted = true;
+    fireAsteroidsBullet();
+  }
+  waitingForRelease = true;
+  uiNeedsRedraw = true;
+}
+
+void drawAsteroidsStatic() {
+  tft.fillScreen(COLOR_BG);
+  tft.setTextFont(2);
+  tft.setTextColor(COLOR_TEXT, COLOR_BG);
+  drawGameExitButton(ASTEROIDS_EXIT_X, ASTEROIDS_EXIT_Y, ASTEROIDS_EXIT_W, ASTEROIDS_EXIT_H, "EXIT", false, false);
+  tft.drawFastHLine(0, ASTEROIDS_STATUS_H, 240, COLOR_ACCENT);
+  tft.drawString("ASTEROIDS", 76, 8, 2);
+}
+
+void drawAsteroidsRock(const AsteroidsRock &rock, uint16_t color) {
+  const int points = 9;
+  int px[points];
+  int py[points];
+  for (int i = 0; i < points; i++) {
+    float angle = (6.2831853f * i) / points;
+    float wobble = 0.78f + (0.22f * ((i % 3) + 1));
+    px[i] = (int)roundf(rock.x + cosf(angle) * rock.radius * wobble);
+    py[i] = (int)roundf(rock.y + sinf(angle) * rock.radius * wobble);
+  }
+  for (int i = 0; i < points; i++) {
+    int j = (i + 1) % points;
+    tft.drawLine(px[i], py[i], px[j], py[j], color);
+  }
+}
+
+void drawAsteroidsShip(uint16_t color) {
+  float noseX = asteroidsShipX + cosf(asteroidsShipHeading) * 11.0f;
+  float noseY = asteroidsShipY + sinf(asteroidsShipHeading) * 11.0f;
+  float leftA = asteroidsShipHeading + 2.42f;
+  float rightA = asteroidsShipHeading - 2.42f;
+  float leftX = asteroidsShipX + cosf(leftA) * 9.0f;
+  float leftY = asteroidsShipY + sinf(leftA) * 9.0f;
+  float rightX = asteroidsShipX + cosf(rightA) * 9.0f;
+  float rightY = asteroidsShipY + sinf(rightA) * 9.0f;
+  tft.drawLine((int)noseX, (int)noseY, (int)leftX, (int)leftY, color);
+  tft.drawLine((int)noseX, (int)noseY, (int)rightX, (int)rightY, color);
+  tft.drawLine((int)leftX, (int)leftY, (int)rightX, (int)rightY, color);
+
+  if (inputChannels[1] > 0.20f && (millis() / 80) % 2 == 0) {
+    float tailX = asteroidsShipX - cosf(asteroidsShipHeading) * 12.0f;
+    float tailY = asteroidsShipY - sinf(asteroidsShipHeading) * 12.0f;
+    tft.drawLine((int)asteroidsShipX, (int)asteroidsShipY, (int)tailX, (int)tailY, COLOR_ACCENT_HI);
+  }
+}
+
+void drawAsteroidsDynamic() {
+  tft.setTextFont(2);
+  tft.setTextColor(COLOR_TEXT, COLOR_BG);
+  tft.fillRect(64, 6, 172, 16, COLOR_BG);
+  tft.drawString(String(asteroidsScore), 68, 8, 2);
+  tft.drawString("L:" + String(asteroidsLives), 150, 8, 2);
+  tft.drawString("W:" + String(asteroidsLevel), 190, 8, 2);
+
+  tft.fillRect(0, ASTEROIDS_VIEW_TOP, 240, ASTEROIDS_VIEW_BOTTOM - ASTEROIDS_VIEW_TOP, COLOR_BG);
+
+  for (int i = 0; i < 18; i++) {
+    int sx = (i * 47 + asteroidsLevel * 11) % 240;
+    int sy = ASTEROIDS_VIEW_TOP + ((i * 83 + asteroidsScore / 10) % (ASTEROIDS_VIEW_BOTTOM - ASTEROIDS_VIEW_TOP));
+    tft.drawPixel(sx, sy, COLOR_PANEL);
+  }
+
+  for (int i = 0; i < ASTEROIDS_MAX_ROCKS; i++) {
+    if (asteroidsRocks[i].active) drawAsteroidsRock(asteroidsRocks[i], COLOR_ACCENT);
+  }
+
+  for (int i = 0; i < ASTEROIDS_MAX_BULLETS; i++) {
+    if (!asteroidsBullets[i].active) continue;
+    tft.fillCircle((int)asteroidsBullets[i].x, (int)asteroidsBullets[i].y, 2, COLOR_ACCENT_HI);
+  }
+
+  if (!asteroidsGameOver && (millis() > asteroidsInvulnerableUntil || (millis() / 120) % 2 == 0)) {
+    drawAsteroidsShip(COLOR_TEXT);
+  }
+
+  if (asteroidsGameOver) {
+    tft.setTextColor(TFT_RED, COLOR_BG);
+    tft.drawCentreString("GAME OVER", 120, 132, 4);
+    tft.setTextColor(COLOR_TEXT, COLOR_BG);
+    tft.drawCentreString("SELECT or tap to restart", 120, 180, 2);
+    tft.drawCentreString("DOWN exits to Games", 120, 200, 2);
+  } else if (!asteroidsStarted) {
+    tft.setTextColor(COLOR_ACCENT_HI, COLOR_BG);
+    tft.drawCentreString("RX rotate  RY thrust", 120, 254, 2);
+    tft.drawCentreString("Tap or SELECT to fire", 120, 274, 2);
+  }
+}
+
+const char dungeonMap[DUNGEON_MAP_H][DUNGEON_MAP_W + 1] = {
+  "############",
+  "#..........#",
+  "#..AA..B...#",
+  "#......B...#",
+  "#.CCC..BBB.#",
+  "#.C........#",
+  "#.C..DD..A.#",
+  "#....D...A.#",
+  "###..D.....#",
+  "#....BBB.C.#",
+  "#..........#",
+  "############"
+};
+
+char dungeonWallTileAt(int mx, int my) {
+  if (mx < 0 || mx >= DUNGEON_MAP_W || my < 0 || my >= DUNGEON_MAP_H) return '#';
+  return dungeonMap[my][mx];
+}
+
+bool isDungeonWallAt(float x, float y) {
+  int mx = (int)floorf(x);
+  int my = (int)floorf(y);
+  return dungeonWallTileAt(mx, my) != '.';
+}
+
+uint16_t dungeonWallColor(char tile, float distance, float textureX, int y, int wallTop, int wallBottom, bool sideHit) {
+  int wallHeight = max(1, wallBottom - wallTop);
+  int textureColumn = constrain((int)(textureX * 16.0f), 0, 15);
+  int textureRow = constrain(((y - wallTop) * 24) / wallHeight, 0, 23);
+  int shade = constrain(224 - (int)(distance * 24.0f), 48, 224);
+
+  if (sideHit) shade = (shade * 3) / 4;
+
+  int red = shade;
+  int green = constrain((shade * 58) / 100, 24, 160);
+  int blue = constrain((shade * 42) / 100, 18, 130);
+
+  if (tile == 'A' || tile == '#') {
+    bool mortar = (textureColumn == 0 || textureColumn == 15 || textureRow == 0 || textureRow == 11 || textureRow == 23);
+    bool offsetSeam = ((textureRow / 6) & 1) && (textureColumn == 7 || textureColumn == 8);
+    if (mortar) shade = (shade * 5) / 8;
+    if (offsetSeam) shade = (shade * 3) / 4;
+    red = shade;
+    green = constrain((shade * 58) / 100, 24, 160);
+    blue = constrain((shade * 42) / 100, 18, 130);
+  } else if (tile == 'B') {
+    bool rib = (textureColumn == 2 || textureColumn == 13 || textureRow == 5 || textureRow == 18);
+    bool bolt = ((textureColumn == 4 || textureColumn == 11) && (textureRow == 3 || textureRow == 20));
+    if (rib) shade = min(240, shade + 22);
+    if (bolt) shade = max(36, shade - 48);
+    red = constrain((shade * 42) / 100, 20, 120);
+    green = constrain((shade * 72) / 100, 28, 170);
+    blue = shade;
+  } else if (tile == 'C') {
+    bool crack = ((textureColumn + textureRow * 3) % 11) == 0;
+    bool block = (textureColumn == 0 || textureColumn == 15 || textureRow == 7 || textureRow == 16);
+    if (crack) shade = max(34, shade - 70);
+    if (block) shade = (shade * 7) / 10;
+    red = constrain((shade * 52) / 100, 22, 130);
+    green = constrain((shade * 76) / 100, 28, 178);
+    blue = constrain((shade * 48) / 100, 18, 120);
+  } else if (tile == 'D') {
+    bool stripe = ((textureColumn + textureRow) % 6) < 2;
+    bool seam = textureColumn == 0 || textureColumn == 15;
+    if (stripe) shade = min(240, shade + 28);
+    if (seam) shade = max(38, shade - 44);
+    red = shade;
+    green = constrain((shade * 72) / 100, 26, 180);
+    blue = constrain((shade * 28) / 100, 12, 90);
+  }
+
+  return tft.color565(red, green, blue);
+}
+
+uint16_t dungeonCeilingColor(int y) {
+  int depth = constrain(y - DUNGEON_VIEW_TOP, 0, DUNGEON_VIEW_H / 2);
+  int shade = 18 + depth / 8;
+  return tft.color565(shade, shade + 3, shade + 12);
+}
+
+uint16_t dungeonFloorColor(int y, int x) {
+  int depth = constrain(y - (DUNGEON_VIEW_TOP + DUNGEON_VIEW_H / 2), 0, DUNGEON_VIEW_H / 2);
+  bool seam = ((y + (x / 2)) % 18) == 0;
+  int shade = 34 + depth / 6;
+  if (seam) shade = max(24, shade - 12);
+  return tft.color565(shade + 5, shade, shade - 4);
+}
+
+bool dungeonSpriteOpaqueAt(int screenX, int screenY, int spriteX, int spriteY,
+                           int spriteW, int spriteH, const uint16_t *data) {
+  int sx = screenX - spriteX;
+  int sy = screenY - spriteY;
+  if (sx < 0 || sx >= spriteW || sy < 0 || sy >= spriteH) return false;
+  return data[(sy * spriteW) + sx] != DUNGEON_RUN_TRANSPARENT_RGB565;
+}
+
+int dungeonPistolXForWidth(int spriteW) {
+  return 120 - DUNGEON_PISTOL_MUZZLE_SRC_X;
+}
+
+bool dungeonGunMaskAt(int x, int y) {
+  int idleX = dungeonPistolXForWidth(DUNGEON_RUN_PISTOL_IDLE_W);
+  int idleY = DUNGEON_VIEW_BOTTOM - DUNGEON_RUN_PISTOL_IDLE_H;
+  return dungeonSpriteOpaqueAt(x, y, idleX, idleY, DUNGEON_RUN_PISTOL_IDLE_W, DUNGEON_RUN_PISTOL_IDLE_H, DUNGEON_RUN_PISTOL_IDLE);
+}
+
+void buildDungeonIdlePistolMask() {
+  if (dungeonIdlePistolMaskReady) return;
+  for (int y = 0; y < DUNGEON_RUN_PISTOL_IDLE_H; y++) {
+    int minX = DUNGEON_RUN_PISTOL_IDLE_W;
+    int maxX = -1;
+    for (int x = 0; x < DUNGEON_RUN_PISTOL_IDLE_W; x++) {
+      uint16_t color = DUNGEON_RUN_PISTOL_IDLE[(y * DUNGEON_RUN_PISTOL_IDLE_W) + x];
+      if (color == DUNGEON_RUN_TRANSPARENT_RGB565) continue;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+    }
+    dungeonIdlePistolMinX[y] = minX;
+    dungeonIdlePistolMaxX[y] = maxX;
+  }
+  dungeonIdlePistolMaskReady = true;
+}
+
+void dungeonFillWorldStrip(int x, int y, int w, int h, uint16_t color) {
+  if (h <= 0 || w <= 0) return;
+  if (!dungeonPreserveIdlePistol) {
+    tft.fillRect(x, y, w, h, color);
+    return;
+  }
+
+  buildDungeonIdlePistolMask();
+  int idleX = dungeonPistolXForWidth(DUNGEON_RUN_PISTOL_IDLE_W);
+  int idleY = DUNGEON_VIEW_BOTTOM - DUNGEON_RUN_PISTOL_IDLE_H;
+  int rectRight = x + w - 1;
+  int rectBottom = y + h - 1;
+  if (rectRight < idleX || x >= idleX + DUNGEON_RUN_PISTOL_IDLE_W ||
+      rectBottom < idleY || y >= idleY + DUNGEON_RUN_PISTOL_IDLE_H) {
+    tft.fillRect(x, y, w, h, color);
+    return;
+  }
+
+  for (int py = y; py < y + h; py++) {
+    int row = py - idleY;
+    if (row < 0 || row >= DUNGEON_RUN_PISTOL_IDLE_H ||
+        dungeonIdlePistolMaxX[row] < dungeonIdlePistolMinX[row]) {
+      tft.drawFastHLine(x, py, w, color);
+      continue;
+    }
+
+    int blockLeft = idleX + dungeonIdlePistolMinX[row];
+    int blockRight = idleX + dungeonIdlePistolMaxX[row];
+    if (rectRight < blockLeft || x > blockRight) {
+      tft.drawFastHLine(x, py, w, color);
+      continue;
+    }
+
+    if (x < blockLeft) {
+      int leftW = min(rectRight, blockLeft - 1) - x + 1;
+      if (leftW > 0) tft.drawFastHLine(x, py, leftW, color);
+    }
+    if (rectRight > blockRight) {
+      int rightX = max(x, blockRight + 1);
+      int rightW = rectRight - rightX + 1;
+      if (rightW > 0) tft.drawFastHLine(rightX, py, rightW, color);
+    }
+  }
+}
+
+void drawDungeonImpactMark(int x, int y) {
+  uint16_t dark = tft.color565(26, 18, 12);
+  uint16_t hot = tft.color565(250, 208, 92);
+  tft.drawLine(x - 7, y - 1, x + 7, y + 1, dark);
+  tft.drawLine(x - 1, y - 7, x + 1, y + 7, dark);
+  tft.drawLine(x - 5, y + 5, x + 5, y - 5, dark);
+  tft.drawPixel(x, y, hot);
+  tft.drawPixel(x - 1, y, hot);
+  tft.drawPixel(x + 1, y, hot);
+}
+
+void drawDungeonGunOverlay(bool muzzleVisible) {
+  unsigned long age = (lastDungeonShotTime == 0) ? DUNGEON_FIRE_ANIM_MS : (millis() - lastDungeonShotTime);
+  const uint16_t *pistol = DUNGEON_RUN_PISTOL_IDLE;
+  int pistolW = DUNGEON_RUN_PISTOL_IDLE_W;
+  int pistolH = DUNGEON_RUN_PISTOL_IDLE_H;
+
+  if (age < DUNGEON_FIRE_ANIM_MS) {
+    if (age < 70) {
+      pistol = DUNGEON_RUN_PISTOL_FIRE0;
+      pistolW = DUNGEON_RUN_PISTOL_FIRE0_W;
+      pistolH = DUNGEON_RUN_PISTOL_FIRE0_H;
+    } else if (age < 140) {
+      pistol = DUNGEON_RUN_PISTOL_FIRE1;
+      pistolW = DUNGEON_RUN_PISTOL_FIRE1_W;
+      pistolH = DUNGEON_RUN_PISTOL_FIRE1_H;
+    } else {
+      pistol = DUNGEON_RUN_PISTOL_FIRE2;
+      pistolW = DUNGEON_RUN_PISTOL_FIRE2_W;
+      pistolH = DUNGEON_RUN_PISTOL_FIRE2_H;
+    }
+  }
+
+  int pistolX = dungeonPistolXForWidth(pistolW);
+  int pistolY = DUNGEON_VIEW_BOTTOM - pistolH;
+  if (muzzleVisible && age < 70) {
+    drawDungeonRunSpriteKeyed(
+      120 - DUNGEON_PISTOL_FLASH_CENTER_X,
+      pistolY - 17,
+      DUNGEON_RUN_PISTOL_FLASH_W,
+      DUNGEON_RUN_PISTOL_FLASH_H,
+      DUNGEON_RUN_PISTOL_FLASH);
+  }
+  drawDungeonRunSpriteKeyed(pistolX, pistolY, pistolW, pistolH, pistol);
+}
+
+void drawDungeonRunSpriteKeyed(int x, int y, int w, int h, const uint16_t *data) {
+  for (int sy = 0; sy < h; sy++) {
+    int dy = y + sy;
+    if (dy < 0 || dy >= 320) continue;
+    for (int sx = 0; sx < w; sx++) {
+      int dx = x + sx;
+      if (dx < 0 || dx >= 240) continue;
+      uint16_t color = data[(sy * w) + sx];
+      if (color == DUNGEON_RUN_TRANSPARENT_RGB565) continue;
+      tft.drawPixel(dx, dy, color);
+    }
+  }
+}
+
+void drawDungeonRunHudNumber(int value, int x, int y, int digits) {
+  value = constrain(value, 0, 999);
+  int divisor = 1;
+  for (int i = 1; i < digits; i++) divisor *= 10;
+
+  for (int i = 0; i < digits; i++) {
+    int digit = (value / divisor) % 10;
+    drawDungeonRunSpriteKeyed(
+      x + (i * (DUNGEON_RUN_HUD_DIGIT_W + 1)), y,
+      DUNGEON_RUN_HUD_DIGIT_W, DUNGEON_RUN_HUD_DIGIT_H,
+      DUNGEON_RUN_HUD_DIGITS[digit]);
+    divisor /= 10;
+  }
+}
+
+void drawDungeonRunHud() {
+  tft.fillRect(0, DUNGEON_HUD_Y, 240, DUNGEON_HUD_H, COLOR_BG);
+  drawDungeonRunSpriteKeyed(
+    DUNGEON_HUD_FACE_X, DUNGEON_HUD_FACE_Y,
+    DUNGEON_RUN_HUD_FACE_W, DUNGEON_RUN_HUD_FACE_H,
+    DUNGEON_RUN_HUD_FACE);
+  drawDungeonRunSpriteKeyed(
+    0, DUNGEON_HUD_Y,
+    DUNGEON_RUN_HUD_BAR_W, DUNGEON_RUN_HUD_BAR_H,
+    DUNGEON_RUN_HUD_BAR);
+  drawDungeonRunHudNumber(dungeonAmmo, 3, DUNGEON_HUD_Y + 4, 3);
+  drawDungeonRunHudNumber(dungeonHealth, 48, DUNGEON_HUD_Y + 4, 3);
+}
+
+void resetDungeonRun() {
+  dungeonPlayerX = 2.5f;
+  dungeonPlayerY = 2.5f;
+  dungeonPlayerHeading = 1.5707963f;
+  dungeonHealth = 100;
+  dungeonAmmo = 50;
+  dungeonStarted = false;
+  lastDungeonFrameTime = millis();
+  lastDungeonShotTime = 0;
+  dungeonMuzzleFlashUntil = 0;
+  dungeonFrameDirty = true;
+  dungeonStatusDirty = true;
+  dungeonGunDirty = true;
+  dungeonMuzzleWasVisible = false;
+  dungeonWeaponAnimWasVisible = false;
+  dungeonRestoreWeaponBackdrop = false;
+  dungeonImpactWasVisible = false;
+  dungeonImpactUntil = 0;
+  lastDungeonDrawnHealth = -1;
+  lastDungeonDrawnAmmo = -1;
+}
+
+void fireDungeonWeapon() {
+  if (millis() - lastDungeonShotTime < DUNGEON_FIRE_COOLDOWN_MS) return;
+  if (dungeonAmmo <= 0) return;
+  dungeonStarted = true;
+  dungeonAmmo--;
+  lastDungeonShotTime = millis();
+  dungeonMuzzleFlashUntil = lastDungeonShotTime + DUNGEON_MUZZLE_FLASH_MS;
+  dungeonImpactUntil = lastDungeonShotTime + DUNGEON_IMPACT_MS;
+  dungeonStatusDirty = true;
+  dungeonGunDirty = true;
+  dungeonRestoreWeaponBackdrop = true;
+  dungeonFrameDirty = true;
+  uiNeedsRedraw = true;
+}
+
+void updateDungeonRun(unsigned long now, bool firePressed, bool exitPressed) {
+  if (currentScreen != SCREEN_DUNGEON_RUN) return;
+  if (exitPressed) {
+    setScreen(SCREEN_GAMES_MENU);
+    return;
+  }
+
+  if (firePressed) fireDungeonWeapon();
+  bool weaponAnimating = lastDungeonShotTime > 0 && (now - lastDungeonShotTime) < DUNGEON_FIRE_ANIM_MS;
+  if (weaponAnimating || dungeonWeaponAnimWasVisible) {
+    dungeonFrameDirty = true;
+    dungeonRestoreWeaponBackdrop = true;
+  }
+  if (dungeonWeaponAnimWasVisible && !weaponAnimating) {
+    dungeonGunDirty = true;
+  }
+  if (dungeonMuzzleWasVisible && now >= dungeonMuzzleFlashUntil) {
+    dungeonFrameDirty = true;
+  }
+  if (dungeonImpactWasVisible && now >= dungeonImpactUntil) {
+    dungeonFrameDirty = true;
+  }
+  if (weaponAnimating || dungeonWeaponAnimWasVisible ||
+      now < dungeonMuzzleFlashUntil || dungeonMuzzleWasVisible ||
+      now < dungeonImpactUntil || dungeonImpactWasVisible) {
+    uiNeedsRedraw = true;
+  }
+  if (now - lastDungeonFrameTime < DUNGEON_FRAME_INTERVAL_MS) return;
+  lastDungeonFrameTime = now;
+
+  float turnInput = constrain(inputChannels[0], -1.0f, 1.0f);      // CH1 / right stick X
+  float moveInput = constrain(inputChannels[1], -1.0f, 1.0f);      // CH2 / right stick Y
+  float strafeInput = constrain(inputChannels[3], -1.0f, 1.0f);    // CH4 / left stick X
+  bool strafing = fabs(strafeInput) > 0.08f;
+  bool moving = fabs(turnInput) > 0.08f || fabs(moveInput) > 0.08f || strafing;
+  bool wasStarted = dungeonStarted;
+  if (moving) {
+    dungeonStarted = true;
+  }
+  if (!wasStarted && dungeonStarted) {
+    dungeonRestoreWeaponBackdrop = true;
+  }
+
+  if (fabs(turnInput) > 0.08f) {
+    dungeonPlayerHeading += turnInput * DUNGEON_TURN_SPEED;
+    while (dungeonPlayerHeading < 0.0f) dungeonPlayerHeading += 6.2831853f;
+    while (dungeonPlayerHeading >= 6.2831853f) dungeonPlayerHeading -= 6.2831853f;
+  }
+
+  if (fabs(moveInput) > 0.08f) {
+    float step = moveInput * DUNGEON_MOVE_SPEED;
+    float nx = dungeonPlayerX + cosf(dungeonPlayerHeading) * step;
+    float ny = dungeonPlayerY + sinf(dungeonPlayerHeading) * step;
+    if (!isDungeonWallAt(nx, dungeonPlayerY)) dungeonPlayerX = nx;
+    if (!isDungeonWallAt(dungeonPlayerX, ny)) dungeonPlayerY = ny;
+  }
+
+  if (strafing) {
+    float step = strafeInput * DUNGEON_STRAFE_SPEED;
+    float strafeAngle = dungeonPlayerHeading + 1.5707963f;
+    float nx = dungeonPlayerX + cosf(strafeAngle) * step;
+    float ny = dungeonPlayerY + sinf(strafeAngle) * step;
+    if (!isDungeonWallAt(nx, dungeonPlayerY)) dungeonPlayerX = nx;
+    if (!isDungeonWallAt(dungeonPlayerX, ny)) dungeonPlayerY = ny;
+  }
+
+  if (moving) {
+    dungeonFrameDirty = true;
+    uiNeedsRedraw = true;
+  }
+}
+
+void handleDungeonRunTouch(int x, int y) {
+  if (isInside(x, y, DUNGEON_EXIT_X, DUNGEON_EXIT_Y, DUNGEON_EXIT_W, DUNGEON_EXIT_H)) {
+    queueScreenButton(BTN_BACK, SCREEN_GAMES_MENU);
+    return;
+  }
+
+  fireDungeonWeapon();
+  waitingForRelease = true;
+  uiNeedsRedraw = true;
+}
+
+void drawDungeonRunStatic() {
+  tft.fillScreen(COLOR_BG);
+  tft.setTextFont(2);
+  drawGameExitButton(DUNGEON_EXIT_X, DUNGEON_EXIT_Y, DUNGEON_EXIT_W, DUNGEON_EXIT_H, "EXIT", false, false);
+  tft.drawFastHLine(0, DUNGEON_STATUS_H, 240, COLOR_ACCENT);
+  tft.setTextColor(COLOR_TEXT, COLOR_BG);
+  tft.drawString("DUNGEON RUN", 72, 8, 2);
+  drawDungeonRunHud();
+  dungeonFrameDirty = true;
+  dungeonStatusDirty = true;
+  dungeonGunDirty = true;
+  lastDungeonDrawnHealth = -1;
+  lastDungeonDrawnAmmo = -1;
+}
+
+void drawDungeonRunDynamic() {
+  unsigned long now = millis();
+  bool muzzleVisible = now < dungeonMuzzleFlashUntil;
+  bool weaponAnimating = lastDungeonShotTime > 0 && (now - lastDungeonShotTime) < DUNGEON_FIRE_ANIM_MS;
+  bool impactVisible = now < dungeonImpactUntil;
+  bool redrawFrame = dungeonFrameDirty;
+  bool gunOverlayDynamic = weaponAnimating || dungeonWeaponAnimWasVisible || muzzleVisible || dungeonMuzzleWasVisible;
+
+  tft.setTextFont(2);
+  if (dungeonStatusDirty ||
+      dungeonHealth != lastDungeonDrawnHealth ||
+      dungeonAmmo != lastDungeonDrawnAmmo) {
+    tft.fillRect(150, 6, 84, 16, COLOR_BG);
+    tft.setTextColor(COLOR_TEXT, COLOR_BG);
+    tft.drawString("H:" + String(dungeonHealth), 150, 8, 2);
+    tft.drawString("A:" + String(dungeonAmmo), 190, 8, 2);
+    lastDungeonDrawnHealth = dungeonHealth;
+    lastDungeonDrawnAmmo = dungeonAmmo;
+    drawDungeonRunHud();
+    dungeonStatusDirty = false;
+  }
+
+  if (!redrawFrame) {
+    if (impactVisible) {
+      drawDungeonImpactMark(120, DUNGEON_VIEW_TOP + (DUNGEON_VIEW_H / 2));
+      uiNeedsRedraw = true;
+    }
+    dungeonImpactWasVisible = impactVisible;
+
+    if (dungeonGunDirty || weaponAnimating || dungeonWeaponAnimWasVisible ||
+        muzzleVisible || dungeonMuzzleWasVisible) {
+      drawDungeonGunOverlay(muzzleVisible);
+      dungeonGunDirty = false;
+      dungeonMuzzleWasVisible = muzzleVisible;
+      dungeonWeaponAnimWasVisible = weaponAnimating;
+      if (muzzleVisible || weaponAnimating) uiNeedsRedraw = true;
+    }
+    return;
+  }
+
+  dungeonPreserveIdlePistol = !gunOverlayDynamic && !dungeonGunDirty;
+  int horizon = DUNGEON_VIEW_TOP + (DUNGEON_VIEW_H / 2);
+
+  for (int ray = 0; ray < DUNGEON_RAY_COUNT; ray++) {
+    int screenX = ray * DUNGEON_RAY_STEP;
+    float camera = ((ray + 0.5f) / (float)DUNGEON_RAY_COUNT) - 0.5f;
+    float rayAngle = dungeonPlayerHeading + (camera * DUNGEON_FOV);
+    float rayDirX = cosf(rayAngle);
+    float rayDirY = sinf(rayAngle);
+
+    int mapX = (int)floorf(dungeonPlayerX);
+    int mapY = (int)floorf(dungeonPlayerY);
+    float deltaDistX = (fabs(rayDirX) < 0.0001f) ? 1000000.0f : fabs(1.0f / rayDirX);
+    float deltaDistY = (fabs(rayDirY) < 0.0001f) ? 1000000.0f : fabs(1.0f / rayDirY);
+    float sideDistX;
+    float sideDistY;
+    int stepX;
+    int stepY;
+    bool sideHit = false;
+    bool hit = false;
+
+    if (rayDirX < 0.0f) {
+      stepX = -1;
+      sideDistX = (dungeonPlayerX - mapX) * deltaDistX;
+    } else {
+      stepX = 1;
+      sideDistX = (mapX + 1.0f - dungeonPlayerX) * deltaDistX;
+    }
+
+    if (rayDirY < 0.0f) {
+      stepY = -1;
+      sideDistY = (dungeonPlayerY - mapY) * deltaDistY;
+    } else {
+      stepY = 1;
+      sideDistY = (mapY + 1.0f - dungeonPlayerY) * deltaDistY;
+    }
+
+    for (int stepCount = 0; stepCount < 32; stepCount++) {
+      if (sideDistX < sideDistY) {
+        sideDistX += deltaDistX;
+        mapX += stepX;
+        sideHit = false;
+      } else {
+        sideDistY += deltaDistY;
+        mapY += stepY;
+        sideHit = true;
+      }
+
+      if (mapX < 0 || mapX >= DUNGEON_MAP_W || mapY < 0 || mapY >= DUNGEON_MAP_H ||
+          dungeonWallTileAt(mapX, mapY) != '.') {
+        hit = true;
+        break;
+      }
+    }
+
+    float corrected = hit
+      ? (sideHit ? (sideDistY - deltaDistY) : (sideDistX - deltaDistX))
+      : 12.0f;
+    corrected = max(corrected, 0.12f);
+    int wallH = constrain((int)(DUNGEON_VIEW_H / corrected), 8, DUNGEON_VIEW_H);
+    int wallTop = horizon - (wallH / 2);
+    int wallBottom = wallTop + wallH;
+    wallTop = max(DUNGEON_VIEW_TOP, wallTop);
+    wallBottom = min(DUNGEON_VIEW_BOTTOM, wallBottom);
+
+    float wallX = sideHit
+      ? dungeonPlayerX + corrected * rayDirX
+      : dungeonPlayerY + corrected * rayDirY;
+    wallX -= floorf(wallX);
+    char wallTile = hit ? dungeonWallTileAt(mapX, mapY) : '#';
+
+    int ceilingY = DUNGEON_VIEW_TOP;
+    while (ceilingY < wallTop) {
+      int segmentEnd = min(wallTop, ceilingY + 8);
+      dungeonFillWorldStrip(screenX, ceilingY, DUNGEON_RAY_STEP, segmentEnd - ceilingY, dungeonCeilingColor(ceilingY));
+      ceilingY = segmentEnd;
+    }
+
+    int segmentStart = wallTop;
+    while (segmentStart < wallBottom) {
+      int segmentEnd = min(wallBottom, segmentStart + 4);
+      uint16_t wallColor = dungeonWallColor(wallTile, corrected, wallX, segmentStart, wallTop, wallBottom, sideHit);
+      dungeonFillWorldStrip(screenX, segmentStart, DUNGEON_RAY_STEP, segmentEnd - segmentStart, wallColor);
+      segmentStart = segmentEnd;
+    }
+
+    int floorY = wallBottom;
+    while (floorY < DUNGEON_VIEW_BOTTOM) {
+      int segmentEnd = min(DUNGEON_VIEW_BOTTOM, floorY + 8);
+      dungeonFillWorldStrip(screenX, floorY, DUNGEON_RAY_STEP, segmentEnd - floorY, dungeonFloorColor(floorY, screenX));
+      floorY = segmentEnd;
+    }
+  }
+
+  dungeonPreserveIdlePistol = false;
+
+  if (impactVisible) drawDungeonImpactMark(120, horizon);
+
+  if (!dungeonStarted) {
+    tft.setTextColor(COLOR_TEXT, COLOR_BG);
+    tft.drawCentreString("RX turn  RY move", 120, 186, 2);
+    tft.drawCentreString("LX strafe  Tap fire", 120, 204, 2);
+  }
+
+  if (dungeonGunDirty || gunOverlayDynamic) {
+    drawDungeonGunOverlay(muzzleVisible);
+    dungeonGunDirty = false;
+  }
+
+  dungeonFrameDirty = false;
+  dungeonRestoreWeaponBackdrop = false;
+  dungeonMuzzleWasVisible = muzzleVisible;
+  dungeonWeaponAnimWasVisible = weaponAnimating;
+  dungeonImpactWasVisible = impactVisible;
+  if (muzzleVisible || weaponAnimating || impactVisible) uiNeedsRedraw = true;
 }
 
   void drawControllerSettings() {
@@ -13567,6 +15383,14 @@ void setScreen(Screen screen) {
     kbPressedRow = -1;
     kbPressedCol = -1;
   }
+  if (previousScreen == SCREEN_20Q_GAME &&
+      screen != SCREEN_20Q_GAME &&
+      keyboardActive &&
+      keyboardTarget == KEYBOARD_TARGET_20Q_LEARN) {
+    closeKeyboard();
+    kbPressedRow = -1;
+    kbPressedCol = -1;
+  }
 
   currentScreen = screen;
   lastScreen = screen;
@@ -13576,6 +15400,9 @@ void setScreen(Screen screen) {
 
   if (screen == SCREEN_MENU) {
     selectedButton = BTN_CTRL;
+  }
+  else if (screen == SCREEN_GAMES_MENU) {
+    selectGameMenuPage(gamesMenuPage);
   }
   else if (screen == SCREEN_DISPLAY_SETTINGS) {
     selectedButton = BTN_DISPLAY_BRIGHTNESS_DEC;
@@ -13660,6 +15487,15 @@ void setScreen(Screen screen) {
   else if (screen == SCREEN_SPACE_GAME) {
     resetSpaceGame();
   }
+  else if (screen == SCREEN_20Q_GAME) {
+    resetTwentyQGame();
+  }
+  else if (screen == SCREEN_ASTEROIDS_GAME) {
+    resetAsteroidsGame();
+  }
+  else if (screen == SCREEN_DUNGEON_RUN) {
+    resetDungeonRun();
+  }
 
   fullRedraw = true;
   uiNeedsRedraw = true;
@@ -13689,15 +15525,23 @@ bool isBackHoldEligibleScreen(Screen screen) {
   return screen != SCREEN_SPLASH &&
          screen != SCREEN_MAIN &&
          screen != SCREEN_MENU &&
-         screen != SCREEN_SPACE_GAME;
+         screen != SCREEN_SPACE_GAME &&
+         screen != SCREEN_20Q_GAME &&
+         screen != SCREEN_ASTEROIDS_GAME &&
+         screen != SCREEN_DUNGEON_RUN;
 }
 
 Screen getBackButtonShortTargetForScreen(Screen screen) {
   switch (screen) {
     case SCREEN_CONTROLLER_SETTINGS:
     case SCREEN_MODEL_SETTINGS:
-    case SCREEN_SPACE_GAME:
+    case SCREEN_GAMES_MENU:
       return SCREEN_MENU;
+    case SCREEN_SPACE_GAME:
+    case SCREEN_20Q_GAME:
+    case SCREEN_ASTEROIDS_GAME:
+    case SCREEN_DUNGEON_RUN:
+      return SCREEN_GAMES_MENU;
     case SCREEN_PROTOCOL:
       return SCREEN_CONTROLLER_SETTINGS;
     case SCREEN_TX_UPDATE:
@@ -14061,8 +15905,63 @@ void handleTouch(int x, int y) {
     }
 
     else if (isInside(x, y, GAME_BTN_X, GAME_BTN_Y, GAME_BTN_W, GAME_BTN_H)) {
-      queueScreenButton(BTN_GAME, SCREEN_SPACE_GAME);
+      queueScreenButton(BTN_GAME, SCREEN_GAMES_MENU);
       return;
+    }
+  }
+
+  else if (currentScreen == SCREEN_GAMES_MENU) {
+    if (isInside(x, y, BACK_BTN_X, BACK_BTN_Y, BACK_BTN_W, BACK_BTN_H)) {
+      queueScreenButton(BTN_BACK, SCREEN_MENU);
+      return;
+    }
+
+    if (isInside(x, y, GAME_MENU_PAGE_BTN_X, GAME_MENU_PAGE_BTN_Y,
+                 GAME_MENU_PAGE_BTN_W, GAME_MENU_PAGE_BTN_H)) {
+      if (!waitingForRelease) {
+        pressedButton = BTN_PAGE_NAV;
+        selectedButton = BTN_PAGE_NAV;
+        waitingForRelease = true;
+        selectGameMenuPage(gamesMenuPage + 1);
+      }
+      return;
+    }
+
+    if (waitingForRelease) return;
+
+    int firstIndex = gamesMenuPage * GAME_MENU_ITEMS_PER_PAGE;
+    for (int row = 0; row < GAME_MENU_ITEMS_PER_PAGE; row++) {
+      int entryIndex = firstIndex + row;
+      ButtonID button = getGameMenuButtonForIndex(entryIndex);
+      if (button == BTN_NONE) break;
+      if (isInside(x, y, GAME_MENU_BTN_X, gameMenuRowY[row],
+                   GAME_MENU_BTN_W, GAME_MENU_BTN_H)) {
+        pressedButton = button;
+        selectedButton = button;
+        waitingForRelease = true;
+        if (button == BTN_GAME_BATTLEZONE) {
+          nextScreen = SCREEN_SPACE_GAME;
+          screenChangePending = true;
+          uiNeedsRedraw = true;
+        } else if (button == BTN_GAME_20Q) {
+          nextScreen = SCREEN_20Q_GAME;
+          screenChangePending = true;
+          uiNeedsRedraw = true;
+        } else if (button == BTN_GAME_ASTEROIDS) {
+          nextScreen = SCREEN_ASTEROIDS_GAME;
+          screenChangePending = true;
+          uiNeedsRedraw = true;
+        } else if (button == BTN_GAME_DUNGEON_RUN) {
+          nextScreen = SCREEN_DUNGEON_RUN;
+          screenChangePending = true;
+          uiNeedsRedraw = true;
+        } else {
+          dpadFocusVisible = true;
+          fullRedraw = true;
+          uiNeedsRedraw = true;
+        }
+        return;
+      }
     }
   }
 
@@ -14193,6 +16092,24 @@ void handleTouch(int x, int y) {
   // ===== SPACE GAME =====
   else if (currentScreen == SCREEN_SPACE_GAME) {
     handleSpaceGameTouch(x, y);
+    return;
+  }
+
+  // ===== 20 QUESTIONS =====
+  else if (currentScreen == SCREEN_20Q_GAME) {
+    handleTwentyQTouch(x, y);
+    return;
+  }
+
+  // ===== ASTEROIDS =====
+  else if (currentScreen == SCREEN_ASTEROIDS_GAME) {
+    handleAsteroidsTouch(x, y);
+    return;
+  }
+
+  // ===== DUNGEON RUN =====
+  else if (currentScreen == SCREEN_DUNGEON_RUN) {
+    handleDungeonRunTouch(x, y);
     return;
   }
 
