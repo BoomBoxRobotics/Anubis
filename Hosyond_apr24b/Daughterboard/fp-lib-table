@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "Daughterboard") (type "KiCad") (uri "${KIPRJMOD}/Daughterboard.pretty") (options "") (descr "Daughterboard project-local footprints"))
+)

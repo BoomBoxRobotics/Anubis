@@ -1,0 +1,69 @@
+﻿Netlist: C:\Users\Avala\OneDrive\Desktop\sketch_may7a\Hosyond_apr24b\Daughterboard\daughterboard\daughterboard.net
+Components: 36
+J1, J10, J11, J12, J13, J14, J15, J16, J17, J18, J19, J2, J20, J21, J22, J23, J24, J25, J3, J4, J5, J6, J7, J8, J9, TP1, TP2, TP3, TP4, TP5, TP6, TP7, U1, U2, U3, U4
+Nets: 51
+
+Checklist comparison:
+  Missing pins from netlist/check symbols: 0
+  Label mismatches: 11
+    U3.3: expected DPAD_SELECT, actual P00 (PCF8575 P00)
+    U3.4: expected DPAD_LEFT, actual P01 (PCF8575 P01)
+    U3.5: expected DPAD_UP, actual P02 (PCF8575 P02)
+    U3.6: expected DPAD_DOWN, actual P03 (PCF8575 P03)
+    U3.7: expected DPAD_RIGHT, actual P04 (PCF8575 P04)
+    U3.8: expected POWER_LED_CTRL, actual P05 (PCF8575 P05)
+    J14.1: expected DPAD_SELECT, actual P00 (D-pad select)
+    J14.2: expected DPAD_LEFT, actual P01 (D-pad left)
+    J14.3: expected DPAD_UP, actual P02 (D-pad up)
+    J14.4: expected DPAD_DOWN, actual P03 (D-pad down)
+    J14.5: expected DPAD_RIGHT, actual P04 (D-pad right)
+
+Critical nets:
+  GND: 30 nodes -> J1.2, J10.3, J10.4, J12.2, J13.1, J13.4, J14.7, J15.2, J18.2, J2.2, J22.2, J23.1, J23.4, J24.3, J24.4, J25.3, J25.4, J4.1, J4.4, J5.1, J5.4, J6.2, J7.2, J9.3, J9.4, TP3.1, U1.2, U2.2, U3.1, U4.1
+  5v: 4 nodes -> J1.1, J25.1, J25.2, TP1.1
+  5V: 4 nodes -> J1.1, J25.1, J25.2, TP1.1
+  3v3: 4 nodes -> J2.1, J24.1, J24.2, TP2.1
+  3V3: 4 nodes -> J2.1, J24.1, J24.2, TP2.1
+  3v3_SW: 15 nodes -> J13.3, J13.6, J22.1, J23.3, J23.6, J4.3, J4.6, J5.3, J5.6, J9.1, J9.2, U1.1, U2.1, U3.2, U4.2
+  3V3_SW: 15 nodes -> J13.3, J13.6, J22.1, J23.3, J23.6, J4.3, J4.6, J5.3, J5.6, J9.1, J9.2, U1.1, U2.1, U3.2, U4.2
+  5v_SW: 4 nodes -> J10.1, J10.2, J14.6, J6.1
+  5V_SW: 4 nodes -> J10.1, J10.2, J14.6, J6.1
+  I2C_SCL: 5 nodes -> J2.3, J22.3, TP5.1, U1.3, U2.3
+  I2C_SDA: 5 nodes -> J2.4, J22.4, TP4.1, U1.4, U2.4
+  UART_TX: 3 nodes -> J1.3, J6.4, TP6.1
+  UART_RX: 3 nodes -> J1.4, J6.3, TP7.1
+  A0_A: 2 nodes -> J4.2, U1.7
+  A1_A: 2 nodes -> J4.5, U1.8
+  A2_A: 2 nodes -> J5.2, U1.9
+  A3_A: 2 nodes -> J5.5, U1.10
+  A0_B: 2 nodes -> J13.2, U2.7
+  A1_B: 2 nodes -> J13.5, U2.8
+  A2_B: 2 nodes -> J23.2, U2.9
+  A3_B: 2 nodes -> J23.5, U2.10
+  P00: 2 nodes -> J14.1, U3.3
+  P01: 2 nodes -> J14.2, U3.4
+  P02: 2 nodes -> J14.3, U3.5
+  P03: 2 nodes -> J14.4, U3.6
+  P04: 2 nodes -> J14.5, U3.7
+  P05: 3 nodes -> J12.1, J18.1, U3.8
+  P06: 2 nodes -> J19.1, U3.9
+  P07: 2 nodes -> J19.2, U3.10
+  P08: 2 nodes -> J19.3, U3.11
+  P09: 2 nodes -> J19.4, U4.11
+  P10: 2 nodes -> J20.1, U4.10
+  P11: 2 nodes -> J20.2, U4.9
+  P12: 2 nodes -> J20.3, U4.8
+  P13: 2 nodes -> J20.4, U4.7
+  P14: 2 nodes -> J21.1, U4.6
+  P15: 2 nodes -> J21.2, U4.5
+  P16: 2 nodes -> J21.3, U4.4
+  P17: 2 nodes -> J21.4, U4.3
+  GPIO14: 2 nodes -> J25.7, J3.3
+  GPIO21: 2 nodes -> J24.7, J3.4
+  ON: 2 nodes -> J24.5, J25.5
+  OFF: 2 nodes -> J24.6, J25.6
+  NC: 9 nodes -> J10.5, J10.6, J10.7, J17.1, J17.2, J22.5, J9.5, J9.6, J9.7
+
+One-node nets:
+  CC1: J7.3
+  CC2: J7.6

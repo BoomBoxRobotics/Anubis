@@ -1,0 +1,33 @@
+PCB: C:\Users\Avala\OneDrive\Desktop\sketch_may7a\Hosyond_apr24b\Daughterboard\daughterboard\daughterboard.kicad_pcb
+Nets seen: 51  Footprints: 36  Tracks: 400  Vias: 31  Zones: 1
+
+Zones:
+  GND@B.Cu
+
+Special nets expected to be intentionally unrouted/disconnected:
+  NC: OK nodes=9 tracks=0 vias=0
+    nodes: J10.5, J10.6, J10.7, J17.1, J17.2, J22.5, J9.5, J9.6, J9.7
+  CC1: OK nodes=1 tracks=0 vias=0
+    nodes: J7.3
+  CC2: OK nodes=1 tracks=0 vias=0
+    nodes: J7.6
+  ADDR: OK nodes=2 tracks=0 vias=0
+    nodes: U1.5, U2.5
+  ALRT: OK nodes=2 tracks=0 vias=0
+    nodes: U1.6, U2.6
+  ON: OK nodes=2 tracks=0 vias=0
+    nodes: J24.5, J25.5
+  OFF: OK nodes=2 tracks=0 vias=0
+    nodes: J24.6, J25.6
+
+Key routed nets:
+  GND: nodes=30 tracks=3 vias=3
+    GND vias: 109 116, 229.2643 128.1549, 112 116
+  3v3: nodes=4 tracks=13 vias=2
+  3v3_SW: nodes=15 tracks=66 vias=2
+  5v: nodes=4 tracks=15 vias=1
+  5v_SW: nodes=4 tracks=15 vias=2
+  I2C_SCL: nodes=5 tracks=29 vias=1
+  I2C_SDA: nodes=5 tracks=22 vias=3
+  UART_TX: nodes=3 tracks=20 vias=2
+  UART_RX: nodes=3 tracks=17 vias=1

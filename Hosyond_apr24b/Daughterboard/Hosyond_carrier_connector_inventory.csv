@@ -1,0 +1,37 @@
+Ref,Name,Pin Count,KiCad Symbol,Footprint Suggestion,Pitch,Type,Notes
+J1,Hosyond UART,4,Connector_Generic:Conn_01x04,Connector_JST:JST_SH_B4B-ZR_1x04_P1.00mm_Horizontal,1.25mm or verify actual,JST cable connector,"Pins: 5V,GND,UART_TX,UART_RX. Footprint suggestion must be changed if connector is JST-GH/JST-SH 1.25mm."
+J2,Hosyond I2C,4,Connector_Generic:Conn_01x04,Connector_JST:JST_SH_B4B-ZR_1x04_P1.00mm_Horizontal,1.25mm or verify actual,JST cable connector,"Pins: 3V3,GND,I2C_SCL,I2C_SDA. Verify exact JST family before layout."
+J3,Hosyond GPIO,4,Connector_Generic:Conn_01x04,Connector_JST:JST_SH_B4B-ZR_1x04_P1.00mm_Horizontal,1.25mm or verify actual,JST cable connector,"Pins: GPIO2,GPIO3,GPIO14,GPIO21. GPIO14/21 now rail enables."
+J4,Left Gimbal,6,Connector_Generic:Conn_01x06,Connector_JST:JST_SH_B6B-ZR_1x06_P1.00mm_Horizontal,1.25mm or verify actual,JST cable connector,"Pins: GND,L_X,3V3,GND,L_Y,3V3."
+J5,Right Gimbal,6,Connector_Generic:Conn_01x06,Connector_JST:JST_SH_B6B-ZR_1x06_P1.00mm_Horizontal,1.25mm or verify actual,JST cable connector,"Pins: GND,R_X,3V3,GND,R_Y,3V3."
+J6,ELRS Module,4,Connector_Generic:Conn_01x04,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,2.54mm,module/header,"Pins: 5V_SW,GND,RX,TX. Use footprint matching actual ELRS socket/header."
+J7,USB-C Breakout,6,Connector_Generic:Conn_01x06,Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical,2.54mm,module/header,"Pins: VBUS,GND,CC1,D-,D+,CC2. Breakout handles CC resistors."
+J8,Battery Input/Pass-through,2,Connector_Generic:Conn_01x02,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,2.0mm typical,JST battery connector,Protected 1S LiPo only. Verify actual battery/Hosyond connector.
+J9,3V3 I2C Power Switch Output Side,7,Connector_Generic:Conn_01x07,Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical,2.54mm,Pololu/module header,"Other side of 3.3V switch module. Pins should carry 3V3_SW/GND where the Pololu board exposes switched VOUT/GND; unused pads can be NC."
+J10,5V ELRS Power Switch Output Side,7,Connector_Generic:Conn_01x07,Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical,2.54mm,Pololu module header,"Other side of 5V switch module. Pins should carry 5V_SW/GND where the Pololu board exposes switched VOUT/GND; unused pads can be NC."
+J11,Power Button,2,Connector_Generic:Conn_01x02,Connector_JST:JST_SH_B2B-ZR_1x02_P1.00mm_Horizontal,1.25mm or verify actual,JST/button connector,"Pins: GPIO2 sense, GPIO3 reference. Direct ESP32 connection for deep-sleep wake."
+J12,Power Button LED,2,Connector_Generic:Conn_01x02,Connector_JST:JST_SH_B2B-ZR_1x02_P1.00mm_Horizontal,1.25mm or verify actual,JST/LED connector,LED+ from PCF8575 P05 through resistor if needed; LED- to GND.
+J13,Aux Analog A0/A1 Header,6,Connector_Generic:Conn_01x06,Connector_JST:JST_SH_B6B-ZR_1x06_P1.00mm_Horizontal,1.25mm or verify actual,JST aux analog connector,"Pins: GND,A0_B,3V3,GND,A1_B,3V3."
+J14,5-way D-pad,7,Connector_Generic:Conn_01x07,Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical,2.54mm,module/header,"Pins: SELECT,D,C,B,A,VCC,GND. Map to PCF P00-P04."
+J15,Hosyond USB Pads/Header,4,Connector_Generic:Conn_01x04,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,TBD,pads/header,"Pins: VBUS,GND,D-,D+. Use if breaking USB out through carrier."
+J16,Hosyond Battery Pads/Header,2,Connector_Generic:Conn_01x02,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,TBD,pads/header,"Pins: BAT+,BAT-. Do not connect to USB VBUS directly."
+J17,Reserved Spare Header,2,Connector_Generic:Conn_01x02,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,2.54mm,pin header,Optional spare/test header if wanted.
+J18,Power LED Ring,2,Connector_Generic:Conn_01x02,Connector_JST:JST_SH_B2B-ZR_1x02_P1.00mm_Horizontal,1.25mm or verify actual,JST/LED connector,"LED+ from PCF P05, LED- to GND."
+J19,PCF Expansion A,4,Connector_Generic:Conn_01x04,Connector_JST:JST_SH_B4B-ZR_1x04_P1.00mm_Horizontal,1.25mm or verify actual,JST expansion,"Pins: PCF P06,P07,P08,P09."
+J20,PCF Expansion B,4,Connector_Generic:Conn_01x04,Connector_JST:JST_SH_B4B-ZR_1x04_P1.00mm_Horizontal,1.25mm or verify actual,JST expansion,"Pins: PCF P10,P11,P12,P13."
+J21,PCF Expansion C,4,Connector_Generic:Conn_01x04,Connector_JST:JST_SH_B4B-ZR_1x04_P1.00mm_Horizontal,1.25mm or verify actual,JST expansion,"Pins: PCF P14,P15,P16,P17."
+J22,PCF8575 I2C Bus,4,Connector_Generic:Conn_01x04,Connector_JST:JST_SH_B4B-ZR_1x04_P1.00mm_Horizontal,1.25mm or verify actual,JST/module connector,"Pins: 3V3_SW,GND,I2C_SCL,I2C_SDA for the PCF8575 module."
+J23,Aux Analog A2/A3 Header,6,Connector_Generic:Conn_01x06,Connector_JST:JST_SH_B6B-ZR_1x06_P1.00mm_Horizontal,1.25mm or verify actual,JST aux analog connector,"Pins: GND,A2_B,3V3,GND,A3_B,3V3."
+J24,3V3 I2C Power Switch Control/Input Side,7,Connector_Generic:Conn_01x07,Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical,2.54mm,Pololu/module header,"One side of 3.3V switch module: VIN,VIN,GND,GND,ON,OFF,CTRL based on current schematic."
+J25,5V ELRS Power Switch Control/Input Side,7,Connector_Generic:Conn_01x07,Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical,2.54mm,Pololu module header,"One side of 5V switch module: VIN,VIN,GND,GND,ON,OFF,CTRL based on current schematic."
+U1,ADS1115 A Module,10,Connector_Generic:Conn_01x10,Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical,2.54mm,module header,"Primary gimbal ADC: VCC,GND,SCL,SDA,ADDR,ALRT,A0,A1,A2,A3."
+U2,ADS1115 B Module,10,Connector_Generic:Conn_01x10,Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical,2.54mm,module header,Future aux ADC. Must set ADDR to non-0x48.
+U3,PCF8575 Module Side A,11,Connector_Generic:Conn_01x11,Connector_PinHeader_2.54mm:PinHeader_1x11_P2.54mm_Vertical,2.54mm,module side header,"One side of PCF8575 module: 3V3_SW,GND,P00-P08."
+U4,PCF8575 Module Side B,11,Connector_Generic:Conn_01x11,Connector_PinHeader_2.54mm:PinHeader_1x11_P2.54mm_Vertical,2.54mm,module side header,"Other side of PCF8575 module: 3V3_SW,GND,P17-P09 or physical order as installed."
+TP1,5V Test Pad,1,Connector_Generic:Conn_01x01,TestPoint:TestPoint_Pad_D1.5mm,NA,test pad,Probe Hosyond 5V rail.
+TP2,3V3 Test Pad,1,Connector_Generic:Conn_01x01,TestPoint:TestPoint_Pad_D1.5mm,NA,test pad,Probe Hosyond 3.3V rail.
+TP3,GND Test Pad,1,Connector_Generic:Conn_01x01,TestPoint:TestPoint_Pad_D1.5mm,NA,test pad,Probe common ground.
+TP4,SDA Test Pad,1,Connector_Generic:Conn_01x01,TestPoint:TestPoint_Pad_D1.5mm,NA,test pad,Probe I2C SDA.
+TP5,SCL Test Pad,1,Connector_Generic:Conn_01x01,TestPoint:TestPoint_Pad_D1.5mm,NA,test pad,Probe I2C SCL.
+TP6,UART TX Test Pad,1,Connector_Generic:Conn_01x01,TestPoint:TestPoint_Pad_D1.5mm,NA,test pad,Probe Hosyond UART TX.
+TP7,UART RX Test Pad,1,Connector_Generic:Conn_01x01,TestPoint:TestPoint_Pad_D1.5mm,NA,test pad,Probe Hosyond UART RX.

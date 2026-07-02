@@ -1,0 +1,1843 @@
+S-8252 Series
+www.ablic.com
+BATTERY PROTECTION IC
+FOR 2-SERIAL-CELL PACK
+© ABLIC Inc., 2011-2019 Rev.4.0_00 
+ 
+ 1 
+The S-8252 Series is a protection IC for 2-serial-cell lithium- ion / lithium polymer rechargeable batteries and includes high-
+accuracy voltage detection circuits and delay circuits.  
+The S-8252 Series is suitable for protecting 2-serial-cell rech argeable lithium-ion / lithium  polymer battery packs from 
+overcharge, overdischarge, and overcurrent. 
+ 
+ Features 
+•  High-accuracy voltage detection function for each cell 
+Overcharge detection voltage n (n = 1, 2) 3.550 V to 4.600 V (5  mV steps) Accuracy ±20 mV (Ta = +25°C) 
+ Accuracy ±25 mV (Ta = −10°C to +60°C) 
+Overcharge release voltage n (n = 1, 2) 3.150 V to 4.600 V *1 Accuracy ±30 mV 
+Overdischarge detection voltage n (n = 1, 2) 2.000 V to 3.000 V (10 mV steps) Accuracy ±50 mV 
+Overdischarge release voltage n (n = 1, 2) 2.000 V to 3.400 V *2 Accuracy ±100 mV 
+Discharge overcurrent detection voltage  0.050 V to 0.400 V (10  mV steps) Accuracy ±10 mV 
+Load short-circuiting detection voltage 0.500 V to 0.900 V (50 mV steps) Accuracy ±100 mV 
+Charge overcurrent detection voltage −0.400 V to −0.050 V (25 mV steps) Accuracy ±20 mV 
+•  Charge overcurrent detection function: Available, unavailable 
+•  Detection delay times are generated only by an internal circuit (external capacitors are unnecessary). 
+Accuracy ±20% 
+•  High-withstand voltage (VM pin and CO pin: Absolute maximum rating = 28 V) 
+•  0 V battery charge: Enabled, inhibited 
+•  Power-down function: Available, unavailable 
+•  Wide operation temperature range: Ta = −40°C to +85°C 
+•  Low current consumption 
+During operation: 8.0 μA max. (Ta = +25°C) 
+During power-down: 0.1 μA max. (Ta = +25°C) 
+•  Lead-free (Sn 100%), halogen-free 
+ 
+*1. Overcharge release voltage = Overcharge detection voltage − Overcharge hysteresis voltage 
+ (Overcharge hysteresis voltage n (n = 1, 2) can be selected as  0 V or from a range of 0.1 V to 0.4 V in 50 mV steps.) 
+*2. Overdischarge release voltage = Overdischarge detection voltage + Overdischarge hysteresis voltage 
+ (Overdischarge hysteresis voltage n (n = 1, 2) can be selected  as 0 V or from a range of 0.1 V to 0.7 V in 100 mV 
+steps.) 
+ 
+ Applications 
+•  Lithium-ion rechargeable battery pack 
+•  Lithium polymer rechargeable battery pack 
+ 
+ Packages 
+•  SOT-23-6 
+•  SNT-6A 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 2 
+ Block Diagram 
+ 
+DO 
+VM 
+VSS 
+VC 
+VDD 
+CO 
+ 
+Charger 
+detection 
+circuit  
+20 kΩ 
+300 kΩ    
+Divider 
+control 
+circuit 
+ Oscillator 
+control 
+circuit 0 V battery charge / 
+ charge inhibition 
+circuit 
++ 
++ 
++ 
++ 
++ 
++ 
++ 
+− 
+−
+− 
+− 
+− 
+− 
+− 
+ 
+Remark  All diodes shown in figure are parasitic diodes. 
+Figure 1 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 3 
+ Product Name Structure 
+1.  Product name 
+ S-8252A  xx  -  xxxx  U 
+Package abbreviation and IC packing specifications*1 
+ M6T1: SOT-23-6, Tape 
+I6T1:  SNT-6A, Tape 
+Serial code*2 
+ Sequentially set from AA to ZZ 
+Environmental code 
+ U: Lead-free (Sn 100%), halogen-free 
+ 
+*1.  Refer to the tape drawing. 
+*2.  Refer to "3.  Product name list". 
+ 
+2.  Packages 
+Table 1  Package Drawing Codes 
+Package Name Dimension Tape Reel Land 
+SOT-23-6 MP006-A-P-SD MP006-A-C-SD MP006-A-R-SD − 
+SNT-6A PG006-A-P-SD PG006-A-C- SD PG006-A-R-SD PG006-A-L-SD 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 4 
+3.  Product name list 
+3. 1  SOT-23-6 
+Table 2 (1 / 2) 
+Product Name 
+Over- 
+charge 
+Detection 
+Voltage 
+[VCU] 
+Over- 
+charge 
+Release 
+Voltage 
+[VCL] 
+Over- 
+discharge 
+Detection 
+Voltage 
+[VDL] 
+Over- 
+discharge 
+Release 
+Voltage 
+[VDU] 
+Discharge 
+Overcurrent 
+Detection 
+Voltage 
+[VDIOV] 
+Load Short-
+circuiting 
+Detection 
+Voltage 
+[VSHORT] 
+Charge 
+Overcurrent 
+ Detection 
+Voltage 
+[VCIOV] 
+0 V Battery 
+Charge 
+Power- 
+down 
+Function 
+Delay  
+Time 
+Combination*1
+S-8252AAA-M6T1U 4.280 V 4.080 V 2.000 V 2.000 V 0.200 V 0.500 V  −0.100 V Inhibited Available (1) 
+S-8252AAB-M6T1U 4.325 V 4.075 V 2.200 V 2.900 V 0.210 V 0.500 V  −0.200 V Inhibited Available (1) 
+S-8252AAC-M6T1U 4.300 V 4.100 V 2.400 V 3.000 V 0.200 V 0.500 V  −0.200 V Inhibited Available (1) 
+S-8252AAD-M6T1U 4.280 V 4.130 V 2.400 V 2.900 V 0.150 V 0.500 V  −0.150 V Inhibited Available (1) 
+S-8252AAE-M6T1U 4.350 V 4.150 V 2.300 V 3.000 V 0.300 V 0.500 V  −0.300 V Enabled Available (1) 
+S-8252AAF-M6T1U 4.350 V 4.100 V 2.400 V 3.000 V 0.150 V 0.500 V  −0.150 V Enabled Available (1) 
+S-8252AAG-M6T1U 4.300 V 4.150 V 2.800 V 3.000 V 0.150 V 0.500 V  −0.150 V Enabled Available (1) 
+S-8252AAH-M6T1U 4.250 V 4.100 V 3.000 V 3.000 V 0.200 V 0.500 V  −0.200 V Enabled Available (1) 
+S-8252AAI-M6T1U 3.650 V 3.450 V 2.000 V 2.700 V 0.200 V 0.500 V  −0.200 V Enabled Unavailable (1) 
+S-8252AAJ-M6T1U 3.900 V 3.500 V 2.000 V 2.500 V 0.200 V 0.500 V  −0.200 V Enabled Unavailable (1) 
+S-8252AAK-M6T1U 4.350 V 4.150 V 2.300 V 3.000 V 0.200 V 0.500 V  −0.200 V Enabled Available (1) 
+S-8252AAL-M6T1U 4.200 V 4.050 V 2.500 V 3.000 V 0.200 V 0.500 V  −0.200 V Inhibited Available (1) 
+S-8252AAO-M6T1U 4.250 V 4.100 V 2.500 V 3.000 V 0.200 V 0.500 V  −0.100 V Inhibited Available (1) 
+S-8252AAP-M6T1U 4.350 V 4.150 V 2.200 V 2.900 V 0.200 V 0.500 V  −0.400 V Inhibited Available (1) 
+S-8252AAQ-M6T1U 4.300 V 4.100 V 2.600 V 3.000 V 0.400 V 0.500 V  −0.400 V Inhibited Available (1) 
+S-8252AAR-M6T1U 4.300 V 4.100 V 2.600 V 3.000 V 0.400 V 0.500 V  − Inhibited Available (3) 
+S-8252AAS-M6T1U 4.250 V 4.050 V 2.500 V 3.000 V 0.200 V 0.500 V  −0.200 V Enabled Unavailable (1) 
+S-8252AAT-M6T1U 4.250 V 4.100 V 2.700 V 3.000 V 0.120 V 0.500 V  −0.050 V Enabled Available (1) 
+S-8252AAU-M6T1U 4.275 V 4.075 V 2.500 V 2.900 V 0.300 V 0.500 V  −0.100 V Enabled Available (1) 
+S-8252AAV-M6T1U 4.400 V 4.250 V 2.500 V 2.900 V 0.150 V 0.500 V  −0.100 V Enabled Available (1) 
+S-8252AAW-M6T1U 4.350 V 4.150 V 2.300 V 3.000 V 0.200 V 0.500 V  −0.400 V Inhibited Available (1) 
+S-8252AAX-M6T1U 4.230 V 4.030 V 2.750 V 3.050 V 0.150 V 0.500 V  −0.100 V Inhibited Available (1) 
+S-8252AAY-M6T1U 4.250 V 4.050 V 3.000 V 3.200 V 0.150 V 0.500 V  −0.050 V Inhibited Available (2) 
+S-8252AAZ-M6T1U 4.225 V 4.075 V 2.400 V 2.900 V 0.150 V 0.500 V  −0.150 V Inhibited Available (1) 
+S-8252ABA-M6T1U 4.300 V 4.150 V 3.000 V 3.100 V 0.100 V 0.500 V  −0.150 V Enabled Available (1) 
+S-8252ABB-M6T1U 4.300 V 4.100 V 2.000 V 2.000 V 0.120 V 0.500 V  − Enabled Available (3) 
+S-8252ABC-M6T1U 4.300 V 4.100 V 2.000 V 2.000 V 0.055 V 0.500 V  − Enabled Available (3) 
+S-8252ABD-M6T1U 4.300 V 4.100 V 2.400 V 3.000 V 0.200 V 0.500 V  −0.200 V Inhibited Available (4) 
+S-8252ABE-M6T1U 4.225 V 4.075 V 2.400 V 2.900 V 0.100 V 0.500 V  −0.100 V Inhibited Available (1) 
+S-8252ABF-M6T1U 4.300 V 4.100 V 2.400 V 2.400 V 0.100 V 0.500 V  −0.100 V Enabled Available (1) 
+S-8252ABG-M6T1U 4.280 V 4.130 V 2.400 V 2.900 V 0.150 V 0.500 V  −0.150 V Inhibited Unavailable (1) 
+S-8252ABH-M6T1U 4.300 V 4.100 V 2.400 V 2.400 V 0.150 V 0.500 V  −0.150 V Enabled Available (1) 
+S-8252ABI-M6T1U 4.425 V 4.225 V 2.500 V 2.800 V 0.150 V 0.500 V  −0.100 V Inhibited Unavailable (1) 
+S-8252ABQ-M6T1U 4.300 V 4.100 V 2.370 V 2.970 V 0.210 V 0.500 V  − Inhibited Unavailable (3) 
+S-8252ABR-M6T1U 4.300 V 4.100 V 2.300 V 2.700 V 0.280 V 0.500 V  −0.250 V Inhibited Available (1) 
+S-8252ABS-M6T1U 4.350 V 4.150 V 2.000 V 2.400 V 0.250 V 0.500 V  −0.400 V Inhibited Available (1) 
+S-8252ABT-M6T1U 4.450 V 4.250 V 2.300 V 2.700 V 0.280 V 0.500 V  −0.250 V Inhibited Available (1) 
+S-8252ABU-M6T1U 4.500 V 4.300 V 2.000 V 2.400 V 0.250 V 0.500 V  −0.400 V Inhibited Available (1) 
+S-8252ABV-M6T1U 4.300 V 4.100 V 2.370 V 2.570 V 0.210 V 0.500 V  − Inhibited Unavailable (3) 
+S-8252ABW-M6T1U 4.300 V 4.100 V 2.370 V 2.570 V 0.400 V 0.500 V  − Inhibited Unavailable (3) 
+S-8252ABX-M6T1U 4.350 V 4.150 V 2.100 V 2.400 V 0.250 V 0.500 V  − Inhibited Unavailable (3) 
+S-8252ABY-M6T1U 4.450 V 4.250 V 2.300 V 2.700 V 0.370 V 0.500 V  − Inhibited Unavailable (3) 
+S-8252ABZ-M6T1U 4.500 V  4.300 V 2.000 V 2.400 V 0.200 V 0.500 V − Inhibited Unavailable (3) 
+S-8252ACA-M6T1U 4.300 V  4.150 V 2.800 V 3.000 V 0.150 V 0.500 V −0.100 V Enabled Available (5) 
+S-8252ACB-M6T1U 4.300 V 4.100 V 2.270 V 2.370 V 0.210 V 0.900 V − Inhibited Unavailable (3) 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 5 
+Table 2 (2 / 2) 
+Product Name 
+Over- 
+charge 
+Detection 
+Voltage 
+[VCU] 
+Over- 
+charge 
+Release 
+Voltage 
+[VCL] 
+Over- 
+discharge 
+Detection 
+Voltage 
+[VDL] 
+Over- 
+discharge 
+Release 
+Voltage 
+[VDU] 
+Discharge 
+Overcurrent 
+Detection 
+Voltage 
+[VDIOV] 
+Load Short-
+circuiting 
+Detection 
+Voltage 
+[VSHORT] 
+Charge 
+Overcurrent 
+ Detection 
+Voltage 
+[VCIOV] 
+0 V Battery 
+Charge 
+Power- 
+down 
+Function 
+Delay  
+Time 
+Combination*1 
+S-8252ACC-M6T1U 4.300 V 4.100 V 2.280 V 2.380 V 0.250 V 0.900 V  − Inhibited Unavailable (3) 
+S-8252ACE-M6T1U 4.300 V  4.100 V 2.230 V 2.930 V 0.080 V 0.500 V −0.075 V Inhibited Available (1) 
+S-8252ACF-M6T1U 4.225 V  4.075 V 2.400 V 2.900 V 0.190 V 0.500 V −0.100 V Inhibited Available (5) 
+S-8252ACI-M6T1U 4.440 V 4.250 V 2.750 V 3.050 V 0.150 V 0.500 V  −0.100 V Inhibited Available (1) 
+S-8252ACM-M6T1U 4.375 V 4.225 V 2.800 V 3.000 V  0.130 V 0.500 V  −0.075 V Inhibited Available (6) 
+S-8252ACN-M6T1U 4.280 V 4.180 V 2.500 V 3.000 V  0.250 V 0.500 V  −0.200 V Enabled Unavailable (7) 
+S-8252ACO-M6T1U 4.300 V 4.100 V 2.300 V 2.700 V 0.280 V 0.500 V  −0.125 V Inhibited Available (5) 
+S-8252ACP-M6T1U 4.300 V 4.100 V 2.600 V 3.000 V 0.370 V 0.500 V − Inhibited Available (8) 
+S-8252ACQ-M6T1U 4.200 V 4.000 V 2.600 V 3.000 V 0.300 V 0.500 V − Inhibited Available (3) 
+S-8252ACR-M6T1U 4.250 V 4.050 V 2.200 V 2.600 V 0.300 V 0.500 V − Inhibited Available (3) 
+S-8252ACS-M6T1U 4.350 V 4.150 V 2.400 V 3.000 V 0.300 V 0.500 V − Inhibited Available (3) 
+S-8252ACT-M6T1U 4.350 V 4.150 V 2.400 V 3.000 V 0.240 V 0.500 V − Inhibited Available (3) 
+S-8252ACU-M6T1U 4.300 V 4.100 V 2.400 V 3.000 V 0.280 V 0.500 V − Inhibited Available (3) 
+S-8252ACV-M6T1U 4.300 V 4.100 V 2.400 V 3.000 V 0.210 V 0.500 V − Inhibited Available (8) 
+S-8252ACW-M6T1U 4.350 V 4.150 V 2.000 V 2.400 V 0.200 V 0.500 V − Inhibited Available (8) 
+S-8252ACX-M6T1U 4.350 V 4.150 V 2.000 V 2.400 V 0.250 V 0.500 V − Inhibited Available (3) 
+S-8252ACY-M6T1U 4.250 V 4.050 V 2.000 V 2.500 V 0.200 V 0.500 V −0.100 V Inhibited Available (7) 
+S-8252ADC-M6T1U 3.900 V 3.500 V 2.000 V 2.500 V 0.200 V 0.500 V −0.200 V Inhibited Unavailable (1) 
+*1.  Refer to Table 4 about the details of the delay time combinations. 
+ 
+Remark  Please contact our sales representatives for products other than the above. 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 6 
+3. 2  SNT-6A 
+Table 3 
+Product Name 
+Over- 
+charge 
+Detection 
+Voltage 
+[VCU] 
+Over- 
+charge 
+Release 
+Voltage 
+[VCL] 
+Over- 
+discharge 
+Detection 
+Voltage 
+[VDL] 
+Over- 
+discharge 
+Release 
+Voltage 
+[VDU] 
+Discharge 
+Overcurrent 
+Detection 
+Voltage 
+[VDIOV] 
+Load Short-
+circuiting 
+Detection 
+Voltage 
+[VSHORT] 
+Charge 
+Overcurrent 
+Detection 
+Voltage 
+[VCIOV] 
+0 V Battery 
+Charge 
+Power- 
+down 
+Function 
+Delay  
+Time 
+Combination*1 
+S-8252AAA-I6T1U 4.280 V 4.080 V 2.000 V 2.000 V 0.200 V 0.500 V  −0.100 V Inhibited Available (1) 
+S-8252AAH-I6T1U 4.250 V 4.100 V 3.000 V 3.000 V 0.200 V 0.500 V  −0.200 V Enabled Available (1) 
+S-8252AAM-I6T1U 4.250 V 4.050 V 2.400 V 3.000 V 0.100 V 0.500 V  −0.100 V Enabled Available (1) 
+S-8252AAN-I6T1U 4.325 V 4.075 V 2.200 V 2.900 V 0.210 V 0.500 V  −0.100 V Enabled Available (1) 
+S-8252AAY-I6T1U 4.250 V 4.050 V 3.000 V 3.200 V 0.150 V 0.500 V  −0.050 V Inhibited Available (2) 
+S-8252ABJ-I6T1U 4.300 V 4.100 V 2.400 V 3.000 V 0.210 V 0.500 V  −0.250 V Inhibited Available (1) 
+S-8252ABK-I6T1U 4.350 V 4.150 V 2.300 V 2.900 V 0.160 V 0.500 V  −0.400 V Inhibited Available (1) 
+S-8252ABL-I6T1U 4.300 V 4.100 V 2.400 V 2.600 V 0.240 V 0.500 V  −0.200 V Inhibited Available (5) 
+S-8252ABM-I6T1U 4.350 V 4.150 V 2.300 V 2.500 V 0.170 V 0.500 V  −0.400 V Inhibited Available (5) 
+S-8252ABO-I6T1U 4.300 V 4.100 V 2.300 V 2.700 V 0.230 V 0.500 V  −0.250 V Inhibited Available (5) 
+S-8252ABP-I6T1U 4.350 V 4.150 V 2.000 V 2.400 V 0.190 V 0.500 V  −0.400 V Inhibited Available (5) 
+S-8252ACD-I6T1U 4.280 V  4.080 V 2.000 V 2.000 V 0.170 V 0.500 V −0.100 V Inhibited Available (1) 
+S-8252ACG-I6T1U 4.280 V  4.080 V 2.000 V 2.000 V 0.170 V 0.500 V −0.100 V Inhibited Available (5) 
+S-8252ACH-I6T1U 4.470 V  4.370 V 2.750 V 3.050 V 0.120 V 0.500 V −0.100 V Inhibited Available (5) 
+S-8252ACJ-I6T1U 4.325 V 4.075 V 2.000 V 2.200 V 0.190 V 0.900 V  − Inhibited Available (3) 
+S-8252ACK-I6T1U 4.300 V 4.100 V 2.300 V 2.700 V 0.340 V 0.500 V  −0.300 V Inhibited Available (5) 
+S-8252ACL-I6T1U 4.350 V 4.150 V 2.000 V 2.400 V 0.330 V 0.500 V  −0.400 V Inhibited Available (5) 
+S-8252ACZ-I6T1U 4.300 V 4.100 V 2.400 V 2.600 V 0.150 V 0.500 V  −0.400 V Inhibited Available (9) 
+S-8252ADA-I6T1U 4.300 V 4.100 V 2.400 V 2.600 V 0.230 V 0.500 V −0.150 V Inhibited Available (10) 
+S-8252ADB-I6T1U 4.350 V 4.150 V 2.000 V 2.400 V 0.140 V 0.500 V −0.400 V Inhibited Available (9) 
+S-8252ADD-I6T1U 4.300 V 4.100 V 2.300 V 2.700 V 0.240 V 0.500 V  −0.175 V Inhibited Available (5) 
+S-8252ADE-I6T1U 4.350 V 4.150 V 2.000 V 2.400 V 0.180 V 0.500 V  −0.150 V Inhibited Available (5) 
+S-8252ADF-I6T1U 4.490 V 4.290 V 2.300 V 2.700 V 0.070 V 0.500 V  −0.075 V Enabled Unavailable (11) 
+S-8252ADH-I6T1U 4.250 V 4.050 V 2.400 V 3.000 V 0.150 V 0.900 V  − Enabled Available (3) 
+S-8252ADI-I6T1U 4.350 V 4.150 V 2.300 V 2.900 V 0.250 V 0.900 V  − Inhibited Available (3) 
+S-8252ADJ-I6T1U 4.350 V 4.150 V 2.300 V 2.900 V 0.100 V 0.900 V  − Enabled Available (3) 
+S-8252ADK-I6T1U 4.350 V 4.150 V 2.300 V 2.700 V 0.220 V 0.900 V  − Inhibited Unavailable (12) 
+S-8252ADL-I6T1U 4.350 V 4.150 V 2.000 V 2.200 V 0.190 V 0.900 V  − Inhibited Available (13) 
+S-8252ADM-I6T1U 4.350 V 4.150 V 2.300 V 2.900 V 0.200 V 0.900 V  − Inhibited Available (3) 
+*1.  Refer to Table 4 about the details of the delay time combinations. 
+ 
+Remark  Please contact our sales representatives for products other than the above. 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 7 
+Table 4 
+Delay Time 
+Combination 
+Overcharge 
+Detection 
+Delay Time 
+[tCU] 
+Overdischarge 
+Detection 
+Delay Time 
+[tDL] 
+Discharge Overcurrent 
+Detection 
+Delay Time 
+[tDIOV] 
+Load Short-circuiting 
+Detection 
+Delay Time 
+[tSHORT] 
+Charge Overcurrent 
+Detection 
+Delay Time 
+[tCIOV] 
+(1) 1.0 s 128 ms 8 ms 280 μs 8 ms 
+(2) 1.0 s  512 ms 8 ms 280 μs 8 ms 
+(3) 1.0 s  128 ms 8 ms 280 μs − 
+(4) 1.0 s  128 ms 8 ms 1 ms 8 ms 
+(5) 1.0 s  128 ms 16 ms 280 μs 8 ms 
+(6) 1.0 s  128 ms 32 ms 280 μs 8 ms 
+(7) 1.0 s  512 ms 8 ms 1 ms 8 ms 
+(8) 1.0 s  128 ms 8 ms 1 ms − 
+(9) 1.0 s  128 ms 128 ms 280 μs 16 ms 
+(10) 1.0 s  128 ms 16 ms 280 μs 16 ms 
+(11) 1.0 s 128 ms 32 ms 500 μs 16 ms 
+(12) 1.0 s 128 ms 16 ms 1 ms  − 
+(13) 1.0 s 128 ms 8 ms  500 μs − 
+Remark  The delay times can be changed within the range listed in Table 5. For details, please contact our sales representatives.  
+ 
+Table 5 
+Delay Time Symbol Selection Range Remark 
+Overcharge detection delay time t CU 256 ms 512 ms 1.0 s *1 Select a value from the left. 
+Overdischarge detection delay time t DL 32 ms 64 ms 128 ms *1 Select a value from the left. 
+Discharge overcurrent detection delay time t DIOV 4  m s  8  m s *1 16 ms Select a value from the left. 
+Load short-circuiting detection delay time t SHORT 280 μs*1 500 μs 1 ms Select a value from the left. 
+Charge overcurrent detection delay time t CIOV 4  m s  8  m s *1 16 ms Select a value from the left. 
+*1.  This value is the delay time of the standard products. 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 8 
+ 
+ Pin Configurations 
+ 
+1.  SOT-23-6 
+ 13 2
+546
+Top view
+ 
+ 
+ 
+Figure 2 
+ Table 6 
+ Pin No. Symbol Description 
+ 1  DO Connection pin of discharge control FET gate 
+(CMOS output) 
+ 2  CO Connection pin of charge control FET gate 
+(CMOS output) 
+ 3  VM Voltage detection pin between VM pin and VSS pin 
+(Overcurrent / charger detection pin) 
+ 4  VC Connection pin for negative voltage of battery 1 and 
+connection pin for positive voltage of battery 2 
+ 5  VDD Connection pin for positive power supply input and  
+connection pin for positive voltage of battery 1 
+ 6  VSS Connection pin for negative power supply input and  
+connection pin for negative voltage of battery 2 
+ 
+2.  SNT-6A 
+ 
+5
+4
+6
+2
+3
+1
+Top view
+ 
+ 
+ 
+Figure 3 
+  
+ Table 7 
+ Pin No. Symbol Description 
+ 1  V M  Voltage detection pin between VM pin and VSS pin 
+(Overcurrent / charger detection pin) 
+ 2  C O  Connection pin of charge control FET gate 
+(CMOS output) 
+ 3  D O  Connection pin of discharge control FET gate 
+(CMOS output) 
+ 4 VSS Connection pin for negative power supply input and  
+connection pin for negative voltage of battery 2 
+ 5  V D D  Connection pin for positive power supply input and  
+connection pin for positive voltage of battery 1 
+ 6  V C  Connection pin for negative voltage of battery 1 and 
+connection pin for positive voltage of battery 2 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 9 
+ 
+ Absolute Maximum Ratings 
+Table 8 
+(Ta = +25°C unless otherwise specified)
+Item Symbol Applied pin Absolute Maximum Rating Unit 
+Input voltage between VDD pin and VSS pin V DS V D D  VSS − 0.3 to VSS + 12 V 
+VC pin input voltage V VC V C  VSS − 0.3 to VDD + 0.3 V 
+VM pin input voltage V VM V M  VDD − 28 to VDD + 0.3 V 
+DO pin output voltage V DO D O  VSS − 0.3 to VDD + 0.3 V 
+CO pin output voltage V CO C O  VVM − 0.3 to VDD + 0.3 V 
+Power dissipation SOT-23-6 PD − 650*1 m W  
+SNT-6A − 400*1 m W  
+Operation ambient temperature T opr − −40 to +85 °C 
+Storage temperature T stg − −55 to +125 °C 
+*1.  When mounted on board 
+[Mounted board] 
+(1) Board size: 114.3 mm × 76.2 mm × t1.6 mm 
+(2) Board name: JEDEC STANDARD51-7 
+ 
+Caution The absolute maximum ratings are rated values exceeding  which the product could suffer physical 
+damage. These values must therefore not be exceeded under any conditions. 
+ 
+ 
+ 
+0 50 100 150 
+800 
+400 
+0 
+Power dissipation (PD) [mW] 
+Ambient temperature (Ta) [°C] 
+SOT-23-6 
+200 
+600 
+SNT-6A 
+ 
+ 
+Figure 4  Package Power Dissipation (When Mounted on Board) 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 10
+ 
+ Electrical Characteristics 
+1.  Ta = +25°C 
+Table 9 
+(Ta = +25°C unless otherwise specified) 
+Item Symbol Condition Min. Typ. Max. Unit Test 
+Circuit 
+DETECTION VOLTAGE        
+Overcharge detection voltage n (n = 1, 2) VCUn − V CU − 0.020 V CU V CU + 0.020 V 1 
+Ta = −10°C to +60°C*1 V CU − 0.025 V CU V CU + 0.025 V 1 
+Overcharge release voltage n (n = 1, 2) VCLn VCL ≠ VCU V CL − 0.030 V CL V CL + 0.030 V 1 
+VCL = VCU V CL − 0.030 V CL V CL + 0.020 V 1 
+Overdischarge detection voltage n (n = 1, 2) VDLn − V DL − 0.050 V DL V DL + 0.050 V 2 
+Overdischarge release voltage n (n = 1, 2) VDUn VDL ≠ VDU V DU − 0.100 V DU V DU + 0.100 V 2 
+VDL = VDU V DU − 0.050 V DU V DU + 0.050 V 2 
+Discharge overcurrent detection voltage VDIOV − V DIOV − 0.010 V DIOV V DIOV + 0.010 V 2 
+Load short-circuiting detection voltage VSHORT − VSHORT − 0.100 V SHORT V SHORT + 0.100 V 2 
+DETECTION VOLTAGE (WITH CHARGE OVERCURRENT DETECTION FUNCTION) 
+Charge overcurrent detection voltage VCIOV − V CIOV − 0.020 V CIOV V CIOV + 0.020 V 2 
+DETECTION VOLTAGE (WITHOUT CHARGE OVERCURRENT DETECTION FUNCTION) 
+Charger detection voltage VCHA − −1.0 −0.7 −0.4 V 2 
+0 V BATTERY CHARGE        
+0 V battery charge starting charger voltage V0CHA 0 V battery charge enabled 0.0 0.7 1.0 V 2 
+0 V battery charge inhibition battery voltage V0INH 0 V battery charge inhibited 0.4 0.8 1.1 V 2 
+INTERNAL RESISTANCE        
+Resistance between VM pin and VDD pin RVMD V1 = V2 = 1.8 V, V3 = 0 V 100 300 900 kΩ  3 
+Resistance between VM pin and VSS pin RVMS V1 = V2 = 3.5 V, V3 = 1.0 V 10 20 40 k Ω  3 
+INPUT VOLTAGE        
+Operation voltage between VDD pin and VSS pin VDSOP1 − 1.5 − 1 0  V  − 
+INPUT CURRENT (WITH POWR-DOWN FUNCTION)      
+Current consumption during operation IOPE V1 = V2 = 3.5 V, V3 = 0 V − 4.0 8.0 μA 2 
+Current consumption during power-down IPDN V1 = V2 = 1.5 V, V3 = 3.0 V − − 0 . 1  μA 2 
+VC pin current IVC V1 = V2 = 3.5 V, V3 = 0 V 0.0 0.7 1.5 μA 2 
+INPUT CURRENT (WITHOUT POWR-DOWN FUNCTION) 
+Current consumption during operation IOPE V1 = V2 = 3.5 V, V3 = 0 V − 4.0 8.0 μA 2 
+Current consumption during overdischarge IOPED V1 = V2 = 1.5 V, V3 = 3.0 V − 2.5 5.0 μA 2 
+VC pin current IVC V1 = V2 = 3.5 V, V3 = 0 V 0.0 0.7 1.5 μA 2 
+OUTPUT RESISTANCE        
+CO pin resistance "H" RCOH V1 = V2 = 3.5 V, 
+V3 = 0 V, V4 = 6.5 V 2.5 5 10 k Ω  4 
+CO pin resistance "L" RCOL V1 = V2 = 4.7 V, 
+V3 = 0 V, V4 = 0.5 V 2.5 5 10 k Ω  4 
+DO pin resistance "H" RDOH V1 = V2 = 3.5 V, 
+V3 = 0 V, V5 = 6.5 V 5 10 20 k Ω  4 
+DO pin resistance "L" RDOL V1 = V2 = 1.8 V,  
+V3 = 3.6 V, V5 = 0.5 V 5 10 20 k Ω  4 
+DELAY TIME        
+Overcharge detection delay time tCU − tCU × 0.8 t CU t CU × 1.2 − 5 
+Overdischarge detection delay time tDL − tDL × 0.8 t DL t DL × 1.2 − 5 
+Discharge overcurrent detection delay time tDIOV − tDIOV × 0.8 t DIOV t DIOV × 1.2 − 5 
+Load short-circuiting detection delay time tSHORT − tSHORT × 0.8 t SHORT t SHORT × 1.2 − 5 
+Charge overcurrent detection delay time tCIOV − tCIOV × 0.8 t CIOV t CIOV × 1.2 − 5 
+*1. Since products are not screened at  high and low temperature, th e specification for this tem perature range is guaranteed by 
+design, not tested in production. 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 11
+ 
+2.  Ta = −40°C to +85°C*1 
+Table 10 
+(Ta = −40°C to +85°C*1 unless otherwise specified) 
+Item Symbol Condition Min. Typ. Max. Unit Test 
+Circuit 
+DETECTION VOLTAGE        
+Overcharge detection voltage n (n = 1, 2) VCUn − V CU − 0.045 V CU V CU + 0.030 V 1 
+Overcharge release voltage n (n = 1, 2) VCLn VCL ≠ VCU V CL − 0.070 V CL V CL + 0.040 V 1 
+VCL = VCU V CL − 0.050 V CL V CL + 0.030 V 1 
+Overdischarge detection voltage n (n =1, 2) VDLn − V DL − 0.085 V DL V DL + 0.060 V 2 
+Overdischarge release voltage n (n =1, 2) VDUn VDL ≠ VDU V DU − 0.140 V DU V DU + 0.110 V 2 
+VDL = VDU V DU − 0.085 V DU V DU + 0.060 V 2 
+Discharge overcurrent detection voltage VDIOV − V DIOV − 0.010 V DIOV V DIOV + 0.010 V 2 
+Load short-circuiting detection voltage VSHORT − V SHORT − 0.100 V SHORT V SHORT + 0.100 V 2 
+DETECTION VOLTAGE (WITH CHARGE OVERCURRENT DETECTION FUNCTION) 
+Charge overcurrent detection voltage VCIOV − V CIOV − 0.020 V CIOV V CIOV + 0.020 V 2 
+DETECTION VOLTAGE (WITHOUT CHARGE OVERCURRENT DETECTION FUNCTION) 
+Charger detection voltage VCHA − −1.2 −0.7 −0.2 V 2 
+0 V BATTERY CHARGE        
+0 V battery charge starting charger voltage V0CHA 0 V battery charge enabled 0.0 0.7 1.5 V 2 
+0 V battery charge inhibition battery voltage V0INH 0 V battery charge inhibited 0.3 0.8 1.3 V 2 
+INTERNAL RESISTANCE        
+Resistance between VM pin and VDD pin RVMD V1 = V2 = 1.8 V, V3 = 0 V 78 300 1310 kΩ  3 
+Resistance between VM pin and VSS pin RVMS V1 = V2 = 3.5 V, V3 = 1.0 V 7.2 20 44 k Ω  3 
+INPUT VOLTAGE        
+Operation voltage between VDD pin and VSS pin VDSOP1 − 1.5 − 1 0  V  − 
+INPUT CURRENT (WITH POWER-DOWN FUNCTION)      
+Current consumption during operation IOPE V1 = V2 = 3.5 V, V3 = 0 V − 4.5 8.5 μA 2 
+Current consumption during power-down IPDN V1 = V2 = 1.5 V, V3 = 3.0 V − − 0 . 1 5  μA 2 
+VC pin current IVC V1 = V2 = 3.5 V, V3 = 0 V 0.0 1.2 2.0 μA 2 
+INPUT CURRENT (WITHOUT POWER-DOWN FUNCTION) 
+Current consumption during operation IOPE V1 = V2 = 3.5 V, V3 = 0 V − 4.5 8.5 μA 2 
+Current consumption during overdischarge IOPED V1 = V2 = 1.5 V, V3 = 3.0 V − 2.5 5.5 μA 2 
+VC pin current IVC V1 = V2 = 3.5 V, V3 = 0 V 0.0 1.2 2.0 μA 2 
+OUTPUT RESISTANCE        
+CO pin resistance "H" RCOH V1 = V2 = 3.5 V, 
+V3 = 0 V, V4 = 6.5 V 1.2 5 15 k Ω  4 
+CO pin resistance "L" RCOL V1 = V2 = 4.7 V, 
+V3 = 0 V, V4 = 0.5 V 1.2 5 15 k Ω  4 
+DO pin resistance "H" RDOH V1 = V2 = 3.5 V, 
+V3 = 0 V, V5 = 6.5 V 2.4 10 30 k Ω  4 
+DO pin resistance "L" RDOL V1 = V2 = 1.8 V, 
+V3 = 3.6 V, V5 = 0.5 V 2.4 10 30 k Ω  4 
+DELAY TIME        
+Overcharge detection delay time tCU − tCU × 0.3 t CU t CU × 2.0 − 5 
+Overdischarge detection delay time tDL − tDL × 0.3 t DL t DL × 2.0 − 5 
+Discharge overcurrent detection delay time tDIOV − tDIOV × 0.3 t DIOV t DIOV × 2.0 − 5 
+Load short-circuiting detection delay time tSHORT − tSHORT × 0.3 t SHORT t SHORT × 2.0 − 5 
+Charge overcurrent detection delay time tCIOV − tCIOV × 0.3 t CIOV t CIOV × 2.0 − 5 
+*1. Since products are not screened at  high and low temperature, th e specification for this tem perature range is guaranteed by 
+design, not tested in production. 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 12
+ Test Circuits 
+Caution Unless otherwise specified, the output voltage levels " H" and "L" at CO pin (V CO) and DO pin (VDO) are 
+judged by the threshold voltage (1.0 V) of the N-channel FET. J udge the CO pin level with respect to 
+VVM and the DO pin level with respect to VSS. 
+ 
+1.  Overcharge detection voltage, overcharge release voltage 
+(Test circuit 1) 
+Overcharge detection voltage (VCU1) is defined as the voltage V1 at which V CO goes from "H" to "L" when the voltage 
+V1 is gradually increased from the starting condition of V1 = V2 = VCU − 0.05 V, V3 = 0 V. Overcharge release voltage 
+(VCL1) is defined as the voltage V1 at which VCO goes from "L" to "H" when the voltage V1 is then gradually decreased 
+after setting V2 = 3.5 V. Overcharge hysteresis voltage (VHC1) is defined as the difference between VCU1 and VCL1. 
+Overcharge detection voltage (VCU2) is defined as the voltage V2 at which V CO goes from "H" to "L" when the voltage 
+V2 is gradually increased from the starting condition of V1 = V2 = VCU − 0.05 V, V3 = 0 V. Overcharge release voltage 
+(VCL2) is defined as the voltage V2 at which VCO goes from "L" to "H" when the voltage V2 is then gradually decreased 
+after setting V1 = 3.5 V. Overcharge hysteresis voltage (VHC2) is defined as the difference between VCU2 and VCL2. 
+ 
+2.  Overdischarge detection voltage, overdischarge release voltage 
+(Test circuit 2) 
+Overdischarge detection voltage (V DL1) is defined as the voltage V1 at which V DO goes from "H" to "L" when the 
+voltage V1 is gradually decreased from the starting condition o f V1 = V2 = 3.5 V, V3 = 0 V. Overdischarge release 
+voltage (VDU1) is defined as the voltage V1 at which V DO goes from "L" to "H" when the voltage V1 is then gradually 
+increased. Overdischarge hysteresis voltage (VHD1) is defined as the difference between VDU1 and VDL1. 
+Overdischarge detection voltage (V DL2) is defined as the voltage V2 at which V DO goes from "H" to "L" when the 
+voltage V2 is gradually decreased from the starting condition o f V1 = V2 = 3.5 V, V3 = 0 V. Overdischarge release 
+voltage (VDU2) is defined as the voltage V2 at which V DO goes from "L" to "H" when the voltage V2 is then gradually 
+increased. Overdischarge hysteresis voltage (VHD2) is defined as the difference between VDU2 and VDL2. 
+ 
+3.  Discharge overcurrent detection voltage 
+(Test circuit 2) 
+Discharge overcurrent detection voltage (VDIOV) is defined as the voltage V3 whose delay time for changing V DO from 
+"H" to "L" is discharge overcurrent detection delay time (t DIOV) when the voltage V3 is increased from the starting 
+condition of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+4.  Load short-circuiting detection voltage 
+(Test circuit 2) 
+Load short-circuiting detection voltage (VSHORT) is defined as the voltage V3 whose delay time for changing V DO from 
+"H" to "L" is load short-circuiting detection delay time (t SHORT) when the voltage V3 is increased from the starting 
+condition of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+5.  Charge overcurrent detection voltage, charger detection voltage 
+(Test circuit 2) 
+5. 1  With charge overcurrent detection function 
+Charge overcurrent detection voltage (V CIOV) is defined as the voltage V3 whose delay time for changing V CO 
+from "H" to "L" is charge overcurrent detection delay time (t CIOV) when the voltage V3 is decreased from the 
+starting condition of V1 = V2 = 3.5 V, V3 = 0 V. 
+5. 2  Without charge overcurrent detection function 
+Charger detection voltage (V CHA) is defined as the voltage V3 at which V CO goes from "H" to "L" when the 
+voltage V3 is decreased from the starting condition of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+6.  Current consumption during operation 
+(Test circuit 2) 
+The current consumption during operation (I OPE) is the current that flo ws through the VDD pin (I DD) under the set 
+conditions of V1 = V2 = 3.5 V, V3 = 0 V. 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 13
+7.  VC pin current 
+(Test circuit 2) 
+The VC pin current (IVC) is the current that flows through the VC pin (I VC) under the set conditions of V1 = V2 = 3.5 V, 
+V3 = 0 V. 
+ 
+8.  Current consumption during power-down, current consumption during overdischarge 
+(Test circuit 2) 
+8. 1  With power-down function 
+The current consumption during power-down (I PDN) is the current that flows through the VSS pin (I SS) under the 
+set conditions of V1 = V2 = 1.5 V, V3 = 3.0 V. 
+8. 2  Without power-down function 
+The current consumption during overdischarge (I OPED) is the current that flo ws through the VSS pin (I SS) under 
+the set conditions of V1 = V2 = 1.5 V, V3 = 3.0 V. 
+ 
+9.  Resistance between VM pin and VDD pin 
+(Test circuit 3)  
+RVMD is the resistance between VM pin and VDD pin under the set conditions of V1 = V2 = 1.8 V, V3 = 0 V. 
+ 
+10.  Resistance between VM pin and VSS pin 
+(Test circuit 3) 
+RVMS is the resistance between VM pin and VSS pin under the set conditions of V1 = V2 = 3.5 V, V3 = 1.0 V. 
+ 
+11.  CO pin resistance "H" 
+(Test circuit 4) 
+The CO pin resistance "H" (RCOH) is the resistance between VDD pin and CO pin under the set conditions of V1 = V2 = 
+3.5 V, V3 = 0 V, V4 = 6.5 V. 
+ 
+12.  CO pin resistance "L" 
+(Test circuit 4) 
+The CO pin resistance "L" (RCOL) is the resistance between VM pin and CO pin under the set con ditions of V1 = V2 = 
+4.7 V, V3 = 0 V, V4 = 0.5 V. 
+ 
+13.  DO pin resistance "H" 
+(Test circuit 4)  
+The DO pin resistance "H" (RDOH) is the resistance between VDD pin and DO pin under the set co nditions of V1 = V2 
+= 3.5 V, V3 = 0 V, V5 = 6.5 V 
+ 
+14.  DO pin resistance "L" 
+(Test circuit 4) 
+The DO pin resistance "L" (RDOL) is the resistance between VSS pin and DO pin under the set conditions of V1 = V2 = 
+1.8 V, V3 = 0 V, V5 = 0.5 V. 
+ 
+15.  Overcharge detection delay time  
+(Test circuit 5) 
+The overcharge detection delay time (t CU) is the time needed for V CO to go to "L" just after the voltage V1 increases 
+and exceeds VCU under the set condition of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 14
+16.  Overdischarge detection delay time 
+(Test circuit 5) 
+The overdischarge detection delay time (t DL) is the time needed for V DO to go to "L" after the voltage V1 decreases 
+and falls below VDL under the set condition of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+17.  Discharge overcurrent detection delay time 
+(Test circuit 5)  
+The discharge overcurrent detection delay time (t DIOV) is the time needed for V DO to go to "L" after the voltage V3  
+increases and exceeds VDIOV under the set conditions of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+18.  Load short-circuiting detection delay time 
+(Test circuit 5)  
+The load short-circuiting detection delay time (t SHORT) is the time needed for V DO to go to "L" after the voltage V3  
+increases and exceeds VSHORT under the set conditions of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+19.  Charge overcurrent detection delay time 
+(Test circuit 5) 
+The charge overcurrent detection delay time (t CIOV) is the time needed for V CO to go to "L" after the voltage V3 
+decreases and falls below VCIOV under the set condition of V1 = V2 = 3.5 V, V3 = 0 V. 
+ 
+20.  0 V battery charge starting charger voltage (0 V battery charge enabled)  
+(Test circuit 2) 
+The 0 V battery charge starting charger voltage (V 0CHA) is defined as the absolute value of voltage V3 at which V CO 
+goes to "H" (V CO = V DD) when the voltage V3 is gradually decreased from the starting condition of V1 = V2 = V3 =  
+0 V. 
+̤
+21.  0 V battery charge inhibition battery voltage (0 V battery charge inhibited) 
+(Test circuit 2) 
+The 0 V battery charge inhibition battery voltage (V 0INH) is defined as the voltage V1 at which V CO goes to "L" (V VM + 
+0.1 V or lower) when the voltage V1 is gradually decreased, after setting V1 = V2 = 1.5 V, V3 = −6.0 V. 
+ 
+ 
+VC 
+S-8252 Series 
+CO 
+VM 
+DO 
+V V3 
+V 
+VDD 
+VSS 
+R1 = 470 Ω  
+V1 
+V2 
+C1 = 0.1 μF 
+C2 = 0.1 μF 
+R2 = 470 Ω  
+COM 
+VCO 
+VDO 
+ 
+Figure 5  Test Circuit 1 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 15
+ 
+ 
+ 
+ 
+ 
+ 
+CO 
+VM 
+DO 
+S-8252 Series 
+A V4 
+VDD 
+VC 
+VSS 
+V1 
+V2 
+A 
+V5 
+COM 
+V3 ICO 
+IDO 
+ 
+Figure 8  Test Circuit 4 
+ 
+ 
+ 
+CO 
+VM 
+DO 
+S-8252 Series 
+VDD 
+VC 
+VSS 
+V1 
+V2 
+COM 
+V3 
+Oscilloscope 
+Oscilloscope 
+ 
+Figure 9  Test Circuit 5 
+ 
+CO 
+VM 
+DO 
+S-8252 Series 
+V V3 
+V 
+VDD 
+VC 
+VSS A 
+A V1 
+V2 
+A 
+COM 
+VCO 
+VDO 
+IDD 
+IVC 
+ISS 
+ 
+Figure 6  Test Circuit 2 
+ 
+CO 
+VM 
+DO 
+S-8252 Series 
+A VDD 
+VC 
+VSS A V2 
+V1 
+COM 
+V3 
+IVM 
+ISS 
+ 
+Figure 7  Test Circuit 3 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 16
+ Operation 
+Remark  Refer to the "  Battery Protection IC Connection Example". 
+Caution  Unless otherwise specified, the VM pin voltage is based on VSS. 
+ 
+1.  Normal status 
+1. 1  With charge overcurrent detection function 
+The S-8252 Series monitors the voltage of the battery connected  between the VDD pin and VSS pin and the 
+voltage difference between the VM  pin and VSS pin to control ch arging and discharging. When the battery 
+voltage is in the range from overdischarge detection voltage (V DL) to overcharge detection voltage (VCU), and the 
+VM pin voltage is in the range from the charge overcurrent dete ction voltage (V CIOV) to discharge overcurrent 
+detection voltage (V DIOV), The S-8252 Series turns both the charging and discharging co ntrol FETs on. This 
+condition is called the normal status, and in this condition charging and discharging can be carried out freely. 
+The resistance (R VMD) between the VM pin and VDD pin, and the resistance (R VMS) between the VM pin and 
+VSS pin are not connected in the normal status. 
+Caution When the battery is connected for the first time, disch arging may not be enabled. In this case, 
+short the VM pin and VSS pin, or set the VM pin voltage at the level of VCIOV or more and V DIOV or 
+less by connecting the charger. The S-8252 Series then returns to the normal status. 
+1. 2  Without charge overcurrent detection function 
+The S-8252 Series monitors the voltage of the battery connected  between the VDD pin and VSS pin and the 
+voltage difference between the VM pin and VSS pin to control ch arging and discharging. When the battery 
+voltage is in the range from overdischarge detection voltage (VDL) to overcharge detection voltage (VCU), and the 
+VM pin voltage is in the range from the charger detection volta ge (V CHA) to discharge overcurrent detection 
+voltage (VDIOV), The S-8252 Series turns both the charging and discharging co ntrol FETs on. This condition is 
+called the normal status, and in this condition charging and discharging can be carried out freely. 
+The resistance (R VMD) between the VM pin and VDD pin, and the resistance (R VMS) between the VM pin and 
+VSS pin are not connected in the normal status. 
+Caution When the battery is connected for the first time, disch arging may not be enabled. In this case, 
+short the VM pin and VSS pin, or set the VM pin voltage at the level of VCHA or more and V DIOV or 
+less by connecting the charger. The S-8252 Series then returns to the normal status. 
+ 
+2.  Overcharge status 
+When the battery voltage becomes higher than V CU during charging in the normal status and detection continues f or 
+the overcharge detection delay time (t CU) or longer, the S-8252 Series turns the charging control FET o ff to stop 
+charging. This condition is called the overcharge status. 
+R
+VMD and RVMS are not connected in the overcharge status. 
+The overcharge status is released in the following two cases ( (1) and (2) ). 
+(1) In the case that the VM pin voltage is lower than V DIOV, the S-8252 Series releases the overcharge status when 
+the battery voltage falls below VCL. 
+(2) In the case that the VM pin voltage is higher than or equal  to VDIOV, the S-8252 Series releases the overcharge 
+status when the battery voltage falls below VCU. 
+When the discharge is started by connecting a load after the ov ercharge detection, the VM pin voltage rises more 
+than the voltage at VSS pin due to the V f voltage of the parasitic diode, because the discharge current flows 
+through the parasitic diode in the charging control FET. If thi s VM pin voltage is higher than or equal to V DIOV, the 
+S-8252 Series releases the overcharge status when the battery voltage is lower than or equal to VCU. 
+Caution 1. If the battery is charged to a voltage higher than V CU and the battery voltage does not fall below 
+VCU even when a heavy load is connected, discharge overcurrent det ection and load short-
+circuiting detection do not function until the battery voltage falls below V CU. Since an actual 
+battery has an internal impedance of tens of m Ω , the battery voltage drops immediately after a 
+heavy load that causes overcurrent is connected, and discharge overcurrent detection and load 
+short-circuiting detection function. 
+2. If a charger is connected after the overcharge detection, th e overcharge status is not released 
+even when the battery voltage falls below V CL. The S-8252 Series releases the overcharge status 
+when the VM pin voltage returns to V CIOV ( o r  VCHA when without charge overcurrent detection 
+function) or higher by removing the charger. 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 17
+3.  Overdischarge status 
+When the battery voltage falls below overdischarge detection vo ltage (VDL) during discharging in the normal status 
+and the condition continues for the overdischarge detection del ay time (t DL) or longer, the S-8252 Series turns the 
+discharging control FET off to stop discharging. This condition is called the overdischarge status.  
+Under the overdischarge status, the VM pin and VDD pin are shor ted by R VMD in the S-8252 Series. The VM pin is 
+pulled up by RVMD. 
+RVMS is not connected in the overdischarge status. 
+3. 1  With power-down function 
+Under the overdischarge status, when voltage difference between the VM pin and VDD pin is 0.8 V typ. or lower, 
+the power-down function works and the current consumption is re duced to the current consumption during 
+power-down (I PDN). By connecting a battery charger, the power-down function is released when the VM pin 
+voltage is 0.7 V typ. or lower. 
+•  When a battery is not connected to a charger and the VM pin vo ltage ≥ 0.7 V typ., the S-8252 Series maintains 
+the overdischarge status even when the battery voltage reaches VDU or higher. 
+•  When a battery is connected to a charger and 0.7 V typ.  > the VM pin voltage > −0.7 V typ., the battery voltage 
+reaches VDU or higher and the S-8252 Series releases the overdischarge status. 
+•  When a battery is connected to a charger and −0.7 V typ. ≥  the VM pin voltage, the battery voltage reaches VDL 
+or higher and the S-8252 Series releases the overdischarge status. 
+3. 2  Without power-down function 
+The power-down function does not work even when voltage difference between the VM pin and VDD pin is 0.8 V 
+typ. or lower. 
+•  When a battery is not connected to a charger and the VM pin vo ltage ≥ 0.7 V typ., the battery voltage reaches 
+VDU or higher and the S-8252 Series releases the overdischarge status. 
+•  When a battery is connected to a charger and 0.7 V typ.  > the VM pin voltage > −0.7 V typ., the battery voltage 
+reaches VDU or higher and the S-8252 Series releases the overdischarge status. 
+•  When a battery is connected to a charger and −0.7 V typ. ≥  the VM pin voltage, the battery voltage reaches VDL 
+or higher and the S-8252 Series releases the overdischarge status. 
+ 
+4.  Discharge overcurrent status (Discharge overcurrent, load short-circuiting) 
+When a battery in the normal status is in the status where the voltage of the VM pin is equal to or higher than V DIOV 
+because the discharge current is equal to or higher than the sp ecified value and the status lasts for the discharge 
+overcurrent detection delay time (t DIOV) or longer, the discharge control FET is turned off and discha rging is stopped. 
+This status is called the discharge overcurrent status. 
+In the discharge overcurrent status, the VM pin and VSS pin are  shorted by the R
+VMS in the S-8252 Series. However, 
+the voltage of the VM pin is at the V DD potential due to the load as long as the load is connected. Wh en the load is 
+disconnected, the VM pin returns to the VSS potential. 
+If the voltage at the VM pin returns to VDIOV or lower, the S-8252 Series releases the discharge overcurrent status. 
+RVMD is not connected in the discharge overcurrent detection status. 
+ 
+5.  Charge overcurrent status (with charge overcurrent detection function) 
+When a battery in the normal status is in the status where the voltage of the VM pin is equal to or lower than V CIOV 
+because the charge current is equal to or higher than the speci fied value and the status lasts for the charge 
+overcurrent detection delay time (t CIOV) or longer, the charge control FET is turned off and charging is stopped. This 
+status is called the charge overcurrent status. 
+The S-8252 Series releases the charge overcurrent status when t he voltage at the VM pin returns to V
+CIOV or higher 
+by removing the charger. 
+The charge overcurrent detection function does not work in the overdischarge status.  
+R
+VMD and RVMS are not connected in the charge overcurrent detection status. 
+ 
+6.  Abnormal charge current status (without charge overcurrent detection function) 
+If the VM pin voltage falls below the charger detection voltage  ( VCHA) during charging under normal status and it 
+continues for the overcharge detection delay time (t CU) or longer, the charging control FET turns off and charging 
+stops. This action is called the abnormal charge current status. 
+Abnormal charge current status is released when the voltage dif ference between VM pin and VSS pin becomes less 
+than charger detection voltage (VCHA). 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 18
+7.  0 V battery charge enabled 
+This function is used to recharge a connected battery whose vol tage is 0 V due to self-discharge. When the 0 V 
+battery charge starting charger voltage (V 0CHA) or a higher voltage is applied between the EB + and EB − p i n s  b y  
+connecting a charger, the charging control FET gate is fixed to the VDD potential. 
+When the voltage between the gate and source of the charging co ntrol FET becomes equal to or higher than the 
+threshold voltage due to the charger voltage, the charging cont rol FET is turned on to start charging. At this time, the 
+discharging control FET is off and the charging current flows t hrough the internal parasitic diode in the discharging 
+control FET. When the battery voltage becomes equal to or highe r than VDU, the S-8252 Series returns to the normal 
+status. 
+ 
+Caution 1. Some battery providers do not recommend recharging f or a completely self-discharged battery. 
+Please ask the battery provider to determine whether to enable or inhibit the 0 V battery charge.  
+ 2 .  The 0 V battery charge has higher priority than the charge over current detection function. 
+Consequently, a product in which use of the 0 V battery charge is enabled charges a battery 
+forcibly and the charge overcurrent cannot be detected when the battery voltage is lower than VDL. 
+ 
+8.  0 V battery charge inhibited 
+This function inhibits charging when a battery that is internal ly short-circuited (0 V battery) is connected. When the 
+battery voltage is the 0 V battery charge inhibition battery vo ltage (V0INH) or lower, the charging control FET gate is 
+fixed to the EB − pin voltage to inhibit charging. When the battery voltage is V 0INH or higher, charging can be 
+performed. 
+ 
+Caution Some battery providers do not recommend recharging for a completely self-discharged battery. 
+Please ask the battery provider to determine whether to enable or inhibit the 0 V battery charge. 
+ 
+9.  Delay circuit 
+The detection delay times are determined by dividing a clock of approximately 4 kHz by the counter. 
+ 
+Remark tDIOV and tSHORT start when V DIOV is detected. When V SHORT is detected over t SHORT after VDIOV, the S-8252 
+Series turns the discharging control FET off within tSHORT from the time of detecting VSHORT. 
+ 
+DO pin 
+VM pin 
+VDD 
+VDD 
+Time 
+VDIOV 
+VSS 
+VSS 
+VSHORT 
+tSHORT 
+Time 
+tD 0 ≤ tD ≤ tSHORT 
+ 
+Figure 10 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 19
+ 
+ Timing Chart 
+1.  Overcharge detection, overdischarge detection 
+VCUn 
+VDUn (VDLn + VHDn) 
+VDLn 
+VCLn (VCUn − VHCn) 
+Battery voltage 
+VSS 
+CO pin voltage 
+VDD 
+DO pin voltage 
+VSS 
+Charger connection 
+Load connection 
+Status*1 
+Overcharge detection delay time (tCU) Overdischarge detection delay time (tDL) 
+(1) (2) (1) (3) (1) 
+VDIOV 
+VSS 
+VM pin voltage 
+VDD 
+VEB− 
+VDD 
+VCIOV 
+VEB− 
+ 
+*1. (1): Normal status 
+ (2): Overcharge status 
+ (3): Overdischarge status 
+ 
+Remark  The charger is assumed to charge with a constant current. 
+Figure 11 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 20
+2.  Discharge overcurrent detection 
+VDD 
+VSS 
+VSHORT  
+(1) (2) (1) (1) 
+Load short-circuiting 
+detection delay time (tSHORT) 
+(2) 
+VDIOV 
+Discharge overcurrent 
+detection delay time (tDIOV) 
+VCUn 
+VDUn (VDLn + VHDn) 
+VDLn 
+VCLn (VCUn − VHCn) 
+Battery voltage 
+VSS 
+CO pin voltage 
+VDD 
+DO pin voltage 
+VSS 
+Load connection 
+Status *1 
+VM pin voltage 
+VDD 
+ 
+*1. (1): Normal status 
+ (2): Discharge overcurrent status 
+ 
+Remark  The charger is assumed to charge with a constant current. 
+Figure 12 
+ 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 21
+3.  Charge overcurrent detection 
+ 
+VDD 
+DO pin voltage 
+VSS 
+VDD 
+VSS 
+CO pin voltage 
+VDD 
+VSS 
+VM pin voltage 
+VCIOV 
+Status*1 
+(3) (1) 
+Charger connection 
+VEB− 
+VEB− 
+Charge overcurrent detection 
+delay time (tCIOV) 
+VCUn 
+VDun (VDLn + VHDn) 
+VDLn 
+VCLn (VCUn − VHCn) 
+Battery voltage 
+(2) 
+Load connection 
+(1) (1) (2) 
+Overdischarge detection  
+ delay time(tDL) Charge overcurrent detection 
+delay time (tCIOV) 
+ 
+*1. (1): Normal status 
+ (2): Charge overcurrent status 
+ (3): Overdischarge status 
+ 
+Remark  The charger is assumed to charge with a constant current. 
+Figure 13 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 22
+ Battery Protection IC Connection Example 
+ 
+ 
+R1 
+Battery 1 C1 
+VSS 
+DO 
+VDD 
+CO VM 
+S-8252 Series 
+FET1 FET2 
+EB− 
+EB+ 
+R3 
+R2 
+VC 
+Battery 2 C2 
+ 
+Figure 14 
+Table 11  Constants for External Components 
+Symbol Part Purpose Typ. Min. Max. Remark 
+FET1 N-channel 
+MOS FET Discharge control − − − 
+Threshold voltage ≤ Overdischarge 
+detection voltage*2 
+Gate to source withstand voltage ≥ 
+Charger voltage*3 
+FET2 N-channel 
+MOS FET Charge control − − − 
+Threshold voltage ≤ Overdischarge 
+detection voltage*2 
+Gate to source withstand voltage ≥ 
+Charger voltage*3 
+R1, R2 Resistor ESD protection,  
+For power fluctuation 470 Ω  150 Ω *1 1  k Ω *1 
+Resistance should be as small as 
+possible to avoid lowering the 
+overcharge detection accuracy due to 
+current consumption.
+*4 
+C1, C2 Capacitor For power fluctuation 0.1 μF 0.068 μF*1 1 . 0  μF*1 Connect a capacitor of 0.068 μF or 
+higher between VDD pin and VSS pin.*5 
+R3 Resistor 
+Protection for reverse 
+connection of a 
+charge
+r 
+2 kΩ  300 Ω *1 4  k Ω *1 
+Select as large a resistance as possible 
+to prevent current when a charger is 
+connected in reverse.
+*6 
+*1. Please set up a filter constant to be R1 × C1 = R2 × C2. 
+*2. If the threshold voltage of an FET is low, the FET may not cut the charge current. If an FET with a threshold voltage 
+equal to or higher than the overdischarge detection voltage is used, discharging may be stopped before overdischarge 
+is detected. 
+*3. If the withstand voltage between the gate and source is equal t o or lower than the charger voltage, the FET may be 
+destroyed. 
+*4. An accuracy of overcharge detection voltage is guaranteed by R1  =  4 7 0  Ω . Connecting resistors with other values 
+worsen the accuracy. In case of connecting larger resistor to R 1, the voltage between the VDD pin and VSS pin may 
+exceed the absolute maximum rating because the current flows to  the S-8252 Series from the charger due to reverse 
+connection of charger. Connect a resistor of 150 Ω  or more to R1 for ESD protection. 
+*5. When connecting a resistor of 150 Ω  or less to R1 or R2 or a capacitor of 0.068 μF or less to C1 or C2, the S-8252 
+Series may malfunction when power dissipation is largely fluctuated. 
+*6. When a resistor of 4 kΩ  or more is connected to R3, the charge current may not be cut. 
+ 
+Caution 1. The constants may be changed without notice. 
+ 2. It has not been confirmed whether the operation is normal o r not in circuits other than the connection 
+example. In addition, the connection example and the constants do not guarantee proper operation. 
+Perform thorough evaluation using the actual application to set the constants. 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 23
+ Precautions 
+•  The application conditions for the input voltage, output volta ge, and load current should not exceed the package 
+power dissipation. 
+•  Do not apply an electrostatic discharge to this IC that exceed s the performance ratings of the built-in electrostatic 
+protection circuit. 
+•  ABLIC Inc. claims no responsibility for any and all disputes a rising out of or in connection with any infringement by 
+products including this IC of patents owned by a third party. 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 24
+ 
+ Characteristics (Typical Data) 
+1.  Current consumption 
+1. 1  IOPE vs. Ta 1. 2  I PDN vs. Ta 
+IOPE [μA] 
+0
+2
+4
+6
+8
+−4 0 0 2 55 07 5 85−25
+Ta [°C]  
+02 5 5 0 7 5 85
+Ta [°C]
+0.100
+0.075
+0.050
+0.025
+0
+ 
+  
+1. 3  IOPE vs. VDD  
+0
+1
+2
+3
+4
+6
+5
+V
+DD [V]
+IOPE  [μA] 
+0 2 4 6 81 0
+ 
+ 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 25
+2.  Overcharge detection / release voltage, overdischarge detection / release voltage, 
+overcurrent detection voltage, charge overcurrent detection voltage, and delay time 
+2. 1  VCU vs. Ta 2. 2  VCL vs. Ta 
+4.32
+4.30
+4.28
+4.26
+4.24 VCU [V] 
+−4 0 0 2 55 07 5 85−25
+Ta [°C]  
+4.14
+4.10
+4.12
+4.08
+4.06
+4.04
+4.02 VCL [V] 
+−40 0 25 50 75 85−25
+Ta [°C]  
+2. 3  VDL vs. Ta 2. 4  VDU vs. Ta 
+2.05
+2.01
+2.03
+1.99
+1.97
+1.95 VDL [V] 
+−4 0 0 2 55 07 5 85−25
+Ta [°C]  
+2.10
+2.05
+2.00
+1.95
+1.90 VDU [V] 
+−40 0 25 50 75 85−25
+Ta [°C]  
+2. 5  tCU vs. Ta 2. 6  t DL vs. Ta 
+0.8
+0.4
+0.6
+tCU [s] 
+−4 0 0 2 55 07 5 85−25
+Ta [°C]
+1.0
+1.2
+1.4
+1.6
+ 
+50
+tDL [ms] 
+−40 0 25 50 75 85−25
+Ta [°C]
+75
+100
+150
+125
+175
+200
+ 
+2. 7  VDIOV vs. Ta 2. 8  t DIOV vs. VDD 
+0.220
+0.210
+0.200
+0.190
+0.180 VDIOV [V] 
+−40 0 25 50 75 85−25
+Ta [°C]  
+4
+6
+8
+10
+12
+V
+DD [V]
+tDIOV  [ms] 
+46 5 789
+ 
+  
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 26
+ 
+2. 9  tDIOV vs. Ta 2. 10  VCIOV vs. Ta 
+12
+10
+8
+6
+4
+tDIOV [ms] 
+−4 0 0 2 55 07 5 85−25
+Ta [°C]  
+−0.08
+−0.09
+−0.10
+−0.11
+−0.12
+VCIOV [V] 
+−40 0 25 50 75 85−25
+Ta [°C]  
+  
+2. 11  tCIOV vs. VDD 2. 12  t CIOV vs. Ta 
+4
+6
+8
+10
+12
+V
+DD [V]
+tCIOV  [ms] 
+4567 9 8
+ 
+12
+10
+8
+6
+4
+tCIOV [ms] 
+−40 0 25 50 75 85−25
+Ta [°C]  
+2. 13  VSHORT vs. Ta 2. 14  t SHORT vs. VDD 
+0.40 VSHORT [V] 
+−4 0 0 2 55 07 5 85−25
+Ta [°C]
+0.45
+0.50
+0.55
+0.60
+ 
+200
+150
+250
+300
+350
+400
+V
+DD [V]
+tSHORT  [μs] 
+456789
+ 
+  
+2. 15  tSHORT vs. Ta  
+200
+150
+−4 0 0 2 55 07 5 85−25
+Ta [°C]
+250
+300
+350
+400tSHORT  [μs] 
+ 
+ 
+ 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 27
+3.  CO pin / DO pin 
+3. 1  RCOH vs. VCO 3. 2  R COL vs. VCO 
+RCOH [kΩ ] 
+VCO [V]
+73216 540
+0
+6
+4
+2
+8
+10
+ 
+RCOL [kΩ ] 
+VCO [V]
+0
+4
+2
+8
+6
+10
+1086420
+ 
+  
+3. 3  RDOH vs. VDO 3. 4  R DOL vs. VDO 
+RDOH [kΩ ] 
+VDO [V]
+73216 540
+0
+10
+20
+30
+ 
+RDOL [kΩ ] 
+VDO [V]
+43210
+0
+20
+10
+30
+ 
+ 
+BATTERY PROTECTION IC FOR 2-SERIAL-CELL PACK  
+S-8252 Series Rev.4.0_00 
+ 
+ 28
+ 
+ Marking Specifications 
+1.  SOT-23-6 
+ 
+123
+465
+Top view
+(1) (2) (3) (4)
+ 
+   
+ (1) to (3): Product code (Refer to Product name vs. Product code) 
+ (4): Lot number 
+   
+   
+   
+   
+   
+   
+   
+ 
+Product name vs. Product code 
+Product Name Product Code 
+(1) (2) (3) 
+S-8252AAA-M6T1U C G A 
+S-8252AAB-M6T1U C G B 
+S-8252AAC-M6T1U C G C 
+S-8252AAD-M6T1U C G D 
+S-8252AAE-M6T1U C G E 
+S-8252AAF-M6T1U C G F 
+S-8252AAG-M6T1U C G G 
+S-8252AAH-M6T1U C G H 
+S-8252AAI-M6T1U C G I 
+S-8252AAJ-M6T1U C G J 
+S-8252AAK-M6T1U C G K 
+S-8252AAL-M6T1U C G L 
+S-8252AAO-M6T1U C G O 
+S-8252AAP-M6T1U C G P 
+S-8252AAQ-M6T1U C G Q 
+S-8252AAR-M6T1U C G R 
+S-8252AAS-M6T1U C G S 
+S-8252AAT-M6T1U C G T 
+S-8252AAU-M6T1U C G U 
+S-8252AAV-M6T1U C G V 
+S-8252AAW-M6T1U C G W 
+S-8252AAX-M6T1U C G X 
+S-8252AAY-M6T1U C G Y 
+S-8252AAZ-M6T1U C G Z 
+S-8252ABA-M6T1U C H A 
+S-8252ABB-M6T1U C H B 
+S-8252ABC-M6T1U C H C 
+S-8252ABD-M6T1U C H D 
+S-8252ABE-M6T1U C H E 
+S-8252ABF-M6T1U C H F 
+S-8252ABG-M6T1U C H G 
+S-8252ABH-M6T1U C H H 
+ 
+Product Name Product Code 
+(1) (2) (3) 
+S-8252ABI-M6T1U C H I 
+S-8252ABQ-M6T1U C H Q 
+S-8252ABR-M6T1U C H R 
+S-8252ABS-M6T1U C H S 
+S-8252ABT-M6T1U C H T 
+S-8252ABU-M6T1U C H U 
+S-8252ABV-M6T1U C H V 
+S-8252ABW-M6T1U C H W 
+S-8252ABX-M6T1U C H X 
+S-8252ABY-M6T1U C H Y 
+S-8252ABZ-M6T1U C H Z 
+S-8252ACA-M6T1U C B A 
+S-8252ACB-M6T1U C B B 
+S-8252ACC-M6T1U C B C 
+S-8252ACE-M6T1U C B E 
+S-8252ACF-M6T1U C B F 
+S-8252ACI-M6T1U C B I 
+S-8252ACM-M6T1U C B M 
+S-8252ACN-M6T1U C B N 
+S-8252ACO-M6T1U C B O 
+S-8252ACP-M6T1U C B P 
+S-8252ACQ-M6T1U C B Q 
+S-8252ACR-M6T1U C B R 
+S-8252ACS-M6T1U C B S 
+S-8252ACT-M6T1U C B T 
+S-8252ACU-M6T1U C B U 
+S-8252ACV-M6T1U C B V 
+S-8252ACW-M6T1U C B W 
+S-8252ACX-M6T1U C B X 
+S-8252ACY-M6T1U C B Y 
+S-8252ADC-M6T1U C 1 C 
+ BATTERY PROTECTION IC F OR 2-SERIAL-CELL PACK 
+Rev.4.0_00 S-8252 Series  
+ 
+ 29
+2.  SNT-6A 
+ 
+Top view
+13 2
+64 5
+(1) (2) (3)
+(4) (5) (6)
+ 
+   
+ (1) to (3): Product code (Refer to Product name vs. Product code) 
+ (4) to (6): Lot number 
+   
+   
+   
+   
+   
+   
+   
+ 
+Product name vs. Product code 
+Product Name Product Code 
+(1) (2) (3) 
+S-8252AAA-I6T1U C G A 
+S-8252AAH-I6T1U C G H 
+S-8252AAM-I6T1U C G M 
+S-8252AAN-I6T1U C G N 
+S-8252AAY-I6T1U C G Y 
+S-8252ABJ-I6T1U C H J 
+S-8252ABK-I6T1U C H K 
+S-8252ABL-I6T1U C H L 
+S-8252ABM-I6T1U C H M 
+S-8252ABO-I6T1U C H O 
+S-8252ABP-I6T1U C H P 
+S-8252ACD-I6T1U C B D 
+S-8252ACG-I6T1U C B G 
+S-8252ACH-I6T1U C B H 
+S-8252ACJ-I6T1U C B J 
+S-8252ACK-I6T1U C B K 
+S-8252ACL-I6T1U C B L 
+S-8252ACZ-I6T1U C B Z 
+S-8252ADA-I6T1U C 1 A 
+S-8252ADB-I6T1U C 1 B 
+S-8252ADD-I6T1U C 1 D 
+S-8252ADE-I6T1U C 1 E 
+S-8252ADF-I6T1U C 1 F 
+S-8252ADH-I6T1U C 1 H 
+S-8252ADI-I6T1U C 1 I 
+S-8252ADJ-I6T1U C 1 J 
+S-8252ADK-I6T1U C 1 K 
+S-8252ADL-I6T1U C 1 L 
+S-8252ADM-I6T1U C 1 M 
+/X4E/X6F/X2E
+/X54/X49/X54/X4C/X45
+/X55/X4E/X49/X54
+/X41/X4E/X47/X4C/X45
+/X41/X42/X4C/X49/X43/X20/X49/X6E/X63/X2E
+/X32/X2E/X39/XB1/X30/X2E/X32
+/X30/X2E/X31/X35
+/X31/X2E/X39/XB1/X30/X2E/X32
+/X31 /X32 /X33
+/X34/X36 /X35
+/X30/X2E/X33/X35/XB1/X30/X2E/X31/X35
+/X30/X2E/X39/X35
+/X20/X2B/X30/X2E/X31
+/X20/X2D/X30/X2E/X30/X35/X30/X2E/X39/X35
+/X6D/X6D
+/X4E/X6F/X2E/X20/X4D/X50/X30/X30/X36/X2D/X41/X2D/X50/X2D/X53/X44/X2D/X32/X2E/X31
+/X4D/X50/X30/X30/X36/X2D/X41/X2D/X50/X2D/X53/X44/X2D/X32/X2E/X31
+/X53/X4F/X54/X32/X33/X36/X2D/X41/X2D/X50/X4B/X47/X20/X44/X69/X6D/X65/X6E/X73/X69/X6F/X6E/X73
+/X4E/X6F/X2E
+/X54/X49/X54/X4C/X45
+/X55/X4E/X49/X54
+/X41/X4E/X47/X4C/X45
+/X41/X42/X4C/X49/X43/X20/X49/X6E/X63/X2E
+/X6D/X6D
+/X31/X32/X33
+/X34/X35/X36
+/XF8/X31/X2E/X35
+/X2B/X30/X2E/X31
+/X2D/X30
+/X32/X2E/X30/XB1/X30/X2E/X30/X35
+/XF8/X31/X2E/X30
+/X2B/X30/X2E/X32
+/X2D/X30 /X34/X2E/X30/XB1/X30/X2E/X31
+/X31/X2E/X34/XB1/X30/X2E/X32
+/X30/X2E/X32/X35/XB1/X30/X2E/X31
+/X33/X2E/X32/XB1/X30/X2E/X32
+/X4E/X6F/X2E/X20/X4D/X50/X30/X30/X36/X2D/X41/X2D/X43/X2D/X53/X44/X2D/X33/X2E/X31
+/X4D/X50/X30/X30/X36/X2D/X41/X2D/X43/X2D/X53/X44/X2D/X33/X2E/X31
+/X53/X4F/X54/X32/X33/X36/X2D/X41/X2D/X43/X61/X72/X72/X69/X65/X72/X20 /X54/X61/X70/X65
+/X46/X65/X65/X64/X20/X64/X69/X72/X65/X63/X74/X69/X6F/X6E
+/X34/X2E/X30/XB1/X30/X2E/X31/X28/X31/X30/X20/X70/X69/X74/X63/X68/X65/X73/X3A/X34/X30/X2E/X30/XB1/X30/X2E/X32/X29
+/X4E/X6F/X2E
+/X54/X49/X54/X4C/X45
+/X55/X4E/X49/X54
+/X41/X4E/X47/X4C/X45
+/X41/X42/X4C/X49/X43/X20/X49/X6E/X63/X2E
+/X6D/X6D
+/X31/X32/X2E/X35/X6D/X61/X78/X2E
+/X39/X2E/X30/XB1/X30/X2E/X33
+/XF8/X31/X33/XB1/X30/X2E/X32
+/X28/X36/X30/XB0/X29 /X28/X36/X30/XB0/X29
+/X51/X54/X59/X33/X2C/X30/X30/X30
+/X45/X6E/X6C/X61/X72/X67/X65/X64/X20/X64/X72/X61/X77/X69/X6E/X67/X20/X69/X6E/X20/X74/X68/X65/X20/X63/X65/X6E/X74/X72/X61/X6C/X20/X70/X61/X72/X74
+/X4E/X6F/X2E/X20/X4D/X50/X30/X30/X36/X2D/X41/X2D/X52/X2D/X53/X44/X2D/X32/X2E/X31
+/X4D/X50/X30/X30/X36/X2D/X41/X2D/X52/X2D/X53/X44/X2D/X32/X2E/X31
+/X53/X4F/X54/X32/X33/X36/X2D/X41/X2D/X52/X65/X65/X6C
+/X4E/X6F/X2E
+/X54/X49/X54/X4C/X45
+/X55/X4E/X49/X54
+/X41/X4E/X47/X4C/X45
+/X41/X42/X4C/X49/X43/X20/X49/X6E/X63/X2E
+/X6D/X6D
+/X53/X4E/X54/X2D/X36/X41/X2D/X41/X2D/X50/X4B/X47/X20/X44/X69/X6D/X65/X6E/X73/X69/X6F/X6E/X73
+/X50/X47/X30/X30/X36/X2D/X41/X2D/X50/X2D/X53/X44/X2D/X32/X2E/X31
+/X4E/X6F/X2E/X20/X50/X47/X30/X30/X36/X2D/X41/X2D/X50/X2D/X53/X44/X2D/X32/X2E/X31
+/X30/X2E/X32/XB1/X30/X2E/X30/X35
+/X30/X2E/X34/X38/XB1/X30/X2E/X30/X32
+/X30/X2E/X30/X38/X2B/X30/X2E/X30/X35
+/X2D/X30/X2E/X30/X32
+/X30/X2E/X35
+/X31/X2E/X35/X37/XB1/X30/X2E/X30/X33
+/X31/X32 /X33
+/X34/X35/X36
+/X4E/X6F/X2E
+/X54/X49/X54/X4C/X45
+/X55/X4E/X49/X54
+/X41/X4E/X47/X4C/X45
+/X41/X42/X4C/X49/X43/X20/X49/X6E/X63/X2E
+/X46/X65/X65/X64/X20/X64/X69/X72/X65/X63/X74/X69/X6F/X6E
+/X34/X2E/X30/XB1/X30/X2E/X31/X32/X2E/X30/XB1/X30/X2E/X30/X35
+/X34/X2E/X30/XB1/X30/X2E/X31
+/XF8/X31/X2E/X35
+/X2B/X30/X2E/X31
+/X20/X2D/X30
+/XF8/X30/X2E/X35
+/X31/X2E/X38/X35/XB1/X30/X2E/X30/X35 /X30/X2E/X36/X35/XB1/X30/X2E/X30/X35
+/X30/X2E/X32/X35/XB1/X30/X2E/X30/X35
+/X6D/X6D
+/X50/X47/X30/X30/X36/X2D/X41/X2D/X43/X2D/X53/X44/X2D/X32/X2E/X30
+/X53/X4E/X54/X2D/X36/X41/X2D/X41/X2D/X43/X61/X72/X72/X69/X65/X72/X20 /X54/X61/X70/X65
+/X4E/X6F/X2E/X20/X50/X47/X30/X30/X36/X2D/X41/X2D/X43/X2D/X53/X44/X2D/X32/X2E/X30
+/X2B/X30/X2E/X31
+/X20/X2D/X30
+/X31/X32
+/X34
+/X33
+/X35/X36
+/X4E/X6F/X2E
+/X54/X49/X54/X4C/X45
+/X55/X4E/X49/X54
+/X41/X4E/X47/X4C/X45
+/X41/X42/X4C/X49/X43/X20/X49/X6E/X63/X2E
+/X31/X32/X2E/X35/X6D/X61/X78/X2E
+/X39/X2E/X30/XB1/X30/X2E/X33
+/XF8/X31/X33/XB1/X30/X2E/X32
+/X28/X36/X30/XB0/X29 /X28/X36/X30/XB0/X29
+/X51/X54/X59/X2E
+/X4E/X6F/X2E/X20/X50/X47/X30/X30/X36/X2D/X41/X2D/X52/X2D/X53/X44/X2D/X31/X2E/X30
+/X50/X47/X30/X30/X36/X2D/X41/X2D/X52/X2D/X53/X44/X2D/X31/X2E/X30
+/X45/X6E/X6C/X61/X72/X67/X65/X64/X20/X64/X72/X61/X77/X69/X6E/X67/X20/X69/X6E/X20/X74/X68/X65/X20/X63/X65/X6E/X74/X72/X61/X6C/X20/X70/X61/X72/X74
+/X53/X4E/X54/X2D/X36/X41/X2D/X41/X2D/X52/X65/X65/X6C
+/X35/X2C/X30/X30/X30/X20
+/X6D/X6D
+/X4E/X6F/X2E
+/X54/X49/X54/X4C/X45
+/X55/X4E/X49/X54
+/X41/X4E/X47/X4C/X45
+/X41/X42/X4C/X49/X43/X20/X49/X6E/X63/X2E
+/X6D/X6D
+/X53/X4E/X54/X2D/X36/X41/X2D/X41
+/X20/X20/X20/X20/X20/X20/X2D/X4C/X61/X6E/X64/X20/X52/X65/X63/X6F/X6D/X6D/X65/X6E/X64/X61/X74/X69/X6F/X6E
+/X50/X47/X30/X30/X36/X2D/X41/X2D/X4C/X2D/X53/X44/X2D/X34/X2E/X31/X4E/X6F/X2E/X20/X50/X47/X30/X30/X36/X2D/X41/X2D/X4C/X2D/X53/X44/X2D/X34/X2E/X31
+/X30/X2E/X33/X30/X2E/X32
+/X30/X2E/X35/X32
+/X31/X2E/X33/X36
+/X30/X2E/X35/X32
+/X31
+/X32
+/X43/X61/X75/X74/X69/X6F/X6E /X31/X2E/X20/X44/X6F/X20/X6E/X6F/X74/X20/X64/X6F/X20/X73/X69/X6C/X6B/X73/X63/X72/X65/X65/X6E/X20/X70/X72/X69/X6E/X74/X69/X6E/X67/X20/X61/X6E/X64/X20/X73/X6F/X6C/X64/X65/X72/X20/X70/X72/X69/X6E/X74/X69/X6E/X67/X20/X75/X6E/X64/X65/X72/X20/X74/X68/X65/X20/X6D/X6F/X6C/X64/X20/X72/X65/X73/X69/X6E/X20/X6F/X66/X20/X74/X68/X65/X20/X70/X61/X63/X6B/X61/X67/X65/X2E
+/X32/X2E/X20/X54/X68/X65/X20/X74/X68/X69/X63/X6B/X6E/X65/X73/X73/X20/X6F/X66/X20/X74/X68/X65/X20/X73/X6F/X6C/X64/X65/X72/X20/X72/X65/X73/X69/X73/X74/X20/X6F/X6E/X20/X74/X68/X65/X20/X77/X69/X72/X65/X20/X70/X61/X74/X74/X65/X72/X6E/X20/X75/X6E/X64/X65/X72/X20/X74/X68/X65/X20/X70/X61/X63/X6B/X61/X67/X65/X20/X73/X68/X6F/X75/X6C/X64/X20/X62/X65/X20/X30/X2E/X30/X33/X20/X6D/X6D
+/X20/X6F/X72/X20/X6C/X65/X73/X73/X20/X66/X72/X6F/X6D/X20/X74/X68/X65/X20/X6C/X61/X6E/X64/X20/X70/X61/X74/X74/X65/X72/X6E/X20/X73/X75/X72/X66/X61/X63/X65/X2E
+/X33/X2E/X20/X4D/X61/X74/X63/X68/X20/X74/X68/X65/X20/X6D/X61/X73/X6B/X20/X61/X70/X65/X72/X74/X75/X72/X65/X20/X73/X69/X7A/X65/X20/X61/X6E/X64/X20/X61/X70/X65/X72/X74/X75/X72/X65/X20/X70/X6F/X73/X69/X74/X69/X6F/X6E/X20/X77/X69/X74/X68/X20/X74/X68/X65/X20/X6C/X61/X6E/X64/X20/X70/X61/X74/X74/X65/X72/X6E/X2E
+/X34/X2E/X20/X52/X65/X66/X65/X72/X20/X74/X6F/X20/X22/X53/X4E/X54/X20/X50/X61/X63/X6B/X61/X67/X65/X20/X55/X73/X65/X72/X27/X73/X20/X47/X75/X69/X64/X65/X22/X20/X66/X6F/X72/X20/X64/X65/X74/X61/X69/X6C/X73/X2E
+/X31/X2E/X20
+ /X28/X30/X2E/X32/X35/X20/X6D/X6D/X20/X6D/X69/X6E/X2E/X20/X2F/X20/X30/X2E/X33/X30/X20/X6D/X6D/X20/X74/X79/X70/X2E/X29
+/X32/X2E/X20
+ /X20/X28/X31/X2E/X33/X30/X20/X6D/X6D/X20/X7E/X20/X31/X2E/X34/X30/X20/X6D/X6D/X29
+/X30/X2E/X30/X33/X20/X6D/X6D
+/X53/X4E/X54
+/X31/X2E/X20/X50/X61/X79/X20/X61/X74/X74/X65/X6E/X74/X69/X6F/X6E/X20/X74/X6F/X20/X74/X68/X65/X20/X6C/X61/X6E/X64/X20/X70/X61/X74/X74/X65/X72/X6E/X20/X77/X69/X64/X74/X68/X20/X28/X30/X2E/X32/X35/X20/X6D/X6D/X20/X6D/X69/X6E/X2E/X20/X2F/X20/X30/X2E/X33/X30/X20/X6D/X6D/X20/X74/X79/X70/X2E/X29/X2E
+/X32/X2E/X20/X44/X6F/X20/X6E/X6F/X74/X20/X77/X69/X64/X65/X6E/X20/X74/X68/X65/X20/X6C/X61/X6E/X64/X20/X70/X61/X74/X74/X65/X72/X6E/X20/X74/X6F/X20/X74/X68/X65/X20/X63/X65/X6E/X74/X65/X72/X20/X6F/X66/X20/X74/X68/X65/X20/X70/X61/X63/X6B/X61/X67/X65/X20/X20/X28/X20/X31/X2E/X33/X30/X20/X6D/X6D/X20/X7E/X20/X31/X2E/X34/X30/X20/X6D/X6D/X20/X29/X2E
+/X31/X2E
+/X32/X2E/X20
+ /X28/X31/X2E/X33/X30/X20/X6D/X6D/X20/X7E/X20/X31/X2E/X34/X30/X20/X6D/X6D/X29
+/X28/X30/X2E/X32/X35/X20/X6D/X6D/X20/X6D/X69/X6E/X2E/X20/X2F/X20/X30/X2E/X33/X30/X20/X6D/X6D/X20/X74/X79/X70/X2E/X29
+
+ 
+Disclaimers (Handling Precautions) 
+1. All the information described  herein (product data, specific ations, figures, tables, programs, algorithms and 
+application circuit examples, et c.) is current as of publishing  date of this document and is subject to change without 
+notice. 
+2. The circuit examples and the usages described herein are for  reference only, and do not guarantee the success of 
+any specific mass-production design.  
+ABLIC Inc. is not liable for any losses, damages, claims or dem ands caused by the reasons other than the products 
+described herein (hereinafter "the products") or infringement o f third-party intellectual property right and any other 
+right due to the use of the information described herein. 
+3. ABLIC Inc. is not liable for any losses, damages, claims or demands caused by the incorrect information described 
+herein. 
+4. Be careful to use the products within their ranges described  herein. Pay special attention for use to the absolute 
+maximum ratings, operation voltage range and electrical characteristics, etc. 
+ABLIC Inc. is not liable for any losses, damages, claims or demands caused by failures and / or accidents, etc. due to 
+the use of the products outside their specified ranges. 
+5. Before using the products, co nfirm their applications, and the laws and regulations of the region or country where they 
+are used and verify suitability, safety and other factors for the intended use. 
+6. When exporting the products, comply with the Foreign Exchang e and Foreign Trade Act and all other export-related 
+laws, and follow the required procedures. 
+7. The products are strictly prohibited from using, providing o r exporting for the purposes of the development of 
+weapons of mass destruction or military use. ABLIC Inc. is not liable for any losses, damages, claims or demands 
+caused by any provision or export to the person or entity who i ntends to develop, manufacture, use or store nuclear, 
+biological or chemical weapons or missiles, or use any other military purposes. 
+8. The products are not designed to be used as part of any devi ce or equipment that may affect the human body, human 
+life, or assets (such as medical equipment, disaster prevention  systems, security systems, combustion control 
+systems, infrastructure control systems, vehicle equipment, traffic systems, in-vehicle equipment, aviation equipment, 
+aerospace equipment, and nuclear-related equipment), excluding when specified for in-vehicle use or other uses by 
+ABLIC, Inc. Do not apply the products to the above listed devices and equipments.  
+ABLIC Inc. is not liable for any losses, damages, claims or dem ands caused by unauthorized or unspecified use of 
+the products. 
+9. In general, semiconductor products may fail or malfunction w ith some probability. The user of the products should 
+therefore take responsibility to  give thorough consideration to  safety design including redundancy, fire spread 
+prevention measures, and malfunction prevention to prevent acci dents causing injury or death, fires and social 
+damage, etc. that may ensue from the products' failure or malfunction. 
+The entire system in which the products are used must be sufficiently evaluated and judged whether the products are 
+allowed to apply for the system on customer's own responsibility. 
+10. The products are not designed to be radiation-proof. The ne cessary radiation measures should be taken in the 
+product design by the customer depending on the intended use. 
+11. The products do not affect human health under normal use. H owever, they contain chemical substances and heavy 
+metals and should therefore not be put in the mouth. The fractu re surfaces of wafers and chips may be sharp. Be 
+careful when handling these with the bare hands to prevent injuries, etc. 
+12. When disposing of t he products, comply with the laws and ordinances of the country or region where they are used. 
+13. The information described herein contains copyright informa tion and know-how of ABL IC Inc. The information 
+described herein does not convey any license under any intellec
+tual property rights or any other rights belonging to 
+ABLIC Inc. or a third party. Reproduction or copying of the inf ormation from this document or any part of this 
+document described herein for the purpose of disclosing it to a  third-party is strictly prohibited without the express 
+permission of ABLIC Inc. 
+14. For more details on the information described herein or any  other questions, please contact ABLIC Inc.'s sales 
+representative. 
+15. This Disclaimers have been delivered in a text using the Ja panese language, which text, despite any translations into 
+the English language and the Chinese language, shall be controlling. 
+ 
+2.4-2019.07
+ 
+www.ablic.com

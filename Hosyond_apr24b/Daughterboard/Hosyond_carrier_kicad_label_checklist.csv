@@ -1,0 +1,90 @@
+Ref,Pin,KiCad Net Label,Notes
+J13,1,GND,Aux analog A0 ground
+J13,2,A0_B,ADS1115_B A0 signal
+J13,3,3V3_SW,Aux analog A0 power
+J13,4,GND,Aux analog A1 ground
+J13,5,A1_B,ADS1115_B A1 signal
+J13,6,3V3_SW,Aux analog A1 power
+J22,1,3V3_SW,PCF8575 switched power
+J22,2,GND,PCF8575 ground
+J22,3,I2C_SCL,PCF8575 I2C clock
+J22,4,I2C_SDA,PCF8575 I2C data
+J23,1,GND,Aux analog A2 ground
+J23,2,A2_B,ADS1115_B A2 signal
+J23,3,3V3_SW,Aux analog A2 power
+J23,4,GND,Aux analog A3 ground
+J23,5,A3_B,ADS1115_B A3 signal
+J23,6,3V3_SW,Aux analog A3 power
+U2,7,A0_B,ADS1115_B A0 signal
+U2,8,A1_B,ADS1115_B A1 signal
+U2,9,A2_B,ADS1115_B A2 signal
+U2,10,A3_B,ADS1115_B A3 signal
+U3,1,GND,PCF8575 side A ground
+U3,2,3v3_SW,PCF8575 side A switched power
+U3,3,DPAD_SELECT,PCF8575 P00
+U3,4,DPAD_LEFT,PCF8575 P01
+U3,5,DPAD_UP,PCF8575 P02
+U3,6,DPAD_DOWN,PCF8575 P03
+U3,7,DPAD_RIGHT,PCF8575 P04
+U3,8,POWER_LED_CTRL,PCF8575 P05
+U3,9,P06,PCF8575 P06 expansion
+U3,10,P07,PCF8575 P07 expansion
+U3,11,P08,PCF8575 P08 expansion
+U4,1,GND,PCF8575 side B ground
+U4,2,3v3_SW,PCF8575 side B switched power
+U4,3,P17,PCF8575 P17 expansion
+U4,4,P16,PCF8575 P16 expansion
+U4,5,P15,PCF8575 P15 expansion
+U4,6,P14,PCF8575 P14 expansion
+U4,7,P13,PCF8575 P13 expansion
+U4,8,P12,PCF8575 P12 expansion
+U4,9,P11,PCF8575 P11 expansion
+U4,10,P10,PCF8575 P10 expansion
+U4,11,P09,PCF8575 P09 expansion
+J14,1,DPAD_SELECT,D-pad select
+J14,2,DPAD_LEFT,D-pad left
+J14,3,DPAD_UP,D-pad up
+J14,4,DPAD_DOWN,D-pad down
+J14,5,DPAD_RIGHT,D-pad right
+J14,6,5v_SW,D-pad power
+J14,7,GND,D-pad ground
+J19,1,P06,PCF expansion A
+J19,2,P07,PCF expansion A
+J19,3,P08,PCF expansion A
+J19,4,P09,PCF expansion A
+J20,1,P10,PCF expansion B
+J20,2,P11,PCF expansion B
+J20,3,P12,PCF expansion B
+J20,4,P13,PCF expansion B
+J21,1,P14,PCF expansion C
+J21,2,P15,PCF expansion C
+J21,3,P16,PCF expansion C
+J21,4,P17,PCF expansion C
+J24,1,3v3,3.3V switch VIN
+J24,2,3v3,3.3V switch VIN duplicate pad
+J24,3,GND,3.3V switch ground
+J24,4,GND,3.3V switch ground duplicate pad
+J24,5,ON,3.3V switch ON pad
+J24,6,OFF,3.3V switch OFF pad
+J24,7,GPIO21,3.3V switch CTRL from Hosyond GPIO21
+J9,1,3v3_SW,3.3V switch VOUT
+J9,2,3v3_SW,3.3V switch VOUT duplicate pad
+J9,3,GND,3.3V switch output-side ground
+J9,4,GND,3.3V switch output-side ground duplicate pad
+J9,5,NC,Unused 3.3V switch output-side pad
+J9,6,NC,Unused 3.3V switch output-side pad
+J9,7,NC,Unused 3.3V switch output-side pad
+J25,1,5v,5V switch VIN
+J25,2,5v,5V switch VIN duplicate pad
+J25,3,GND,5V switch ground
+J25,4,GND,5V switch ground duplicate pad
+J25,5,ON,5V switch ON pad
+J25,6,OFF,5V switch OFF pad
+J25,7,GPIO14,5V switch CTRL from Hosyond GPIO14
+J10,1,5v_SW,5V switch VOUT
+J10,2,5v_SW,5V switch VOUT duplicate pad
+J10,3,GND,5V switch output-side ground
+J10,4,GND,5V switch output-side ground duplicate pad
+J10,5,NC,Unused 5V switch output-side pad
+J10,6,NC,Unused 5V switch output-side pad
+J10,7,NC,Unused 5V switch output-side pad
