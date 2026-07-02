@@ -1,0 +1,45 @@
+ERC report (2026-06-30T00:28:15, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(30.00 mm, 65.00 mm): Symbol J1 [USB_C_5V_SINK]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(76.00 mm, 65.00 mm): Symbol A1 [INPUT_PROTECTION]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(118.00 mm, 144.00 mm): Symbol J3 [ESP32S3_GPIO_CTRL]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(130.00 mm, 65.00 mm): Symbol U1 [BQ24074_POWERPATH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(173.00 mm, 30.00 mm): Symbol U3 [TPS61023_5V]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(173.00 mm, 104.00 mm): Symbol U4 [TPS63031_3V3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(186.00 mm, 65.00 mm): Symbol A2 [BATTERY_PROTECTION]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(208.00 mm, 30.00 mm): Symbol SW1 [POLOLU_2808_SWITCH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(208.00 mm, 104.00 mm): Symbol SW2 [POLOLU_2808_SWITCH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(239.00 mm, 67.00 mm): Symbol J2 [OUTPUT_CONNECTOR]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(240.00 mm, 65.00 mm): Symbol BT1 [BATTERY_1S2P]
+
+ ** ERC messages: 11  Errors 0  Warnings 11
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

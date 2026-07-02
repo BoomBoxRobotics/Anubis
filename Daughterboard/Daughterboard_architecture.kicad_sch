@@ -1,0 +1,998 @@
+(kicad_sch
+	(version 20250114)
+	(generator "codex")
+	(generator_version "1.0")
+	(uuid "d4b0641a-9c05-4a64-9f99-e24c4b75c101")
+	(paper "A3")
+	(title_block
+		(title "USB-C 1S2P 18650 Power Board")
+		(date "2026-06-30")
+		(rev "A-first-pass")
+		(company "Daughterboard")
+		(comment 1 "Architecture schematic: USB-C, 1S2P charge, 5V/1A, 3V3/500mA.")
+		(comment 2 "First pass; finalize passives and footprints before PCB.")
+	)
+	(lib_symbols
+		(symbol "Daughterboard:USB_C_5V_SINK"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -15.24 -12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "USB_C_5V_SINK"
+				(at -15.24 12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "USB-C receptacle wired as 5 V sink only"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "USB_C_5V_SINK_0_1"
+				(rectangle
+					(start -15.24 -10.16)
+					(end 15.24 10.16)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "USB-C RECEPTACLE"
+					(at 0 -4.445 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "5 V sink only"
+					(at 0 0 0)
+					(effects (font (size 1.27 1.27)))
+				)
+				(text "CC1/CC2: 5.1k Rd"
+					(at 0 4.445 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:INPUT_PROTECTION"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "F/D"
+				(at -12.7 -12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "INPUT_PROTECTION"
+				(at -12.7 12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "Fuse/polyfuse, VBUS TVS, and input capacitance"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "INPUT_PROTECTION_0_1"
+				(rectangle
+					(start -13.97 -10.16)
+					(end 13.97 10.16)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "INPUT PROTECTION"
+					(at 0 -3.81 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "Fuse + TVS + CIN"
+					(at 0 0.635 0)
+					(effects (font (size 1.27 1.27)))
+				)
+				(text "1.5A adapter mode"
+					(at 0 4.445 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:BQ24074_POWERPATH"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at -17.78 -13.97 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "BQ24074RGT"
+				(at -17.78 13.97 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" "https://www.ti.com/product/BQ24074"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "1-cell Li-ion charger with power path"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "BQ24074_POWERPATH_0_1"
+				(rectangle
+					(start -17.78 -11.43)
+					(end 17.78 11.43)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "BQ24074"
+					(at 0 -5.08 0)
+					(effects (font (size 1.524 1.524) (bold yes)))
+				)
+				(text "1S charger + power path"
+					(at 0 -0.635 0)
+					(effects (font (size 1.27 1.27)))
+				)
+				(text "I_CHG <= 1.5 A"
+					(at 0 3.175 0)
+					(effects (font (size 1.016 1.016)))
+				)
+				(text "TS: 10k NTC"
+					(at 0 6.35 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:BATTERY_PROTECTION"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U/Q"
+				(at -17.78 -13.97 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "BQ2970 + dual NFET"
+				(at -17.78 13.97 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" "https://www.ti.com/product/BQ2970"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "1S Li-ion pack protection"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "BATTERY_PROTECTION_0_1"
+				(rectangle
+					(start -17.78 -11.43)
+					(end 17.78 11.43)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "PACK PROTECTION"
+					(at 0 -5.08 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "BQ2970 + back-to-back FETs"
+					(at 0 -0.635 0)
+					(effects (font (size 1.016 1.016)))
+				)
+				(text "OV/UV/OCP/short"
+					(at 0 3.175 0)
+					(effects (font (size 1.016 1.016)))
+				)
+				(text ">=3 A continuous margin"
+					(at 0 6.35 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:BATTERY_1S2P"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "BT"
+				(at -15.24 -13.97 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "2x 18650 1S2P"
+				(at -15.24 13.97 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "Two matched 18650 cells in parallel"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "BATTERY_1S2P_0_1"
+				(rectangle
+					(start -15.24 -11.43)
+					(end 15.24 11.43)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "2x 18650"
+					(at 0 -5.08 0)
+					(effects (font (size 1.524 1.524) (bold yes)))
+				)
+				(text "1S2P pack"
+					(at 0 -0.635 0)
+					(effects (font (size 1.27 1.27)))
+				)
+				(text "per-cell fuse/PTC"
+					(at 0 3.175 0)
+					(effects (font (size 1.016 1.016)))
+				)
+				(text "matched cells only"
+					(at 0 6.35 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:TPS61023_5V"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at -15.24 -12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "TPS61023"
+				(at -15.24 12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" "https://www.ti.com/product/TPS61023"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "5 V synchronous boost regulator"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "TPS61023_5V_0_1"
+				(rectangle
+					(start -15.24 -10.16)
+					(end 15.24 10.16)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "TPS61023"
+					(at 0 -4.445 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "5 V boost"
+					(at 0 0 0)
+					(effects (font (size 1.27 1.27)))
+				)
+				(text "1 A max output"
+					(at 0 4.445 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:TPS63031_3V3"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at -15.24 -12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "TPS63031"
+				(at -15.24 12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" "https://www.ti.com/product/TPS63031"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "Fixed 3.3 V buck-boost regulator"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "TPS63031_3V3_0_1"
+				(rectangle
+					(start -15.24 -10.16)
+					(end 15.24 10.16)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "TPS63031"
+					(at 0 -4.445 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "3.3 V buck-boost"
+					(at 0 0 0)
+					(effects (font (size 1.27 1.27)))
+				)
+				(text "500 mA max output"
+					(at 0 4.445 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:OUTPUT_CONNECTOR"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -13.97 -12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "OUTPUTS"
+				(at -13.97 12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "Power output connector/test pads"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "OUTPUT_CONNECTOR_0_1"
+				(rectangle
+					(start -13.97 -44.45)
+					(end 13.97 44.45)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "OUTPUTS"
+					(at 0 -10.16 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "+5V_SW @ 1A"
+					(at 0 -2.54 0)
+					(effects (font (size 1.27 1.27)))
+				)
+				(text "+3V3_SW @ 500mA"
+					(at 0 3.175 0)
+					(effects (font (size 1.016 1.016)))
+				)
+				(text "switched load power"
+					(at 0 8.89 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:POLOLU_2808_SWITCH"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW"
+				(at -13.97 -12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "Pololu #2808"
+				(at -13.97 12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" "https://www.pololu.com/product/2808"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "Mini Pushbutton Power Switch LV"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "POLOLU_2808_SWITCH_0_1"
+				(rectangle
+					(start -13.97 -10.16)
+					(end 13.97 10.16)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "POLOLU #2808"
+					(at 0 -4.445 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "pushbutton power switch"
+					(at 0 0 0)
+					(effects (font (size 1.016 1.016)))
+				)
+				(text "GPIO pulse on CTRL"
+					(at 0 4.445 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+		(symbol "Daughterboard:ESP32S3_GPIO_CTRL"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -17.78 -12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Value" "ESP32-S3 GPIO header"
+				(at -17.78 12.7 0)
+				(effects (font (size 1.27 1.27)) (justify left))
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Datasheet" "https://www.lcdwiki.com/2.8inch_ESP32-S3_Display"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(property "Description" "Hosyond/LCDWiki ESP32-S3 display GPIO control connector"
+				(at 0 0 0)
+				(effects (font (size 1.27 1.27)) (hide yes))
+			)
+			(symbol "ESP32S3_GPIO_CTRL_0_1"
+				(rectangle
+					(start -17.78 -10.16)
+					(end 17.78 10.16)
+					(stroke (width 0.254) (type default))
+					(fill (type background))
+				)
+				(text "ESP32-S3 GPIO"
+					(at 0 -4.445 0)
+					(effects (font (size 1.27 1.27) (bold yes)))
+				)
+				(text "GPIO2 -> CTRL_5V_SW"
+					(at 0 0 0)
+					(effects (font (size 1.016 1.016)))
+				)
+				(text "GPIO3 -> CTRL_3V3_SW"
+					(at 0 4.445 0)
+					(effects (font (size 1.016 1.016)))
+				)
+			)
+		)
+	)
+	(polyline
+		(pts (xy 45 65) (xy 62 65))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "0ff5af12-5dbd-4bd4-a520-ec2f97160e11")
+	)
+	(polyline
+		(pts (xy 90 65) (xy 112 65))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "ba80587b-49d6-4c47-a0d1-3840df2e6f21")
+	)
+	(polyline
+		(pts (xy 148 65) (xy 168 65))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "c4f6becb-9ded-4be9-abf7-99d76c6aac1e")
+	)
+	(polyline
+		(pts (xy 204 65) (xy 225 65))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "d9697a1d-2407-4402-943b-40e9c0b54484")
+	)
+	(polyline
+		(pts (xy 130 76.5) (xy 130 104))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "aef453f3-0165-4672-bd06-0e23cd435c4e")
+	)
+	(polyline
+		(pts (xy 130 104) (xy 158 104))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "323437f4-b3f5-40a7-a941-32416e47b83a")
+	)
+	(polyline
+		(pts (xy 148 65) (xy 158 104))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "dd069dc4-4db1-407c-b099-151ae403796b")
+	)
+	(polyline
+		(pts (xy 130 76.5) (xy 158 30))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "688413f4-715e-4574-a1bd-71d616be7c7c")
+	)
+	(polyline
+		(pts (xy 188 30) (xy 194 30))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "7fc69b61-af30-40b2-95ab-2f1c7d008567")
+	)
+	(polyline
+		(pts (xy 188 104) (xy 194 104))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "3da6416b-f58a-437e-8344-bc3f7849fa44")
+	)
+	(polyline
+		(pts (xy 222 30) (xy 271 30))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "36b92282-bb9e-4ca6-bd85-52f18e8ea028")
+	)
+	(polyline
+		(pts (xy 222 104) (xy 271 104))
+		(stroke (width 0) (type solid))
+		(fill (type none))
+		(uuid "7392ddac-ea80-4c03-bb21-fcb7223443c6")
+	)
+	(polyline
+		(pts (xy 136 140) (xy 150 140) (xy 150 18) (xy 208 18) (xy 208 20))
+		(stroke (width 0) (type dash))
+		(fill (type none))
+		(uuid "a7717960-c5db-453e-b898-ff16e895aa24")
+	)
+	(polyline
+		(pts (xy 136 148) (xy 150 148) (xy 150 126) (xy 208 126) (xy 208 114))
+		(stroke (width 0) (type dash))
+		(fill (type none))
+		(uuid "854164b8-520a-4c42-b57e-0e54f7f6c23d")
+	)
+	(text "USB_VBUS"
+		(exclude_from_sim no)
+		(at 50 61.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "855d2f77-79a7-4887-b5c1-cbc11e20958d")
+	)
+	(text "CHG_IN"
+		(exclude_from_sim no)
+		(at 93 61.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "e9032051-2179-4e20-9511-b77a90fe4ff5")
+	)
+	(text "PACK_P / PACK_N"
+		(exclude_from_sim no)
+		(at 151 61.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "fe18c911-a678-4c2d-a823-7d1563d47df6")
+	)
+	(text "BATT_RAW_P / BATT_RAW_N"
+		(exclude_from_sim no)
+		(at 207 61.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "9e648602-233d-4369-81f5-10cfa67fe619")
+	)
+	(text "BAT_SYS"
+		(exclude_from_sim no)
+		(at 133 91 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "847ed80c-ac89-4145-b33d-b4c98117324c")
+	)
+	(text "+5V"
+		(exclude_from_sim no)
+		(at 197 26.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "80b4399e-0717-43ea-9278-592f0ce1b2a8")
+	)
+	(text "+3V3"
+		(exclude_from_sim no)
+		(at 197 100.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "fd452e35-7314-4eb8-aa8e-dafc91bdf7b0")
+	)
+	(text "+5V_SW"
+		(exclude_from_sim no)
+		(at 236 26.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "63a66bb2-07a8-4a7e-8fd9-05163b4ad62e")
+	)
+	(text "+3V3_SW"
+		(exclude_from_sim no)
+		(at 236 100.5 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "2f2479fc-44c4-4d13-9384-420c0e9bf871")
+	)
+	(text "CTRL_5V_SW"
+		(exclude_from_sim no)
+		(at 152 15 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "97c0be66-ea76-45a1-9ccf-47f26949be9b")
+	)
+	(text "CTRL_3V3_SW"
+		(exclude_from_sim no)
+		(at 152 130 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "5fc64341-cd0f-4608-a204-11298368e1e2")
+	)
+	(text "Design limits:\n- Charge current: 1.5 A max\n- 5 V rail: 1 A max\n- 3.3 V rail: 500 mA max\n- Full-load battery current estimate at 3.3 V pack: about 2.24 A plus transients\n- Use matched, voltage-balanced 18650 cells only"
+		(exclude_from_sim no)
+		(at 25 172 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "62128605-7a18-4d36-9e76-ed56ed692745")
+	)
+	(text "USB-C note: plain 5.1k CC pulldowns make this a 5 V sink. For fixed 1.5 A input current, use a capable USB-C adapter,\nadd a 500 mA / 1.5 A selector, or add Type-C current-detect/PD circuitry before drawing adapter-level current."
+		(exclude_from_sim no)
+		(at 25 202 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "d33c1706-7275-4064-a4ec-b1f14414094b")
+	)
+	(text "Output power switching: Pololu #2808 modules sit after the regulators. ESP32 GPIOs pulse CTRL high to turn on,\npulse CTRL low to turn off, then return to input/high-Z. Suggested pins: GPIO2 for 5 V, GPIO3 for 3.3 V."
+		(exclude_from_sim no)
+		(at 25 220 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(uuid "547038e8-f9d4-4eef-be0c-cda32fab7f2a")
+	)
+	(symbol
+		(lib_id "Daughterboard:USB_C_5V_SINK")
+		(at 30 65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2bd51ed5-b9df-4e4c-b0ca-e5b60eebf6ed")
+		(property "Reference" "J1"
+			(at 14.5 51.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "USB-C 5V Sink"
+			(at 14.5 78.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 30 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 30 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "J1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:INPUT_PROTECTION")
+		(at 76 65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e93217b7-48dc-4db9-8c86-20f302672f8a")
+		(property "Reference" "A1"
+			(at 62 51.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "Fuse + VBUS TVS + CIN"
+			(at 62 78.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 76 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 76 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "A1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:BQ24074_POWERPATH")
+		(at 130 65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b8d77d60-4318-4b17-8a0a-b68f0f082378")
+		(property "Reference" "U1"
+			(at 112 50 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "BQ24074RGT"
+			(at 112 80 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 130 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.ti.com/product/BQ24074"
+			(at 130 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "U1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:BATTERY_PROTECTION")
+		(at 186 65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a7d07fa3-3ec9-4e56-b3a1-905f34c2be96")
+		(property "Reference" "A2"
+			(at 168 50 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "BQ2970 + dual NFET"
+			(at 168 80 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 186 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.ti.com/product/BQ2970"
+			(at 186 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "A2") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:BATTERY_1S2P")
+		(at 240 65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ab26d33b-ee10-48b8-bc72-c322f8a79f91")
+		(property "Reference" "BT1"
+			(at 225 50 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "2x 18650 1S2P"
+			(at 225 80 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 240 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 240 65 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "BT1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:TPS61023_5V")
+		(at 173 30 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "658488e6-033b-4be8-b532-ae8065ac6f66")
+		(property "Reference" "U3"
+			(at 158 16.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "TPS61023 5V"
+			(at 158 43.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 173 30 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.ti.com/product/TPS61023"
+			(at 173 30 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "U3") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:POLOLU_2808_SWITCH")
+		(at 208 30 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f4fa83e6-956a-4bec-b88e-668ce3f0c510")
+		(property "Reference" "SW1"
+			(at 194 16.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "Pololu #2808 5V switch"
+			(at 194 43.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 208 30 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.pololu.com/product/2808"
+			(at 208 30 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "SW1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:TPS63031_3V3")
+		(at 173 104 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1c4a16ce-9738-4487-96b7-0a407b0f0bc2")
+		(property "Reference" "U4"
+			(at 158 90.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "TPS63031 3V3"
+			(at 158 117.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 173 104 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.ti.com/product/TPS63031"
+			(at 173 104 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "U4") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:POLOLU_2808_SWITCH")
+		(at 208 104 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "193eb12a-e388-4c5c-8a14-a42051070e2d")
+		(property "Reference" "SW2"
+			(at 194 90.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "Pololu #2808 3V3 switch"
+			(at 194 117.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 208 104 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.pololu.com/product/2808"
+			(at 208 104 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "SW2") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:ESP32S3_GPIO_CTRL")
+		(at 118 144 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a8c6f1ad-b2ab-4e83-8ee9-aedc90b0bd97")
+		(property "Reference" "J3"
+			(at 100 130.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "Hosyond ESP32-S3 GPIO"
+			(at 100 157.5 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 118 144 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.lcdwiki.com/2.8inch_ESP32-S3_Display"
+			(at 118 144 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "J3") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Daughterboard:OUTPUT_CONNECTOR")
+		(at 285 67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f6e6c2e4-30ac-4f1c-b173-5e67621b30e8")
+		(property "Reference" "J2"
+			(at 271 23 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Value" "Power outputs"
+			(at 271 118 0)
+			(effects (font (size 1.27 1.27)) (justify left))
+		)
+		(property "Footprint" ""
+			(at 285 67 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 285 67 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "Daughterboard"
+				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "J2") (unit 1))
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

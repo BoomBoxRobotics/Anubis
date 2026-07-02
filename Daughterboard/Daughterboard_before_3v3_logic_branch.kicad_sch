@@ -4167,51 +4167,6 @@
 		(property "Intersheetrefs" "${INTERSHEET_REFS}" (at 422.91 219.71 0) (effects (font (size 0.889 0.889)) (hide yes)))
 	)
 	(symbol
-		(lib_id "Daughterboard:PWR_FLAG")
-		(at 408.94 237.49 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(dnp no)
-		(uuid "9751541c-8e7a-409a-b8be-7575218e0f93")
-		(property "Reference" "#FLG7"
-			(at 405.13 226.06 0)
-			(effects (font (size 1.016 1.016)) (justify left))
-		)
-		(property "Value" "PWR_FLAG"
-			(at 405.13 228.6 0)
-			(effects (font (size 1.016 1.016)) (justify left))
-		)
-		(property "Footprint" ""
-			(at 408.94 237.49 0)
-			(effects (font (size 1.016 1.016)) (hide yes) (justify left))
-		)
-		(property "Datasheet" ""
-			(at 408.94 237.49 0)
-			(effects (font (size 1.016 1.016)) (hide yes) (justify left))
-		)
-		(property "Purchase Link" "https://www.digikey.com/en/products/result?keywords=PWR_FLAG"
-			(at 408.94 237.49 0)
-			(effects (font (size 1.016 1.016)) (hide yes) (justify left))
-		)
-		(instances
-			(project "Daughterboard"
-				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "#FLG7") (unit 1))
-			)
-		)
-	)
-	(wire (pts (xy 417.83 237.49) (xy 422.91 237.49)) (stroke (width 0) (type default)) (uuid "b03b6e16-f822-4976-805b-076e6ae0c4c6"))
-	(wire (pts (xy 422.91 237.49) (xy 422.91 234.95)) (stroke (width 0) (type default)) (uuid "5f3716cf-7282-4604-8231-a989155e9d3b"))
-	(global_label "+3V3_SW_LOGIC"
-		(shape bidirectional)
-		(at 422.91 234.95 0)
-		(fields_autoplaced yes)
-		(effects (font (size 0.889 0.889)))
-		(uuid "035f0d1c-bc9b-41a1-8080-23bf1642361d")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}" (at 422.91 234.95 0) (effects (font (size 0.889 0.889)) (hide yes)))
-	)
-	(symbol
 		(lib_id "Daughterboard:AP63200WU")
 		(at 91.44 264.16 0)
 		(unit 1)
@@ -6489,7 +6444,7 @@
 	(no_connect (at 487.68 62.23) (uuid "cc7fe3ef-8eea-4c46-91c3-77b12864c73b"))
 	(wire (pts (xy 487.68 54.61) (xy 492.76 54.61)) (stroke (width 0) (type default)) (uuid "44ed73c6-ad6e-4840-9dda-ecc61555e8b8"))
 	(wire (pts (xy 492.76 54.61) (xy 492.76 52.07)) (stroke (width 0) (type default)) (uuid "dab9d8d6-5ff1-4e5f-8838-56d36165c49f"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 492.76 52.07 0)
 		(fields_autoplaced yes)
@@ -6584,7 +6539,7 @@
 	)
 	(wire (pts (xy 449.58 124.46) (xy 444.5 124.46)) (stroke (width 0) (type default)) (uuid "a0b5e6c0-cbaa-4717-bb0d-ae63a269c2b8"))
 	(wire (pts (xy 444.5 124.46) (xy 444.5 121.92)) (stroke (width 0) (type default)) (uuid "19ed0605-4338-4b57-b3ad-4fc8656c3760"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 444.5 121.92 0)
 		(fields_autoplaced yes)
@@ -6615,7 +6570,7 @@
 	(no_connect (at 487.68 134.62) (uuid "01d7f13c-1fd8-47fd-964c-4ae8128a3e41"))
 	(wire (pts (xy 487.68 127) (xy 492.76 127)) (stroke (width 0) (type default)) (uuid "eb986467-9813-4c50-95a3-6a69ad9e472d"))
 	(wire (pts (xy 492.76 127) (xy 492.76 124.46)) (stroke (width 0) (type default)) (uuid "6a4c7b28-4ade-4ed6-a5c4-aac065df269d"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 492.76 124.46 0)
 		(fields_autoplaced yes)
@@ -6632,61 +6587,6 @@
 		(effects (font (size 0.889 0.889)))
 		(uuid "2d15d543-896a-45cf-9cf0-cb1ce51a4281")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}" (at 492.76 119.38 0) (effects (font (size 0.889 0.889)) (hide yes)))
-	)
-	(symbol
-		(lib_id "Daughterboard:TWO_PIN")
-		(at 527.05 25.4 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "99c00d94-5a82-4da1-8923-041e3210e5b1")
-		(property "Reference" "R45"
-			(at 521.97 12.7 0)
-			(effects (font (size 1.016 1.016)) (justify left))
-		)
-		(property "Value" "0R"
-			(at 521.97 15.24 0)
-			(effects (font (size 1.016 1.016)) (justify left))
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 527.05 25.4 0)
-			(effects (font (size 1.016 1.016)) (hide yes) (justify left))
-		)
-		(property "Datasheet" ""
-			(at 527.05 25.4 0)
-			(effects (font (size 1.016 1.016)) (hide yes) (justify left))
-		)
-		(property "Purchase Link" "https://www.digikey.com/en/products/result?keywords=0R+Resistor_SMD%3AR_0603_1608Metric+resistor"
-			(at 527.05 25.4 0)
-			(effects (font (size 1.016 1.016)) (hide yes) (justify left))
-		)
-		(instances
-			(project "Daughterboard"
-				(path "/d4b0641a-9c05-4a64-9f99-e24c4b75c101" (reference "R45") (unit 1))
-			)
-		)
-	)
-	(wire (pts (xy 516.89 25.4) (xy 511.81 25.4)) (stroke (width 0) (type default)) (uuid "5ba28993-41d4-49ed-a199-7b3e46fcb32d"))
-	(wire (pts (xy 511.81 25.4) (xy 511.81 22.86)) (stroke (width 0) (type default)) (uuid "61006afa-59a5-4234-9763-43d5baad6b86"))
-	(global_label "+3V3_SW"
-		(shape bidirectional)
-		(at 511.81 22.86 0)
-		(fields_autoplaced yes)
-		(effects (font (size 0.889 0.889)))
-		(uuid "78885a44-cba3-4d04-a324-5cecb8312ae3")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}" (at 511.81 22.86 0) (effects (font (size 0.889 0.889)) (hide yes)))
-	)
-	(wire (pts (xy 537.21 25.4) (xy 542.29 25.4)) (stroke (width 0) (type default)) (uuid "1f115a82-aed9-4312-adcd-d6988b9aa51c"))
-	(wire (pts (xy 542.29 25.4) (xy 542.29 22.86)) (stroke (width 0) (type default)) (uuid "b382cdb4-3f95-4b3c-b0ab-1c3bb39e45f3"))
-	(global_label "+3V3_SW_LOGIC"
-		(shape bidirectional)
-		(at 542.29 22.86 0)
-		(fields_autoplaced yes)
-		(effects (font (size 0.889 0.889)))
-		(uuid "29e3c0b7-9b62-4f6f-aad4-0a21f5e7e7ea")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}" (at 542.29 22.86 0) (effects (font (size 0.889 0.889)) (hide yes)))
 	)
 	(symbol
 		(lib_id "Daughterboard:TWO_PIN")
@@ -6735,7 +6635,7 @@
 	)
 	(wire (pts (xy 537.21 40.64) (xy 542.29 40.64)) (stroke (width 0) (type default)) (uuid "35a1dab9-6ec0-452d-8ca1-65e0f328be58"))
 	(wire (pts (xy 542.29 40.64) (xy 542.29 38.1)) (stroke (width 0) (type default)) (uuid "f2145dc7-bb52-43d7-8f8e-f502e02478a0"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 542.29 38.1 0)
 		(fields_autoplaced yes)
@@ -6790,7 +6690,7 @@
 	)
 	(wire (pts (xy 537.21 54.61) (xy 542.29 54.61)) (stroke (width 0) (type default)) (uuid "6fa35c0d-58ce-4742-a74e-b48d75567617"))
 	(wire (pts (xy 542.29 54.61) (xy 542.29 52.07)) (stroke (width 0) (type default)) (uuid "c8cc88fe-8cc2-46d4-af6c-aee5d5dfa789"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 542.29 52.07 0)
 		(fields_autoplaced yes)
@@ -6835,7 +6735,7 @@
 	)
 	(wire (pts (xy 516.89 74.93) (xy 511.81 74.93)) (stroke (width 0) (type default)) (uuid "d2689522-cfe9-463f-be98-c362912cf118"))
 	(wire (pts (xy 511.81 74.93) (xy 511.81 72.39)) (stroke (width 0) (type default)) (uuid "b1961846-d3fc-43b6-ad90-c739f337b622"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 511.81 72.39 0)
 		(fields_autoplaced yes)
@@ -6890,7 +6790,7 @@
 	)
 	(wire (pts (xy 516.89 88.9) (xy 511.81 88.9)) (stroke (width 0) (type default)) (uuid "c92f43ab-7938-4b7b-8201-b2da23aade39"))
 	(wire (pts (xy 511.81 88.9) (xy 511.81 86.36)) (stroke (width 0) (type default)) (uuid "fd6d406d-d335-4b84-8856-67fa1865b15c"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 511.81 86.36 0)
 		(fields_autoplaced yes)
@@ -6945,7 +6845,7 @@
 	)
 	(wire (pts (xy 516.89 146.05) (xy 511.81 146.05)) (stroke (width 0) (type default)) (uuid "89968648-46f8-41e4-8ac2-0c2f0142b976"))
 	(wire (pts (xy 511.81 146.05) (xy 511.81 143.51)) (stroke (width 0) (type default)) (uuid "d33d7557-c264-43ce-857a-84a134c08555"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 511.81 143.51 0)
 		(fields_autoplaced yes)
@@ -7000,7 +6900,7 @@
 	)
 	(wire (pts (xy 516.89 161.29) (xy 511.81 161.29)) (stroke (width 0) (type default)) (uuid "e611e68b-4f1a-4301-9db4-fcac666e3b10"))
 	(wire (pts (xy 511.81 161.29) (xy 511.81 158.75)) (stroke (width 0) (type default)) (uuid "2604cb55-a953-4dd5-9789-6bcae0552668"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 511.81 158.75 0)
 		(fields_autoplaced yes)
@@ -7261,7 +7161,7 @@
 		(property "Intersheetrefs" "${INTERSHEET_REFS}" (at 455.93 377.19 0) (effects (font (size 0.889 0.889)) (hide yes)))
 	)
 	(wire (pts (xy 422.91 389.89) (xy 422.91 384.81)) (stroke (width 0) (type default)) (uuid "ea5236b1-97c7-47fe-8a4e-c328635ef0f3"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 422.91 384.81 0)
 		(fields_autoplaced yes)
@@ -7460,7 +7360,7 @@
 		)
 	)
 	(wire (pts (xy 330.2 293.37) (xy 325.12 293.37)) (stroke (width 0) (type default)) (uuid "5e4f8031-6f6a-43af-8aaf-96e4df26bd0b"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 325.12 293.37 0)
 		(fields_autoplaced yes)
@@ -7513,7 +7413,7 @@
 		)
 	)
 	(wire (pts (xy 330.2 308.61) (xy 325.12 308.61)) (stroke (width 0) (type default)) (uuid "f7350953-85a1-4745-bb9c-00b50f269839"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 325.12 308.61 0)
 		(fields_autoplaced yes)
@@ -7725,7 +7625,7 @@
 		)
 	)
 	(wire (pts (xy 330.2 365.76) (xy 325.12 365.76)) (stroke (width 0) (type default)) (uuid "1fe2ae5b-7826-4aa4-a94a-38761672d244"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 325.12 365.76 0)
 		(fields_autoplaced yes)
@@ -7831,7 +7731,7 @@
 		)
 	)
 	(wire (pts (xy 421.64 293.37) (xy 416.56 293.37)) (stroke (width 0) (type default)) (uuid "d04b4a79-10b4-4e1b-aba1-869f743bed91"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 416.56 293.37 0)
 		(fields_autoplaced yes)
@@ -7884,7 +7784,7 @@
 		)
 	)
 	(wire (pts (xy 421.64 308.61) (xy 416.56 308.61)) (stroke (width 0) (type default)) (uuid "68ca52e3-a6bf-4e9e-95bd-17c5cd5c4ab2"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 416.56 308.61 0)
 		(fields_autoplaced yes)
@@ -9945,7 +9845,7 @@
 		)
 	)
 	(wire (pts (xy 769.62 482.6) (xy 774.7 482.6)) (stroke (width 0) (type default)) (uuid "a6f755a3-4ee2-445e-9f8f-37a4caa7524b"))
-	(global_label "+3V3_SW_LOGIC"
+	(global_label "+3V3_SW"
 		(shape bidirectional)
 		(at 774.7 482.6 0)
 		(fields_autoplaced yes)
