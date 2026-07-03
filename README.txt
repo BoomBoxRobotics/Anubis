@@ -34,8 +34,7 @@
 |								0r7FZIny8Zc.NQ8r1z_ITbAhZCPfBiFbQt_Egn72p50ASO21K2ShytE&dib_tag=se&keyw	|
 |								ords=3600mah%2Blipo&qid=1778048277&s=electronics&sprefix=3600mah%2Blipo	|
 |								%2Celectronics%2C265&sr=1-1&th=1					|
-|1		RadioMaster Pocket ELRS Module			https://radiomasterrc.com/products/elrs-module-for-zorro-and-tx12-mark-	|
-|								ii									|
+|1		RadioMaster Pocket ELRS Module			https://radiomasterrc.com/products/x5-replacement-gimbals-for-pocket	|						|
 |1		RPSMA to IPEX adapter				https://www.amazon.com/dp/B0931SL6LG?ref=ppx_yo2ov_dt_b_fed_asin_title	|
 |---------------------------------------------------------------------------------------------------------------------------------------|
 |						||||	HOSYOND 2.8" ESP32-S3 Display	||||						|
