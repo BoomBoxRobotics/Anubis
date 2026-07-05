@@ -1,0 +1,13 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "author": "Avala / Codex",
+  "description": {
+    "": "Creates a RadioMaster X5 gimbal fit/reference model and exports a STEP file."
+  },
+  "supportedOS": "windows|mac",
+  "editEnabled": true,
+  "id": "com.avala.daughterboard.radiomaster-x5-gimbal-fit-model",
+  "version": "1.0.0",
+  "runOnStartup": false
+}

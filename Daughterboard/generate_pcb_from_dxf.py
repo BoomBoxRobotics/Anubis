@@ -76,7 +76,7 @@ MANUAL_PLACEMENTS = {
     "F2": (15.0, 45.0, 0),
     "F3": (22.0, 45.0, 0),
     "F4": (29.0, 45.0, 0),
-    "J7": (39.0, 51.0, 0),
+    "J7": (70.45, 12.45, 180),  # Top-edge side-entry 2S JST-XH balance connector, about 16.85 mm right of SW1 outline.
     # 2S protection cluster.
     "U2": (50.0, 28.0, 0),
     "Q1": (50.0, 35.0, 0),
@@ -108,7 +108,10 @@ MANUAL_PLACEMENTS = {
     "J4": (99.0, 52.0, 0),  # UART out on the narrow bridge beside USB-C
     "J5": (129.0, 23.0, 0),  # I2C header on right half
     "J6": (129.0, 40.0, 0),  # Deep-sleep pushbutton header on right half
-    "J8": (137.8, 15.4, 90),  # Analog input header rotated into upper-right blank space
+    "J8": (21.0, 14.0, 0),  # Left gimbal A JST-GH above L3: GND,AIN0,+3V3_SW
+    "J40": (33.0, 14.0, 0),  # Left gimbal B JST-GH above L3: GND,AIN1,+3V3_SW
+    "J41": (139.0, 14.0, 0),  # Right gimbal A JST-GH in former J8 area: GND,AIN2,+3V3_SW
+    "J42": (151.0, 14.0, 0),  # Right gimbal B JST-GH in former J8 area: GND,AIN3,+3V3_SW
     # Keep the right-side I2C/ADC cluster close to the daughterboard input area.
     "U5": (124.5, 49.0, 0),
     "U6": (132.0, 49.0, 0),
@@ -187,14 +190,36 @@ MANUAL_PLACEMENTS = {
     "TP12": (60.0, 44.0, 0),
     "TP13": (60.0, 49.0, 0),
     "TP14": (35.0, 70.0, 0),
+    "TP15": (163.4, 18.0, 0),  # AIN4 spare analog test pad
+    "TP16": (163.4, 23.0, 0),  # AIN5 spare analog test pad
+    "TP17": (163.4, 28.0, 0),  # AIN6 spare analog test pad
+    "TP18": (163.4, 33.0, 0),  # AIN7 spare analog test pad
 }
 
 FIXED_PLACEMENT_REFS = {
-    "J1", "R1", "R2", "J4", "J5", "J6", "J8", "SW1", "SW2",
+    "J1", "R1", "R2", "J4", "J5", "J6", "J8", "J40", "J41", "J42", "SW1", "SW2",
     "J30", "J31", "J32", "J33", "J34", "J35", "J36", "J37", "J38", "J39",
     "U5", "U6", "U7",
     "TP1", "TP2", "TP3", "TP4", "TP5", "TP6", "TP7", "TP8", "TP9", "TP10", "TP11", "TP12", "TP13", "TP14",
+    "TP15", "TP16", "TP17", "TP18",
 }
+
+INTERFACE_PAD_REFS = {
+    "J30", "J31", "J32", "J33", "J34", "J35", "J36", "J37", "J38", "J39",
+}
+
+INTERFACE_SILK_LABELS = [
+    ("+5V_SW", 54.9, 15.0),
+    ("UART_TX", 54.9, 20.0),
+    ("UART_RX", 54.9, 25.0),
+    ("GND", 54.9, 30.0),
+    ("I2C_SDA", 122.1, 20.2),
+    ("I2C_SCL", 122.1, 25.2),
+    ("GPIO2", 122.1, 30.2),
+    ("GPIO3", 122.1, 35.2),
+    ("GPIO14", 122.1, 40.2),
+    ("GPIO21", 122.1, 45.2),
+]
 
 
 def mm(value: float) -> int:
@@ -492,6 +517,16 @@ def add_text_note(board: pcbnew.BOARD, text: str, x: float, y: float) -> None:
     board.Add(note)
 
 
+def add_silk_label(board: pcbnew.BOARD, text: str, x: float, y: float) -> None:
+    label = pcbnew.PCB_TEXT(board)
+    label.SetLayer(pcbnew.F_SilkS)
+    label.SetText(text)
+    label.SetPosition(vec(x, y))
+    label.SetTextSize(vec(0.8, 0.8))
+    label.SetTextThickness(mm(0.12))
+    board.Add(label)
+
+
 def main() -> None:
     raw_outline = read_dxf_lwpolyline(DXF_PATH)
     outline = normalize_outline(raw_outline)
@@ -592,6 +627,19 @@ def main() -> None:
             if net_name and net_name in net_items and not net_name.startswith("unconnected-"):
                 pad.SetNet(net_items[net_name])
 
+        if ref == "J7":
+            fp.Reference().SetVisible(False)
+            fp.Value().SetVisible(False)
+            for item in list(fp.GraphicalItems()):
+                try:
+                    if item.GetLayer() == pcbnew.F_SilkS:
+                        fp.Remove(item)
+                except Exception:
+                    pass
+
+        if ref in INTERFACE_PAD_REFS:
+            fp.Reference().SetVisible(False)
+
         board.Add(fp)
         placed_boxes.append(keepout)
         placement_note = ""
@@ -605,6 +653,8 @@ def main() -> None:
         )
 
     board.BuildListOfNets()
+    for label, x, y in INTERFACE_SILK_LABELS:
+        add_silk_label(board, label, x, y)
     board.SanitizeNetcodes()
     if "GND" in net_items:
         add_ground_zone(board, outline, net_items["GND"])
