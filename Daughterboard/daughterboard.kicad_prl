@@ -63,7 +63,7 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "Daughterboard.kicad_prl",
+    "filename": "daughterboard.kicad_prl",
     "version": 5
   },
   "net_inspector_panel": {
