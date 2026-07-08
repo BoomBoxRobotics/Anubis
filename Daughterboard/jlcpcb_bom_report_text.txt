@@ -1,0 +1,1142 @@
+24
+SMT
+24-hour PCB production. Fast Delivery to United States.
+ Coupons
+ Download APP
+USD 
+
+Assembly Parts Lib
+
+For PCBA Only
+
+Upload BOM
+0
+Parts Cart
+My Account 
+Products
+In Stock Parts
+Bom Tool
+Request a Quote
+Support 
+Daughterboard_jlcpcb_bom_compone...
+PCB Assembled Qty
+5
+All Parts (56)JLCPCB Parts ( 31 )Not Matched Parts ( 25 )
+JLCPCB Parts
+Item Selected: 0
+Ext Total: $0.00
+Add Part Create Quote Add All to My parts Lib
+	Comment	Footprint	Designator	Matched Part Detail	Availability	Rec. Order Qty	Total Cost	Do not place
+ In-stock Items
+
+
+	
+LED green
+	
+LED_SMD:LED_0603_1608Metric
+	
+D2
+	
+C125093
+LTST-C190GKT
+Extended
+-55?~+85? 100mW 130° 2.1V 20mA 565nm 569nm 6mcd Discrete Diode Water Clear Yellow Green 0603 LED Indication - Discrete ROHS
+	
+
+Stock:61305
+
+Parts Cart:0
+
+	
+Add
+	
+$0.4800
+	
+
+
+	
+1uF 10V X5R
+	
+Capacitor_SMD:C_0603_1608Metric
+	
+C18,C20,C28
+	
+C15849
+CL10A105KB8NNNC
+Basic
+1uF 50V X5R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+Stock:11571943
+
+Parts Cart:0
+
+	
+Add
+	
+$3.3275
+	
+
+
+	
+4.7uF 6.3V X5R
+	
+Capacitor_SMD:C_0603_1608Metric
+	
+C6
+	
+C19666
+CL10A475KO8NNNC
+Basic
+16V 4.7uF X5R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+Stock:4092663
+
+Parts Cart:0
+
+	
+Add
+	
+$0.6280
+	
+
+
+	
+0R
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R39-R41,R45
+	
+C21189
+0603WAF0000T5E
+Basic
+-55?~+155? 0O 100mW 75V Thick Film Resistor ±1% 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:4909043
+
+Parts Cart:0
+
+	
+Add
+	
+$0.4560
+	
+
+
+	
+100R
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R16,R21-R38,R47,R48
+	
+C22775
+0603WAF1000T5E
+Basic
+-55?~+155? 100mW 100O 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:6061557
+
+Parts Cart:0
+
+	
+Add
+	
+$0.6090
+	
+
+
+	
+2.2uF 10V X5R
+	
+Capacitor_SMD:C_0603_1608Metric
+	
+C30
+	
+C23630
+CL10A225KO8NNNC
+Basic
+16V 2.2uF X5R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+Stock:1729524
+
+Parts Cart:0
+
+	
+Add
+	
+$0.1840
+	
+
+
+	
+100k
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R10,R13
+	
+C25803
+0603WAF1003T5E
+Basic
+-55?~+155? 100kO 100mW 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:6540116
+
+Parts Cart:0
+
+	
+Add
+	
+$0.0500
+	
+
+
+	
+806R 1% TBD
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R3
+	
+C2692785
+PTFR0603B806RN9
+Extended
+-55?~+125? 100V 100mW 806O Thin Film Resistor ±0.1% ±10ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:792
+
+Parts Cart:0
+
+	
+Add
+	
+$0.9110
+	
+
+
+	
+4.7uH >=2A sat
+	
+Inductor_SMD:L_APV_ANR4020
+	
+L2
+	
+C2847471
+MDA4020-4R7M
+Extended
+2.5A 2.5A 4.7uH 84mO ±20% SMD,4.5x4.1mm Power Inductors ROHS
+	
+
+Stock:1201
+
+Parts Cart:0
+
+	
+Add
+	
+$3.9535
+	
+
+
+	
+BQ28Z610DRZR-R1
+	
+Daughterboard:BQ28Z610_DRZ0012A_12SON_2.5x4mm_P0.5mm
+	
+U2
+	
+C2876556
+BQ28Z610DRZR-R1
+Extended
+-40?~+85? 1~2 2.2V~26V 250uA I2C Lithium Battery Protection IC?Monitoring IC Support SON-12-EP(2.5x4) Battery Management ROHS
+	
+
+Stock:217
+
+Parts Cart:0
+
+	
+Add
+	
+$13.5580
+	
+
+
+	
+5.1k 1%
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R1,R2
+	
+C2907044
+FRC0603F5101TS
+Extended
+-55?~+155? 100mW 5.1kO 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:4447259
+
+Parts Cart:0
+
+	
+Add
+	
+$0.0560
+	
+
+
+	
+316k 1%
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R11
+	
+C2998125
+FRC0603F3163TS
+Extended
+-55?~+155? 100mW 316kO 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:54519
+
+Parts Cart:0
+
+	
+Add
+	
+$0.0500
+	
+
+
+	
+4.7uH >=3A sat
+	
+Inductor_SMD:L_APV_ANR4020
+	
+L1
+	
+C3002596
+CKST0402-4.7uH/M
+Extended
+126mO 2.2A 3A 4.7uH Molded Inductor ±20% SMD,4.6x4.1mm Power Inductors ROHS
+	
+
+Stock:1997
+
+Parts Cart:0
+
+	
+Add
+	
+$0.8953
+	
+
+
+	
+2.2k
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R6,R7
+	
+C4190
+0603WAF2201T5E
+Basic
+-55?~+155? 100mW 2.2kO 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:1953273
+
+Parts Cart:0
+
+	
+Add
+	
+$0.0480
+	
+
+
+	
+10uF 10V X5R
+	
+Capacitor_SMD:C_0805_2012Metric
+	
+C1
+	
+C440198
+GRM21BR61H106KE43L
+Basic
+10uF 50V X5R ±10% 0805 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+Stock:1608571
+
+Parts Cart:0
+
+	
+Add
+	
+$6.8385
+	
+
+
+	
+10uF 16V X5R
+	
+Capacitor_SMD:C_0805_2012Metric
+	
+C11,C16
+	
+C440198
+GRM21BR61H106KE43L
+Basic
+10uF 50V X5R ±10% 0805 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+
+	
+MCP23017-E/SO
+	
+Daughterboard:SOIC-28W_7.5x17.9mm_P1.27mm_NoPads11_14
+	
+U7
+	
+C47023
+MCP23017-E/SO
+Extended
+-40?~+85? 1.7MHz 1.8V~5.5V 16 1uA 600mV 8 8mA I2C Interrupt Output Reset function?Cascading and address extension SOIC-28-300mil I/O Expanders ROHS
+	
+
+Stock:3117
+
+Parts Cart:0
+
+	
+Add
+	
+$9.7095
+	
+
+
+	
+470R 1%
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R14,R15
+	
+C844564
+CRCW0603470RFKEAC
+Extended
+-55?~+155? 100mW 470O Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:2213
+
+Parts Cart:0
+
+	
+Add
+	
+$0.1360
+	
+
+
+	
+523k 1%
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R8
+	
+C861460
+RT0603BRD07523KL
+Extended
+-55?~+155? 100mW 523kO 75V Thin Film Resistor ±0.1% ±25ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:2262
+
+Parts Cart:0
+
+	
+Add
+	
+$0.6360
+	
+
+
+	
+LED blue
+	
+LED_SMD:LED_0603_1608Metric
+	
+D3
+	
+C99290
+LTST-C191TBKT
+Extended
+-20?~+80? 104mcd 130° 20mA 3.3V 465nm~475nm 468nm 75mW Blue Discrete Diode Water Clear 0603 LED Indication - Discrete ROHS
+	
+
+Stock:57381
+
+Parts Cart:0
+
+	
+Add
+	
+$0.3880
+	
+
+
+ Pre-order Items Price for pre-order items are for reference only. The confirmed price will be quoted within 48 hours after finish the payment.
+
+
+	
+100nF 10V X7R
+	
+Capacitor_SMD:C_0603_1608Metric
+	
+C2,C8,C17,C19,C27,C29
+	
+C14663
+CC0603KRX7R9BB104
+Basic
+100nF 50V X7R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+Stock:18528026
+
+Parts Cart:0
+
+MOQ:335
+
+	
+Add
+	
+$8.9780
+	
+
+
+	
+100nF 16V X7R
+	
+Capacitor_SMD:C_0603_1608Metric
+	
+C4,C7,C9,C10,C12,C15,C21,C24-C26,C31
+	
+C14663
+CC0603KRX7R9BB104
+Basic
+100nF 50V X7R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+
+	
+330R
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R17,R18
+	
+C23138
+0603WAF3300T5E
+Basic
+-55?~+155? 100mW 330O 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:730110
+
+Parts Cart:0
+
+MOQ:1357
+
+	
+Add
+	
+$8.9562
+	
+
+
+	
+4.7k
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R19,R20
+	
+C23162
+0603WAF4701T5E
+Basic
+-55?~+155? 100mW 4.7kO 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:5206665
+
+Parts Cart:0
+
+MOQ:830
+
+	
+Add
+	
+$8.9640
+	
+
+
+	
+10k
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R42-R44
+	
+C25804
+0603WAF1002T5E
+Basic
+-55?~+155? 100mW 10kO 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:28751
+
+Parts Cart:0
+
+MOQ:4976
+
+	
+Add
+	
+$8.9568
+	
+
+
+	
+CSD83325L
+	
+Daughterboard:CSD83325L_YJE0006A
+	
+Q1
+	
+C2860700
+CSD83325L
+Extended
+-55?~+150? 1.17nF 1.25V 10.9nC@4.5V 12V 144pF 2 N-Channel 2.3W 243pF 8A 9.9mO@4.5V Common Drain N-Channel PicoStar-6 MOSFETs ROHS
+	
+
+Stock:0
+
+Parts Cart:0
+
+MOQ:20
+
+	
+Add
+	
+$9.0180
+	
+
+
+	
+2mR 1% 50ppm
+	
+Resistor_SMD:R_1206_3216Metric
+	
+R46
+	
+C2904210
+HoJLR1206-1W-2mR-1%
+Extended
+1W 2mO Current Sense Resistor SMD ±1% 1206 Current Sense Resistors / Shunt Resistors ROHS
+	
+
+Stock:111
+
+Parts Cart:0
+
+MOQ:159
+
+	
+Add
+	
+$8.9676
+	
+
+
+	
+100k 1%
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R9,R12
+	
+C2961368
+TD03H1003BT
+Extended
+-55?~+155? 100kO 100mW 50V Thin Film Resistor ±0.1% ±50ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:120
+
+Parts Cart:0
+
+MOQ:462
+
+	
+Add
+	
+$8.9628
+	
+
+
+	
+22uF 10V X5R
+	
+Capacitor_SMD:C_0805_2012Metric
+	
+C13,C14,C22,C23
+	
+C45783
+CL21A226MAQNNNE
+Basic
+22uF 25V X5R ±20% 0805 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+Stock:1489844
+
+Parts Cart:0
+
+MOQ:18
+
+	
+Add
+	
+$15.5670
+	
+
+
+	
+22uF 16V X5R
+	
+Capacitor_SMD:C_0805_2012Metric
+	
+C3,C5
+	
+C45783
+CL21A226MAQNNNE
+Basic
+22uF 25V X5R ±20% 0805 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS
+	
+
+
+	
+10k 1%
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R5
+	
+C5713432
+FRQ0603F1002TS
+Extended
+-55?~+155? 100mW 10kO 75V Thick Film Resistor ±1% ±100ppm/? 0603 Chip Resistor - Surface Mount ROHS
+	
+
+Stock:3136
+
+Parts Cart:0
+
+MOQ:3732
+
+	
+Add
+	
+$8.9568
+	
+Not Matched Parts
+Comment	Footprint	Designator	Matched Part Detail	Availability	Rec. Order Qty	Total Cost	
+PTC/fuse cell1
+	
+Fuse:Fuse_1206_3216Metric
+	
+F2
+	
+No matches found
+	
+	
+	
+	
+
+
+TBD 1%
+	
+Resistor_SMD:R_0603_1608Metric
+	
+R4
+	
+No matches found
+	
+	
+	
+	
+
+
+4ch 3.3V GPIO TVS array TBD
+	
+Daughterboard:SOT-23-6_NoPad6
+	
+D4-D7
+	
+No matches found
+	
+	
+	
+	
+
+
+2S balance input JST-XH side-entry
+	
+Connector_JST:JST_XH_S3B-XH-A_1x03_P2.50mm_Horizontal
+	
+J7
+	
+No matches found
+	
+	
+	
+	
+
+
+Right gimbal B JST-GH 1.25mm
+	
+Connector_JST:JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical
+	
+J42
+	
+No matches found
+	
+	
+	
+	
+
+
+2A hold polyfuse
+	
+Fuse:Fuse_1206_3216Metric
+	
+F1
+	
+No matches found
+	
+	
+	
+	
+
+
+I2C male header 2.54mm
+	
+Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical
+	
+J5
+	
+No matches found
+	
+	
+	
+	
+
+
+Pololu #2808 3V3 switch
+	
+Daughterboard:Pololu_2808_Raised_Header
+	
+SW2
+	
+No matches found
+	
+	
+	
+	
+
+
+1uH >=4A sat
+	
+Inductor_SMD:L_APV_ANR5040
+	
+L3
+	
+No matches found
+	
+	
+	
+	
+
+
+AP63200WU 5V Buck
+	
+Package_TO_SOT_SMD:TSOT-23-6
+	
+U3
+	
+No matches found
+	
+	
+	
+	
+
+
+AP63200WU 3V3 Buck
+	
+Package_TO_SOT_SMD:TSOT-23-6
+	
+U4
+	
+No matches found
+	
+	
+	
+	
+
+
+PTC/fuse cell2
+	
+Fuse:Fuse_1206_3216Metric
+	
+F3
+	
+No matches found
+	
+	
+	
+	
+
+
+Left gimbal B JST-GH 1.25mm
+	
+Connector_JST:JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical
+	
+J40
+	
+No matches found
+	
+	
+	
+	
+
+
+ADS1115IDGS 0x49
+	
+Package_SO:TSSOP-10_3x3mm_P0.5mm
+	
+U6
+	
+No matches found
+	
+	
+	
+	
+
+
+Pololu #2808 5V switch
+	
+Daughterboard:Pololu_2808_Raised_Header
+	
+SW1
+	
+No matches found
+	
+	
+	
+	
+
+
+Left gimbal A JST-GH 1.25mm
+	
+Connector_JST:JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical
+	
+J8
+	
+No matches found
+	
+	
+	
+	
+
+
+BQ25887RGE 2S charger
+	
+Package_DFN_QFN:Texas_RGE0024H_VQFN-24-1EP_4x4mm_P0.5mm_EP2.7x2.7mm
+	
+U1
+	
+No matches found
+	
+	
+	
+	
+
+
+10k NTC
+	
+Resistor_SMD:R_0603_1608Metric
+	
+TH1
+	
+No matches found
+	
+	
+	
+	
+
+
+Deep sleep pushbutton header
+	
+Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
+	
+J6
+	
+No matches found
+	
+	
+	
+	
+
+
+Right gimbal A JST-GH 1.25mm
+	
+Connector_JST:JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical
+	
+J41
+	
+No matches found
+	
+	
+	
+	
+
+
+2A system fuse
+	
+Fuse:Fuse_1206_3216Metric
+	
+F4
+	
+No matches found
+	
+	
+	
+	
+
+
+USB-C 5V Sink
+	
+Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x_6P_TopMnt_Horizontal
+	
+J1
+	
+No matches found
+	
+	
+	
+	
+
+
+UART JST-GH 1.25mm
+	
+Connector_JST:JST_GH_SM05B-GHS-TB_1x05-1MP_P1.25mm_Horizontal
+	
+J4
+	
+No matches found
+	
+	
+	
+	
+
+
+ADS1115IDGS 0x48
+	
+Package_SO:TSSOP-10_3x3mm_P0.5mm
+	
+U5
+	
+No matches found
+	
+	
+	
+	
+
+
+5V VBUS TVS
+	
+Diode_SMD:D_SOD-323
+	
+D1
+	
+No matches found
+	
+	
+	
+	
+Online Chat >
+Chat with our live agent for fast reply.
+Mon-Fri: 24 hours, Sat: 9am-6pm, GMT+8
+Email Us >
+Contact us at supportjlcpcb.com
+Typically reply within hours.
+Help Center >
+Get instant answers.
+24/7 Available.
+Services & Tools
+Electronic Parts
+BOM Tool
+Request a Quote
+Manufacturers
+PCB Assembly
+Support
+Contact Us
+How to Order
+User Guides
+Sourcing Tips
+Payment Methods
+Company
+About Us
+Quality Assurance
+How We Work
+Certifications
+Security
+Environment
+JLCAPI
+News
+Cooperation
+Electronics
+EasyEDA
+JLCPCB
+JLCDFM
+LCSC
+OSHWLAB
+Mechanical
+JLC3DP
+JLCCNC
+JLCMC
+Download JLCONE Desktop—Get $524 Exclusive Coupons
+Windows
+MAC
+Android
+IOS
+CONNECT WITH US
+© 2026 JLCPCB.COM All Rights Reserved.
+Privacy Policy
+Terms & Conditions
+Cookies Policy
+ Welcome back, may I help you? Chat Now

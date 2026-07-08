@@ -1,0 +1,62 @@
+** Drc report for daughterboard.kicad_pcb **
+** Created on 2026-05-28T14:03:49 **
+** Report includes: Errors, Warnings **
+
+** Found 0 DRC violations **
+
+** Found 11 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(88.2650 mm, 99.5000 mm): PTH pad 2 [/NC] of J17
+    @(85.7250 mm, 99.5000 mm): PTH pad 1 [/NC] of J17
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(88.2650 mm, 99.5000 mm): PTH pad 2 [/NC] of J17
+    @(151.6600 mm, 120.0000 mm): PTH pad 5 [/NC] of J10
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(151.6600 mm, 120.0000 mm): PTH pad 5 [/NC] of J10
+    @(154.2000 mm, 120.0000 mm): PTH pad 6 [/NC] of J10
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(154.2000 mm, 120.0000 mm): PTH pad 6 [/NC] of J10
+    @(156.7400 mm, 120.0000 mm): PTH pad 7 [/NC] of J10
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(156.7400 mm, 120.0000 mm): PTH pad 7 [/NC] of J10
+    @(172.1200 mm, 120.0000 mm): PTH pad 5 [/NC] of J9
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(172.1200 mm, 120.0000 mm): PTH pad 5 [/NC] of J9
+    @(174.6600 mm, 120.0000 mm): PTH pad 6 [/NC] of J9
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(174.6600 mm, 120.0000 mm): PTH pad 6 [/NC] of J9
+    @(177.2000 mm, 120.0000 mm): PTH pad 7 [/NC] of J9
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(177.2000 mm, 120.0000 mm): PTH pad 7 [/NC] of J9
+    @(233.1200 mm, 101.5000 mm): PTH pad 5 [/NC] of J22
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(95.7000 mm, 119.5000 mm): PTH pad 6 [/ALRT] of U1
+    @(125.7000 mm, 119.5000 mm): PTH pad 6 [/ALRT] of U2
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(151.6600 mm, 134.5000 mm): PTH pad 5 [/ON] of J25
+    @(172.1200 mm, 134.5000 mm): PTH pad 5 [/ON] of J24
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(154.2000 mm, 134.5000 mm): PTH pad 6 [/OFF] of J25
+    @(174.6600 mm, 134.5000 mm): PTH pad 6 [/OFF] of J24
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

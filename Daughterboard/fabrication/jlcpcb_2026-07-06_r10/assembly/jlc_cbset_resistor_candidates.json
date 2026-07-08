@@ -1,0 +1,330 @@
+{
+  "r10_2512": [
+    {
+      "componentCode": "C5123624",
+      "mpn": "HoCR2512-2W-10R-1%",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 3756,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 250V 2W Ceramic Resistor ±1% ±100ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.1108
+    },
+    {
+      "componentCode": "C5123625",
+      "mpn": "HoCR2512-2W-10R-5%",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 19808,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 250V 2W Ceramic Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0938
+    },
+    {
+      "componentCode": "C173291",
+      "mpn": "RC2512JK-7W10RL",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 1318,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 200V 2W Thick Film Resistor ±200ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.1118
+    },
+    {
+      "componentCode": "C346150",
+      "mpn": "RK73HW3ATTE10R0F",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 2,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 200V 2W ±1% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0857
+    },
+    {
+      "componentCode": "C414890",
+      "mpn": "HP122WF100JT4E",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 4556,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 2W 300V Thick Film Resistor ±1% ±75ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.069
+    },
+    {
+      "componentCode": "C840601",
+      "mpn": "CRM2512-JW-100ELF",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 3,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 2W Thick Film Resistor ±200ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0865
+    },
+    {
+      "componentCode": "C840605",
+      "mpn": "CRM2512-FX-10R0ELF",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 18467,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 2W Thick Film Resistor ±1% ±100ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.2496
+    },
+    {
+      "componentCode": "C876258",
+      "mpn": "RC2512FK-7W10RL",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 2,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10Ω 200V 2W Thick Film Resistor ±1% ±200ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.1743
+    }
+  ],
+  "r47_2512": [
+    {
+      "componentCode": "C15261",
+      "mpn": "25121WJ0470T4E",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 7,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 47Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.048
+    },
+    {
+      "componentCode": "C105119",
+      "mpn": "RTT25470JTE",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 3644,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 47Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.031
+    },
+    {
+      "componentCode": "C146892",
+      "mpn": "CR2512F47R0E04Z",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 3,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 47Ω Thick Film Resistor ±1% ±100ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0327
+    },
+    {
+      "componentCode": "C159941",
+      "mpn": "RK73BW3ATTE470J",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 3122,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 47Ω Thick Film Resistor ±200ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.106
+    },
+    {
+      "componentCode": "C175524",
+      "mpn": "HR2512F47R0E04Z",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 4141,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 47Ω 800V Thick Film Resistor ±1% ±500ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.1281
+    },
+    {
+      "componentCode": "C269359",
+      "mpn": "RMC2512475%N",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 4004,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "1W 200V 47Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0535
+    },
+    {
+      "componentCode": "C332250",
+      "mpn": "CR2512J47R0E04Z",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 12,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 47Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0348
+    },
+    {
+      "componentCode": "C333631",
+      "mpn": "RTT2547R0FTE",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 1809,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 47Ω Thick Film Resistor ±1% ±100ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0343
+    }
+  ],
+  "r43_2512": [
+    {
+      "componentCode": "C38957",
+      "mpn": "25121WJ0430T4E",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 7975,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 43Ω Thick Film Resistor ±200ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0228
+    },
+    {
+      "componentCode": "C102575",
+      "mpn": "CR2512J10430G",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 119,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+125℃ 1W 200V 43Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.026
+    },
+    {
+      "componentCode": "C105118",
+      "mpn": "RTT25430JTE",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 3273,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 43Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0297
+    },
+    {
+      "componentCode": "C163331",
+      "mpn": "RC2512JK-0743RL",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 6,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 43Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0258
+    },
+    {
+      "componentCode": "C171338",
+      "mpn": "WR25X430JTL",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 12,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 250V 43Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0274
+    },
+    {
+      "componentCode": "C175265",
+      "mpn": "CR2512F43R0E04Z",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 11,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 43Ω Thick Film Resistor ±1% ±100ppm/℃ 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0551
+    },
+    {
+      "componentCode": "C428973",
+      "mpn": "CR2512J43R0E04Z",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 84,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 200V 43Ω Thick Film Resistor ±200ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0353
+    },
+    {
+      "componentCode": "C454008",
+      "mpn": "RC-12K430JT",
+      "package": "2512",
+      "lib": "expand",
+      "stock": 437,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1W 43Ω Thick Film Resistor ±100ppm/℃ ±5% 2512 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0182
+    }
+  ],
+  "r100_1206": [
+    {
+      "componentCode": "C49286685",
+      "mpn": "RCT06100RJLF",
+      "package": "1206",
+      "lib": "expand",
+      "stock": 189007,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "100Ω 200V 250mW Thick Film Resistor ±100ppm/℃ ±5% 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0039
+    },
+    {
+      "componentCode": "C49330182",
+      "mpn": "AST06100RJ",
+      "package": "1206",
+      "lib": "expand",
+      "stock": 4958,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 100Ω 200V 250mW ±100ppm/℃ ±5% 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0108
+    },
+    {
+      "componentCode": "C17901",
+      "mpn": "1206W4F1000T5E",
+      "package": "1206",
+      "lib": "base",
+      "stock": 1820643,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 100Ω 200V 250mW Thick Film Resistor ±1% ±100ppm/℃ 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.008
+    },
+    {
+      "componentCode": "C25348",
+      "mpn": "1206W4J0101T5E",
+      "package": "1206",
+      "lib": "expand",
+      "stock": 6,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 100Ω 200V 250mW Thick Film Resistor ±100ppm/℃ ±5% 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0051
+    },
+    {
+      "componentCode": "C102059",
+      "mpn": "CR1206F41000G",
+      "package": "1206",
+      "lib": "expand",
+      "stock": 5,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+125℃ 100Ω 200V 250mW Thick Film Resistor ±1% ±100ppm/℃ 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0619
+    },
+    {
+      "componentCode": "C102267",
+      "mpn": "CR1206J40101G",
+      "package": "1206",
+      "lib": "expand",
+      "stock": 7830,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+125℃ 100Ω 200V 250mW Thick Film Resistor ±200ppm/℃ ±5% 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0072
+    },
+    {
+      "componentCode": "C104593",
+      "mpn": "RTT061000FTP",
+      "package": "1206",
+      "lib": "expand",
+      "stock": 55,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 100Ω 150V 250mW Thick Film Resistor ±1% ±100ppm/℃ 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0038
+    },
+    {
+      "componentCode": "C104600",
+      "mpn": "RTT06101JTP",
+      "package": "1206",
+      "lib": "expand",
+      "stock": 23,
+      "type": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 100Ω 150V 250mW Thick Film Resistor ±100ppm/℃ ±5% 1206 Chip Resistor - Surface Mount ROHS",
+      "price": 0.0027
+    }
+  ]
+}

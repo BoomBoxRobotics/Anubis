@@ -1,0 +1,87 @@
+** Drc report for daughterboard.kicad_pcb **
+** Created on 2026-05-28T13:52:49 **
+** Report includes: Errors, Warnings **
+
+** Found 7 DRC violations **
+[starved_thermal]: Thermal relief connection to zone incomplete (layer B.Cu; zone min spoke count 2; actual 1)
+    Local override; error
+    @(77.0000 mm, 95.0000 mm): Zone 'GND' [/GND] on B.Cu, priority 0
+    @(210.0000 mm, 97.1250 mm): PTH pad 2 [/GND] of J12
+[starved_thermal]: Thermal relief connection to zone incomplete (layer B.Cu; zone min spoke count 2; actual 1)
+    Local override; error
+    @(77.0000 mm, 95.0000 mm): Zone 'GND' [/GND] on B.Cu, priority 0
+    @(108.5000 mm, 114.3750 mm): PTH pad 1 [/GND] of J13
+[starved_thermal]: Thermal relief connection to zone incomplete (layer B.Cu; zone min spoke count 2; actual 1)
+    Local override; error
+    @(77.0000 mm, 95.0000 mm): Zone 'GND' [/GND] on B.Cu, priority 0
+    @(204.5000 mm, 97.1250 mm): PTH pad 2 [/GND] of J18
+[starved_thermal]: Thermal relief connection to zone incomplete (layer B.Cu; 1 spokes connected to isolated island)
+    Local override; error
+    @(77.0000 mm, 95.0000 mm): Zone 'GND' [/GND] on B.Cu, priority 0
+    @(85.5400 mm, 119.5000 mm): PTH pad 2 [/GND] of U1
+[via_dangling]: Via is not connected or connected on only one layer
+    Local override; warning
+    @(146.0000 mm, 118.0000 mm): Via [/GND] on F.Cu - B.Cu
+[via_dangling]: Via is not connected or connected on only one layer
+    Local override; warning
+    @(131.0000 mm, 112.0000 mm): Via [/GND] on F.Cu - B.Cu
+[track_dangling]: Track has unconnected end
+    Local override; warning
+    @(220.9825 mm, 114.3937 mm): Track [/5v] on F.Cu, length 15.4356 mm
+
+** Found 11 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(88.2650 mm, 99.5000 mm): PTH pad 2 [/NC] of J17
+    @(85.7250 mm, 99.5000 mm): PTH pad 1 [/NC] of J17
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(88.2650 mm, 99.5000 mm): PTH pad 2 [/NC] of J17
+    @(151.6600 mm, 120.0000 mm): PTH pad 5 [/NC] of J10
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(151.6600 mm, 120.0000 mm): PTH pad 5 [/NC] of J10
+    @(154.2000 mm, 120.0000 mm): PTH pad 6 [/NC] of J10
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(154.2000 mm, 120.0000 mm): PTH pad 6 [/NC] of J10
+    @(156.7400 mm, 120.0000 mm): PTH pad 7 [/NC] of J10
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(156.7400 mm, 120.0000 mm): PTH pad 7 [/NC] of J10
+    @(172.1200 mm, 120.0000 mm): PTH pad 5 [/NC] of J9
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(172.1200 mm, 120.0000 mm): PTH pad 5 [/NC] of J9
+    @(174.6600 mm, 120.0000 mm): PTH pad 6 [/NC] of J9
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(174.6600 mm, 120.0000 mm): PTH pad 6 [/NC] of J9
+    @(177.2000 mm, 120.0000 mm): PTH pad 7 [/NC] of J9
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(177.2000 mm, 120.0000 mm): PTH pad 7 [/NC] of J9
+    @(233.1200 mm, 101.5000 mm): PTH pad 5 [/NC] of J22
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(95.7000 mm, 119.5000 mm): PTH pad 6 [/ALRT] of U1
+    @(125.7000 mm, 119.5000 mm): PTH pad 6 [/ALRT] of U2
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(151.6600 mm, 134.5000 mm): PTH pad 5 [/ON] of J25
+    @(172.1200 mm, 134.5000 mm): PTH pad 5 [/ON] of J24
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(154.2000 mm, 134.5000 mm): PTH pad 6 [/OFF] of J25
+    @(174.6600 mm, 134.5000 mm): PTH pad 6 [/OFF] of J24
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

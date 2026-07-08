@@ -299,18 +299,20 @@ def read_dxf_circles(path: Path) -> list[tuple[float, float, float]]:
 
 
 def normalize_outline(vertices: list[tuple[float, float]]) -> list[tuple[float, float]]:
-    min_x = min(x for x, _ in vertices)
-    min_y = min(y for _, y in vertices)
-    return [(x - min_x + BOARD_MARGIN_MM, y - min_y + BOARD_MARGIN_MM) for x, y in vertices]
+    max_x = max(x for x, _ in vertices)
+    max_y = max(y for _, y in vertices)
+    # The mechanical DXF is exported from the model/view side opposite KiCad's board
+    # coordinates, so mirror both axes while normalizing into positive millimeters.
+    return [(max_x - x + BOARD_MARGIN_MM, max_y - y + BOARD_MARGIN_MM) for x, y in vertices]
 
 
 def normalize_circles(
     circles: list[tuple[float, float, float]],
     outline_vertices: list[tuple[float, float]],
 ) -> list[tuple[float, float, float]]:
-    min_x = min(x for x, _ in outline_vertices)
-    min_y = min(y for _, y in outline_vertices)
-    return [(x - min_x + BOARD_MARGIN_MM, y - min_y + BOARD_MARGIN_MM, radius) for x, y, radius in circles]
+    max_x = max(x for x, _ in outline_vertices)
+    max_y = max(y for _, y in outline_vertices)
+    return [(max_x - x + BOARD_MARGIN_MM, max_y - y + BOARD_MARGIN_MM, radius) for x, y, radius in circles]
 
 
 def point_in_polygon(x: float, y: float, poly: list[tuple[float, float]]) -> bool:

@@ -1,0 +1,552 @@
+ERC report (2026-07-06T15:42:47, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(36.83 mm, 50.80 mm): Symbol J1 [USB_C_SINK_GCT_6PAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(36.83 mm, 83.82 mm): Symbol R1 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(36.83 mm, 97.79 mm): Symbol R2 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(45.72 mm, 149.86 mm): Symbol BT1 [CONN_3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(45.72 mm, 180.34 mm): Symbol BT2 [CONN_3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(85.09 mm, 50.80 mm): Symbol F1 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(85.09 mm, 67.31 mm): Symbol D1 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(85.09 mm, 83.82 mm): Symbol C1 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(85.09 mm, 97.79 mm): Symbol C2 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(91.44 mm, 264.16 mm): Symbol U3 [AP63200WU]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(91.44 mm, 341.63 mm): Symbol U4 [AP63200WU]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(97.79 mm, 149.86 mm): Symbol F2 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(97.79 mm, 180.34 mm): Symbol F3 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 163.83 mm): Symbol J7 [CONN_3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 246.38 mm): Symbol L1 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 260.35 mm): Symbol C11 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 274.32 mm): Symbol C12 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 289.56 mm): Symbol R10 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 323.85 mm): Symbol L2 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 337.82 mm): Symbol C16 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 353.06 mm): Symbol C21 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(149.86 mm, 367.03 mm): Symbol R13 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(158.75 mm, 72.39 mm): Symbol U1 [BQ25887RGE]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 163.83 mm): Symbol U2 [BQ28Z610_DRZ]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 163.83 mm): Symbol U2 [BQ28Z610_DRZ]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 246.38 mm): Symbol C13 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 260.35 mm): Symbol C14 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 274.32 mm): Symbol C15 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 289.56 mm): Symbol R8 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 303.53 mm): Symbol R9 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 323.85 mm): Symbol C22 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 337.82 mm): Symbol C23 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 353.06 mm): Symbol C24 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 367.03 mm): Symbol R11 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(201.93 mm, 381.00 mm): Symbol R12 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(226.06 mm, 26.67 mm): Symbol L3 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(226.06 mm, 40.64 mm): Symbol R3 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(226.06 mm, 54.61 mm): Symbol R4 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(226.06 mm, 69.85 mm): Symbol C3 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(226.06 mm, 83.82 mm): Symbol C4 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(226.06 mm, 97.79 mm): Symbol C5 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(254.00 mm, 135.89 mm): Symbol R14 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(254.00 mm, 149.86 mm): Symbol R15 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(254.00 mm, 163.83 mm): Symbol C25 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(254.00 mm, 179.07 mm): Symbol C26 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(254.00 mm, 193.04 mm): Symbol R16 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(254.00 mm, 207.01 mm): Symbol C30 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(254.00 mm, 222.25 mm): Symbol R46 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(278.13 mm, 26.67 mm): Symbol C6 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(278.13 mm, 40.64 mm): Symbol C7 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(278.13 mm, 54.61 mm): Symbol C8 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(278.13 mm, 69.85 mm): Symbol C9 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(278.13 mm, 83.82 mm): Symbol C10 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(278.13 mm, 97.79 mm): Symbol TH1 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(278.13 mm, 113.03 mm): Symbol R5 [TWO_PIN]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(298.45 mm, 257.81 mm): Symbol SW1 [POLOLU_2808]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(298.45 mm, 257.81 mm): Symbol SW1 [POLOLU_2808]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(298.45 mm, 290.83 mm): Symbol R17 [TWO_PIN]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(298.45 mm, 323.85 mm): Symbol SW2 [POLOLU_2808]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(298.45 mm, 323.85 mm): Symbol SW2 [POLOLU_2808]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(298.45 mm, 356.87 mm): Symbol R18 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(306.07 mm, 120.65 mm): Symbol R47 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(306.07 mm, 135.89 mm): Symbol R48 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(306.07 mm, 149.86 mm): Symbol R21 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(306.07 mm, 163.83 mm): Symbol R22 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(306.07 mm, 179.07 mm): Symbol C31 [TWO_PIN]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(306.07 mm, 189.23 mm): Symbol Q1 [PROT_FET_PAIR]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(306.07 mm, 189.23 mm): Symbol Q1 [PROT_FET_PAIR]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(330.20 mm, 40.64 mm): Symbol R6 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(330.20 mm, 54.61 mm): Symbol D2 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(330.20 mm, 69.85 mm): Symbol R7 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(330.20 mm, 83.82 mm): Symbol D3 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(340.36 mm, 293.37 mm): Symbol C27 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(340.36 mm, 308.61 mm): Symbol C28 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(340.36 mm, 322.58 mm): Symbol R39 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(340.36 mm, 337.82 mm): Symbol R40 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(340.36 mm, 351.79 mm): Symbol R41 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(340.36 mm, 365.76 mm): Symbol R42 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(340.36 mm, 381.00 mm): Symbol C29 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(356.87 mm, 163.83 mm): Symbol F4 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(356.87 mm, 264.16 mm): Symbol J2 [CONN_3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 38.10 mm): Symbol TP1 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 50.80 mm): Symbol TP2 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 62.23 mm): Symbol TP3 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 74.93 mm): Symbol TP4 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 86.36 mm): Symbol TP5 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 97.79 mm): Symbol TP6 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 110.49 mm): Symbol TP7 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 121.92 mm): Symbol TP8 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 134.62 mm): Symbol TP9 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 146.05 mm): Symbol TP10 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 158.75 mm): Symbol TP11 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 170.18 mm): Symbol TP12 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 194.31 mm): Symbol TP14 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 207.01 mm): Symbol TP15 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 218.44 mm): Symbol TP16 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 229.87 mm): Symbol TP17 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(370.84 mm, 242.57 mm): Symbol TP18 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 226.06 mm): Symbol J30 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 237.49 mm): Symbol J31 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 250.19 mm): Symbol J32 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 261.62 mm): Symbol J33 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 273.05 mm): Symbol J34 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 285.75 mm): Symbol J35 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 297.18 mm): Symbol J36 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 309.88 mm): Symbol J37 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 321.31 mm): Symbol J38 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(383.54 mm, 334.01 mm): Symbol J39 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(408.94 mm, 149.86 mm): Symbol #FLG1 [PWR_FLAG]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(408.94 mm, 163.83 mm): Symbol #FLG2 [PWR_FLAG]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(408.94 mm, 179.07 mm): Symbol #FLG3 [PWR_FLAG]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(408.94 mm, 193.04 mm): Symbol #FLG4 [PWR_FLAG]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(408.94 mm, 207.01 mm): Symbol #FLG5 [PWR_FLAG]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(408.94 mm, 222.25 mm): Symbol #FLG6 [PWR_FLAG]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(408.94 mm, 236.22 mm): Symbol #FLG7 [PWR_FLAG]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(422.91 mm, 336.55 mm): Symbol U7 [MCP23017_SO]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(422.91 mm, 336.55 mm): Symbol U7 [MCP23017_SO]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(431.80 mm, 293.37 mm): Symbol R43 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(431.80 mm, 308.61 mm): Symbol R44 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(468.63 mm, 62.23 mm): Symbol U5 [ADS1115IDGS]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(468.63 mm, 134.62 mm): Symbol U6 [ADS1115IDGS]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(474.98 mm, 515.62 mm): Symbol D4 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(474.98 mm, 515.62 mm): Symbol D4 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 228.60 mm): Symbol J4 [CONN_5]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 275.59 mm): Symbol J5 [CONN_4]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 317.50 mm): Symbol J6 [CONN_2]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 341.63 mm): Symbol R23 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 356.87 mm): Symbol R24 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 370.84 mm): Symbol R25 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 384.81 mm): Symbol R26 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 400.05 mm): Symbol R27 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 414.02 mm): Symbol R28 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 427.99 mm): Symbol R29 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(506.73 mm, 443.23 mm): Symbol R30 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(527.05 mm, 26.67 mm): Symbol R45 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(527.05 mm, 40.64 mm): Symbol R19 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(527.05 mm, 54.61 mm): Symbol R20 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(527.05 mm, 74.93 mm): Symbol C17 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(527.05 mm, 88.90 mm): Symbol C18 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(527.05 mm, 146.05 mm): Symbol C19 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(527.05 mm, 161.29 mm): Symbol C20 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(546.10 mm, 180.34 mm): Symbol J8 [CONN_3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(546.10 mm, 213.36 mm): Symbol J40 [CONN_3]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(552.45 mm, 515.62 mm): Symbol D5 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(552.45 mm, 515.62 mm): Symbol D5 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 341.63 mm): Symbol R31 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 356.87 mm): Symbol R32 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 370.84 mm): Symbol R33 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 384.81 mm): Symbol R34 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 400.05 mm): Symbol R35 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 414.02 mm): Symbol R36 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 427.99 mm): Symbol R37 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(591.82 mm, 443.23 mm): Symbol R38 [TWO_PIN]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(610.87 mm, 180.34 mm): Symbol J41 [CONN_3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(610.87 mm, 213.36 mm): Symbol J42 [CONN_3]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(629.92 mm, 515.62 mm): Symbol D6 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(629.92 mm, 515.62 mm): Symbol D6 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 341.63 mm): Symbol J91 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 356.87 mm): Symbol J92 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 370.84 mm): Symbol J93 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 384.81 mm): Symbol J94 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 400.05 mm): Symbol J95 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 414.02 mm): Symbol J96 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 427.99 mm): Symbol J97 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 443.23 mm): Symbol J98 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 468.63 mm): Symbol J925 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 482.60 mm): Symbol J927 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(675.64 mm, 496.57 mm): Symbol J929 [TESTPAD]
+[footprint_link_issues]: The current configuration does not include the footprint library 'Daughterboard'
+    ; warning
+    @(708.66 mm, 515.62 mm): Symbol D7 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(708.66 mm, 515.62 mm): Symbol D7 [ESD_ARRAY_4CH]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 341.63 mm): Symbol J99 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 356.87 mm): Symbol J910 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 370.84 mm): Symbol J911 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 384.81 mm): Symbol J912 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 400.05 mm): Symbol J913 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 414.02 mm): Symbol J914 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 427.99 mm): Symbol J915 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 443.23 mm): Symbol J916 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 468.63 mm): Symbol J926 [TESTPAD]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'Daughterboard'
+    ; warning
+    @(760.73 mm, 482.60 mm): Symbol J928 [TESTPAD]
+
+ ** ERC messages: 180  Errors 0  Warnings 180
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

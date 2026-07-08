@@ -1,0 +1,126 @@
+ERC report (2026-05-28T14:04:00, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(15.24 mm, 115.57 mm): Label 'CC1'
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(15.24 mm, 123.19 mm): Label 'CC2'
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(92.71 mm, 144.78 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(93.98 mm, 147.32 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 149.86 mm): Horizontal Wire, length 10.16 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(88.90 mm, 152.40 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 168.91 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(100.33 mm, 171.45 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(97.79 mm, 173.99 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(95.25 mm, 176.53 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(92.71 mm, 179.07 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(90.17 mm, 181.61 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(87.63 mm, 184.15 mm): Horizontal Wire, length 24.13 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(111.76 mm, 134.62 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(109.22 mm, 137.16 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(111.76 mm, 147.32 mm): Horizontal Wire, length 10.16 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(109.22 mm, 149.86 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(133.35 mm, 168.91 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(130.81 mm, 171.45 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(128.27 mm, 173.99 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(125.73 mm, 176.53 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(123.19 mm, 179.07 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(120.65 mm, 181.61 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(118.11 mm, 184.15 mm): Horizontal Wire, length 24.13 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 24.13 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 26.67 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 29.21 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 31.75 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 34.29 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 36.83 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 39.37 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 41.91 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 44.45 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 46.99 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 49.53 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(165.10 mm, 64.77 mm): Horizontal Wire, length 8.89 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(162.56 mm, 67.31 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 69.85 mm): Horizontal Wire, length 13.97 mm
+
+ ** ERC messages: 38  Errors 0  Warnings 38
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

@@ -1,0 +1,22 @@
+Quote readiness check: 2026-05-28T14:05:57
+Schematic netlist: components=36 nets=50
+PCB: footprints=36 netsSeen=50 tracks=452 vias=38 zones=2 [3v3_SW@F.Cu, GND@B.Cu]
+
+Schematic-vs-PCB node mismatches: 0
+
+Selected net route counts:
+  GND: nodes=31 tracks=54 vias=10
+  3v3: nodes=4 tracks=13 vias=2
+  3v3_SW: nodes=15 tracks=66 vias=2
+  5v: nodes=4 tracks=15 vias=1
+  5v_SW: nodes=4 tracks=15 vias=2
+  I2C_SCL: nodes=5 tracks=29 vias=1
+  I2C_SDA: nodes=6 tracks=23 vias=3
+  UART_TX: nodes=3 tracks=20 vias=2
+  UART_RX: nodes=3 tracks=17 vias=1
+  NC: nodes=9 tracks=0 vias=0
+  ALRT: nodes=2 tracks=0 vias=0
+  ON: nodes=2 tracks=0 vias=0
+  OFF: nodes=2 tracks=0 vias=0
+  CC1: nodes=1 tracks=0 vias=0
+  CC2: nodes=1 tracks=0 vias=0
