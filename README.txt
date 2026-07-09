@@ -1,240 +1,185 @@
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|							Anubis RC Controller								|
-|							By BoomBox Robotics								|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|	The goal for the Anubis RC Controller is to create a community driven, open source RC controller that is built from DIY parts	|
-| with all of the features of modern transmitters. We allow our community to fill in the gaps of features wherever they are needed by	|
-| making our code open for anybody to modify. The Anubis RC Controller has been designed to transmit via the built in ELRS module, or	|
-| via ESP-NOW transmission to another WiFi equipped ESP32 programmed as a receiver. Code for both the Transmitter and Receiver can be	|
-| found on our GitHub repo here: https://github.com/BoomBoxRobotics/Anubis								|
-|																	|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|--------|																|
-|Hardware|																|
-|--------|																|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Qty		Item						Source									|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|1		Hosyond 2.8" ESP32-S3 Display			https://www.amazon.com/dp/B0FKG7WRWV?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|2		Mini Pushbutton Power Switch			https://www.pololu.com/product/2808					|
-|2		Radio Master Pocket X5 Gimbals			https://www.fruugo.us/radiomaster-pocket-radio-transmitter-x5-replaceme	|
-|								nt-gimbals/p-307085345-687785683					|
-|1		MP1584EN Mini Buck Converter DC-DC 3A		https://www.amazon.com/dp/B0DC3N7PMY?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|1		MT3608 DC to DC Step Up Boost Converter		https://www.amazon.com/dp/B0DSZ9G3ZS/ref=sspa_dk_hqp_detail_aax_0?psc=	|
-|								1&sp_csd=d2lkZ2V0TmFtZT1zcF9ocXBfc2hhcmVk				|
-|1		PCF8575 IO Expansion Board			https://www.amazon.com/dp/B0F2M5Y2LK?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|2		JST MX 1.25mm 4 Pin Male Connector		https://www.amazon.com/dp/B0FSZJTQKQ?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|								&th=1									|
-|1		5-Channel Navigation Button Switch Module	https://www.amazon.com/dp/B0D8T4YQ3Y?ref=ppx_yo2ov_dt_b_fed_asin_title	|						|
-|1		3,000mAh Lithium Polymer Battery		https://www.amazon.com/YTKavq-3600mAh-Battery-Rechargeable-Connector/dp	|
-|								/B08TTQ3PWT/ref=sr_1_1?crid=2CQJRB58QQLGW&dib=eyJ2IjoiMSJ9.n9yeCi6NzEJ3	|
-|								hD0ceLljFy6-wyO3nz-gFsvsAqpme6EgbiHp2zFb20yixI0C5z7L7Iluxy7F8jhHPuaoDN-	|
-|								m1jLpwyLirwMfkVd8CDKCkqE5sk3rcH1FzgkKNvy-KL_pXCDiUoKF9HLPSeoTeS_GsomF9	|
-|								jCH4hHqGF2_50G9CuzLfjvaJsIVych1eobokgUDJd6POM5R6qzidcX8FnSmUEfcdYb1jNF9	|
-|								0r7FZIny8Zc.NQ8r1z_ITbAhZCPfBiFbQt_Egn72p50ASO21K2ShytE&dib_tag=se&keyw	|
-|								ords=3600mah%2Blipo&qid=1778048277&s=electronics&sprefix=3600mah%2Blipo	|
-|								%2Celectronics%2C265&sr=1-1&th=1					|
-|1		RadioMaster Pocket ELRS Module			https://radiomasterrc.com/products/x5-replacement-gimbals-for-pocket	|						|
-|1		RPSMA to IPEX adapter				https://www.amazon.com/dp/B0931SL6LG?ref=ppx_yo2ov_dt_b_fed_asin_title	|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|						||||	HOSYOND 2.8" ESP32-S3 Display	||||						|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|								Product Parameters							|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|----------------|															|
-|ESP32 Parameters|															|
-|----------------|															|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Item					Parameters											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Module					ESP32-S3											|
-|CPU					Xtensa LX7 32-bit dual-core processor								|
-|Clock rate				240MHz（MAX）											|
-|Memory					384KB ROM+512KB SRAM+16KB RTC SRAM+8M internal OPI PSRAM   +16M external SPI Flash (N16R8)	|
-|WIFI					2.4GHz, 802.11b/g/n mode									|
-|Bluetooth				Bluetooth V5.0 BR/EDR and Bluetooth LE standard							|
-|Operation voltage			3.0~3.6(V)											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|-----------------|															|
-|Screen Parameters|															|
-|-----------------|															|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Item					Parameters											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Screen Size				2.8 inch											|
-|Screen Type				IPS TFT												|
-|Screen resolution			240xRGBx320(pixels)										|
-|Active Area				43.20(W)x57.60(H)(mm)										|
-|Number of pixels			MAX：262K(RGB666)										|
-|TYPE：					65K(RGB565)											|
-|Drive IC				ILI9341V											|
-|Screen interface			4-Line SPI											|
-|pixels size				0.153(H)x0.153(mm)										|
-|View Angle				ALL 0’CLOCK											|
-|Luminance(TYP)				280 cd/m2											|
-|Backlight Type				White LED*4											|
-|Operation Temperature			-30~80(℃)											|
-|Storage Temperature			-30~80(℃)											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|-----------------------|														|
-|Touch Screen Parameters|														|
-|-----------------------|														|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Item					Parameters											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Effective area size			2.8 inch											|
-|Touch screen type			Capacitive touch screen										|
-|Valid Area				240x320(pixels)											|
-|Drive IC				D-FT6336G											|
-|Visual Area				45.20(W)x59.45(H)(mm)										|
-|interface				IIC												|
-|Operation Temperature			-30~80(℃)											|
-|Storage Temperature			-30~80(℃)											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|---------------|															|
-|Size Parameters|															|
-|---------------|															|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Item					Parameters											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|LCD screen size			50.00±0.2(W)x69.20±0.2(H)x2.3±0.1(D)								|
-|Touch screen size			50.00±0.2(W)x69.20±0.2(H)x1.20 (D) ±0.1(D)							|
-|Product size				Touch screen：50.00(W)x86.00(H)x10.60(D)								|
-|					No Touch screen：50.00(W)x86.00(H)x9.10(D)							|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|---------------------------|														|
-|Battery Charging Parameters|														|
-|---------------------------|														|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Item					Parameters											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Charging voltage			Range: 4.2~6.5(V)										|
-|					Typical value: 5V										|
-|																	|
-|Charging current			Maximum: 500mA											|
-|					Actual value of module: 290mA									|
-|																	|
-|Charging saturation voltage		4.24V												|
-|Charging temperature			62℃												|
-|Charging battery specifications	3.7V polymer lithium battery									|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|---------------------|															|
-|Electrical Parameters|															|
-|---------------------|															|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Item					Parameters											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Operation Temperature			5.0V												|
-|Backlight current			79mA												|
-|Backlight brightness(actual value)	touch screen：230cd/m2										|
-|					Touchless screen：270cd/m2									|
-|																	|
-|Total current				ESP32-S3 reset: 0										|
-|					Only display works: 140 Display, speaker, battery charging all work: 560			|
-|																	|
-|Power					0.7（Only the display works)									|
-|					2.8（Display, speaker, battery charging all work)						|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|--------------------|															|
-|Interface Parameters|															|
-|--------------------|															|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Item					Parameters											|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|ESP32-S3				Main control of the display module, controlling on-board and external peripherals		|
-|																	|
-|MicroSD Interface			Insert a Micro SD card to expand the storage space, such as storing font library, pictures,	|
-|					audio files and other large data content.							|
-|																	|
-|RGB					LED lights with red, green, and blue colors, controlled by a single IO port.			|
-|																	|
-|UART					1.25mm 4P socket. Can be used for serial port debugging, downloading and communication. An	|
-|					external USB to serial port module is required							|
-|																	|
-|Battery interface			1.25mm 2P socket. Used to connect to 3.7V polymer lithium battery, charge the battery through	|
-|					the battery charging management circuit, also used for battery power |supply. Note the positive	|
-|					and negative terminals of the interface								|
-|																	|
-|BOOT key				For entering the download mode or key test. Press and hold this key to power up,		|
-|					then release to enter the download mode, or after powering up, and hold this key, then press	|
-|					the RESET key, release the RESET key and then release this key, you can also enter the download	|
-|					mode. When it is not necessary enter the download mode, this key can be used as a normal key.	|
-|																	|
-|TYPE-C interface			For module power and program downloading. This interface is connected to the one-key download	|
-|					circuit on the module, which can realize automatic entry into the |download mode (without the	|
-|					BOOT key).											|
-|																	|
-|RESET key				For ESP32S3 main control and LCD reset, press to reset the level.				|
-|																	|
-|Expand pin				1.25mm 4P socket. Pins GPIO2/3/14/21 are brought out						|
-|																	|
-|Horn interface				1.25mm 2P socket. For connecting to speaker to play audio. For connecting to speaker to play	|
-|					audio (max 1.5W(Ω) or 2W (4Ω) speaker).								|
-|																	|
-|IIC interface				1.25mm 4P socket. For external SPI communication device, this SPI interface and MicroSD share.	|
-|					Can be used as ordinary IO1.25mm 4P socket. For external IIC communication |device, this IIC	|
-|					interface and capacitive touch screen share. Can be used as ordinary.				|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|--------------------|															|
-|ESP32 Pin Parameters|															|
-|--------------------|															|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Device					Pin					Pin Parameters						|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|LCD					IO10					LCD screen chip select control signal, low level active	|
-|					IO46					LCD command/data select control signal;			|
-|										High level: data; low level: command.			|
-|																	|
-|					IO12					LCD SPI bus clock signal				|
-|					IO11					LCD SPI bus write data signal				|
-|					IO13					LCD SPI bus read data signal				|
-|					RST					LCD reset control signal, low level reset (share reset	|
-|										pin with ESP32-S3 main control)				|
-|					IO45					LCD backlight control signal (high level to turn on	|
-|										backlight, low level to turn off backlight)		|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Touch Screen				IO16					Capacitive touch screen I2C bus data signal		|
-|					IO15					Capacitive touch screen I2C bus clock signal		|
-|					IO18					Capacitive touch screen reset control signal, low level	|
-|										reset							|
-|					IO17					Capacitive touch screen interrupt input signal, low	|
-|										level input when a touch event occurs.			|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|RGB					IO42					Single-line RGB three-color LED light, which can	|
-|										control the internal red, green, and blue three kinds	|
-|										of light beads separately according to different signals|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|MicroSD				IO38					SD card SDIO bus clock signal				|
-|					IO40					SD card SDIO bus command signal				|
-|					IO39					SD card SDIO bus data signals (DATA0~DATA3 four data	|
-|					IO41					lines (39/41/47/48)					|
-|					IO48												|
-|					IO47												|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Audio					IO1					Audio output enable signal, low level enable, high	|
-|										level disable.						|
-|					IO4					Audio I2S bus master clock signal			|
-|					IO5					Audio I2S bus bit clock signal				|
-|					IO6					Audio I2S bus bit output data signal			|
-|					IO7					Audio I2S bus left and right channel selection signal.	|
-|										High level: right channel; low level: left channel.	|
-|					IO8					Audio I2S bus bit input data signal			|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Key					IO0					Download mode selection key (hold this key to power on,	|
-|										then release to enter download mode)			|
-|					EN					ESP32-s3 reset button, low level reset (share with LCD	|
-|										reset)							|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Uart					RXD0(IO43)				ESP32-S3 UART0 RX signal				|
-|					TXD0(IO44)				ESP32-S3 UART0 TX signal				|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|BATTERY				IO9					Battery voltage ADC value acquisition input signal	|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|Expand pin				IO2					Can be used as a normal IO (ADS)			|
-|					IO3					Can be used as a normal IO (ADS)			|
-|					IO14					Can be used as a normal IO (ADS)			|
-|					IO21					Can be used as a normal IO (Digital Only)		|
-|---------------------------------------------------------------------------------------------------------------------------------------|
-|IIC interface				IO16					I2C bus data signal					|
-|					IO15					I2C bus clock signal					|
-|---------------------------------------------------------------------------------------------------------------------------------------|
+# Anubis RC Controller Daughterboard
+
+Anubis is an open hardware and open firmware RC controller project built around accessible DIY parts, modern radio-control features, and a design that can be modified by the community instead of locked behind a black box.
+
+This repository contains the custom daughterboard for the Anubis controller. The board is designed to sit under a Hosyond 2.8 inch ESP32-S3 display board and turn the wiring-heavy prototype into a cleaner, more repeatable hardware platform.
+
+The goal is simple: make a capable, repairable, hackable transmitter that builders can assemble, understand, modify, and improve.
+
+## Why This Board Exists
+
+The first version of Anubis used off-the-shelf modules wired together by hand: display board, power switches, regulators, analog input boards, GPIO expanders, gimbal connectors, and radio wiring. That approach is great for proving an idea, but it gets messy quickly.
+
+This daughterboard replaces that loose wiring with a purpose-built PCB. It provides battery power management, switched accessory rails, onboard analog and GPIO expansion, and connector breakouts for the controller hardware. The Hosyond ESP32-S3 board remains the main brain and user interface, while this board handles the support electronics around it.
+
+Anubis is intended for experimentation as much as use. Builders should be able to change pin mappings, swap modules, adapt connectors, and tune the firmware for their own transmitter layout.
+
+## Core Design Goals
+
+- Use common, hobby-accessible parts where possible.
+- Keep the project open enough for community modification.
+- Support modern RC workflows such as ELRS and ESP-NOW.
+- Reduce hand wiring compared with the early prototype.
+- Make the board practical for JLCPCB assembly.
+- Keep power to external accessories switchable so the controller can shut down attached devices cleanly.
+- Leave room for manual wiring where real-world modules and harnesses vary.
+
+## Current Hardware Overview
+
+The daughterboard is designed around the Hosyond 2.8 inch ESP32-S3 display/dev board. The Hosyond board provides the ESP32-S3, TFT display, touch input, USB programming interface, audio hardware, battery ADC input, UART, I2C, and expansion GPIO.
+
+The daughterboard adds:
+
+- USB-C 5 V input for charging/power input.
+- 2S battery connection through a standard 2S LiPo balance connector.
+- Support for a 2S LiPo pack or two 18650 cells configured as a 2S pack.
+- 2S battery gauge/protection circuitry based around `BQ28Z610DRZR-R1`.
+- Dual-FET protection/power path using `CSD83325L`.
+- Switched 5 V rail for UART/ELRS-side accessories.
+- Switched 3.3 V rail for I2C, analog, and low-voltage peripherals.
+- Two Pololu mini pushbutton power switch modules for rail control.
+- Two onboard ADS1115 ADC circuits for up to eight analog inputs.
+- One onboard MCP23017 GPIO expander for buttons and digital expansion.
+- JST and pin-header breakouts for UART, I2C, GPIO, gimbals, and accessory wiring.
+- ESD protection for external signal connections.
+- Ground plane and wider routing rules for higher-current power paths.
+
+The current rail targets are:
+
+| Rail | Intended Use | Approximate Max Current |
+| --- | --- | --- |
+| USB-C input | 5 V charge/input source | 500 mA to 1.5 A charge target |
+| `+5V_SW` | ELRS/UART-side accessory power | about 1 A |
+| `+3V3_SW` | I2C, ADCs, MCP23017, gimbals, sensors | about 500 mA |
+
+## Firmware Relationship
+
+The daughterboard is part of the larger Anubis controller project. The main firmware lives in the companion Anubis firmware project and runs on the Hosyond ESP32-S3 board.
+
+The firmware currently includes:
+
+- Touchscreen UI for transmitter settings.
+- Model storage and configuration.
+- Stick calibration.
+- Expo, rates, trims, endpoints, failsafe, and mixing.
+- ELRS/CRSF support over UART.
+- ESP-NOW transmitter support.
+- ADS1115 analog stick input support.
+- MCP23017/PCF8575-style button and accessory support.
+- Battery monitoring and deep-sleep behavior.
+
+Current important firmware pin expectations include:
+
+| Function | ESP32-S3 Pin |
+| --- | --- |
+| I2C SDA | GPIO16 |
+| I2C SCL | GPIO15 |
+| ELRS/UART TX | GPIO44 |
+| ELRS/UART RX | GPIO43 |
+| Battery ADC | GPIO9 |
+
+Some pin assignments are intentionally flexible. For example, GPIO2/GPIO3 and GPIO14/GPIO21 may be reassigned in software depending on how the physical daughterboard and front-panel controls are wired. Likewise, UART-to-ELRS wiring can be crossed manually if a specific module harness expects the opposite order.
+
+## Radio and Control Hardware
+
+The controller is being designed around parts that are easy for hobby builders to source or substitute:
+
+- Hosyond 2.8 inch ESP32-S3 display board as the main controller.
+- RadioMaster Pocket/Zorro X5-style gimbals.
+- ELRS module support through UART/CRSF.
+- Optional ESP-NOW receiver support for WiFi-equipped ESP32 receivers.
+- D-pad/button input through the MCP23017 GPIO expander.
+- Auxiliary analog inputs through the ADS1115 circuits.
+
+The mechanical layout is designed to fit around the Hosyond board and controller shell constraints. The Hosyond board sits above the daughterboard on standoffs, with the daughterboard occupying the surrounding and lower internal space.
+
+## Repository Contents
+
+Important project files:
+
+| Path | Purpose |
+| --- | --- |
+| `Daughterboard.kicad_pro` | KiCad project file |
+| `Daughterboard.kicad_sch` | Main schematic |
+| `Daughterboard.kicad_pcb` | PCB layout |
+| `Daughterboard.kicad_sym` | Project symbols |
+| `Daughterboard.pretty/` | Custom KiCad footprints |
+| `Daughterboard.net` | Exported netlist |
+| `Daughterboard_pcb_bom.csv` | Human-readable PCB BOM |
+| `Daughterboard_current_jlc_part_audit.csv` | JLC part audit/reference |
+| `fabrication/` | Current fabrication and assembly outputs |
+| `daughterboard2.dxf` | Board outline reference |
+| `Daughterboardv2.step` | Mechanical board reference |
+| `PROJECT_CONTEXT.md` | Detailed working context for future development |
+
+Current fabrication package:
+
+```text
+fabrication/jlcpcb_2026-07-06_r12.zip
+```
+
+This package is intended for JLCPCB board fabrication. Assembly files are included under:
+
+```text
+fabrication/jlcpcb_2026-07-06_r12/assembly/
+```
+
+## Manufacturing Notes
+
+The board is being prepared for JLCPCB assembly with as many populated parts as practical. The Pololu mini pushbutton power switch modules are treated as separately installed modules. Some through-hole headers may also be hand-installed unless through-hole assembly is explicitly ordered.
+
+Before ordering boards, always check:
+
+- KiCad ERC and DRC reports.
+- Copper clearance and board-edge clearance.
+- Unrouted nets.
+- Connector orientation.
+- IC pin 1 orientation.
+- JLCPCB part availability.
+- BOM and CPL alignment in the JLCPCB preview.
+
+Known current status from the latest R12 fabrication pass:
+
+- ERC reports no errors or warnings.
+- DRC contains known/accepted clearance and silkscreen warnings.
+- The known clearance items are around the battery-management IC package and are small differences from the configured rule.
+- Silkscreen warnings should not normally prevent fabrication.
+- Copper, drill, outline, missing-net, and footprint-orientation issues should be treated as critical.
+
+## Battery and Power Safety
+
+This board works with lithium battery packs and charging/protection circuitry. That means mistakes can damage hardware or create a safety hazard.
+
+Do not assume a PCB revision is safe just because the schematic opens or the Gerbers generate. Review the battery path, charger configuration, protection FETs, current limits, connector polarity, and pack wiring before connecting real cells.
+
+Use protected cells or a known-good 2S pack during testing, current-limit the first power-up, and verify rails with a meter before plugging in the Hosyond board or radio hardware.
+
+## Project Status
+
+This hardware is still a work in progress. The current board has been through several schematic, layout, footprint, BOM, and JLCPCB preparation passes, but it should still be treated as a prototype until assembled boards are tested.
+
+Open work includes:
+
+- Validate the physical PCB after manufacturing.
+- Confirm all connector orientations in the assembled board.
+- Update firmware for the final GPIO assignments.
+- Update firmware battery handling for the 2S power system.
+- Add or refine support for the second ADS1115 if all eight analog inputs are used.
+- Test ELRS and ESP-NOW behavior in the finished controller.
+- Document assembly steps after the first successful build.
+
+## Contributing
+
+Anubis is meant to be community driven. Contributions are welcome in the form of firmware changes, PCB review, mechanical improvements, documentation, testing notes, alternate part suggestions, and build reports.
+
+If you change the hardware, include enough context for another builder to understand why the change was made. If you change the firmware, document the pin assumptions and hardware revision you tested against.
+
+## Companion Project
+
+The firmware and receiver-side code for the broader Anubis controller project are hosted with the main project:
+
+```text
+https://github.com/BoomBoxRobotics/Anubis
+```
+
+This daughterboard is one hardware path toward that larger goal: a capable open source RC controller that builders can actually understand, repair, and make their own.
