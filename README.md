@@ -1,18 +1,32 @@
 # Anubis RC Controller Daughterboard
 
-Anubis is an open hardware and open firmware RC controller project built around accessible DIY parts, modern radio-control features, and a design that can be modified by the community instead of locked behind a black box.
+**A compact open-hardware support board for a DIY ESP32-S3 RC transmitter.**
 
-This repository contains the custom daughterboard for the Anubis controller. The board is designed to sit under a Hosyond 2.8 inch ESP32-S3 display board and turn the wiring-heavy prototype into a cleaner, more repeatable hardware platform.
+Anubis is an open hardware and open firmware RC controller project built around accessible DIY parts, modern radio-control features, and a design that builders can understand, repair, modify, and improve.
 
-The goal is simple: make a capable, repairable, hackable transmitter that builders can assemble, understand, modify, and improve.
+This repository contains the custom daughterboard for the Anubis controller. It sits under a Hosyond 2.8 inch ESP32-S3 display board and turns the early wiring-heavy prototype into a cleaner, more repeatable hardware platform.
 
-## Why This Board Exists
+## Mission
 
-The first version of Anubis used off-the-shelf modules wired together by hand: display board, power switches, regulators, analog input boards, GPIO expanders, gimbal connectors, and radio wiring. That approach is great for proving an idea, but it gets messy quickly.
+The goal is simple: make a capable, repairable, hackable transmitter that is not locked behind a black box.
 
-This daughterboard replaces that loose wiring with a purpose-built PCB. It provides battery power management, switched accessory rails, onboard analog and GPIO expansion, and connector breakouts for the controller hardware. The Hosyond ESP32-S3 board remains the main brain and user interface, while this board handles the support electronics around it.
+The first Anubis prototype used off-the-shelf modules wired together by hand: display board, power switches, regulators, analog input boards, GPIO expanders, gimbal connectors, and radio wiring. That is a great way to prove an idea, but it gets messy fast. This daughterboard pulls those support circuits onto a purpose-built PCB while leaving the Hosyond ESP32-S3 board as the main brain, display, touch interface, and firmware target.
 
-Anubis is intended for experimentation as much as use. Builders should be able to change pin mappings, swap modules, adapt connectors, and tune the firmware for their own transmitter layout.
+Anubis is meant for experimentation as much as use. Builders should be able to change pin mappings, adapt connectors, swap radio hardware, and tune the firmware for their own transmitter layout.
+
+## At A Glance
+
+| Area | Current Direction |
+| --- | --- |
+| Main controller | Hosyond 2.8 inch ESP32-S3 display/dev board |
+| Battery system | 2S LiPo or two 18650 cells as a 2S pack |
+| Charging input | USB-C 5 V input, 500 mA to 1.5 A charge target |
+| Switched outputs | `+5V_SW` and `+3V3_SW` accessory rails |
+| Analog inputs | Two onboard ADS1115 ADCs, up to 8 analog channels |
+| GPIO expansion | MCP23017 16-bit I2C GPIO expander |
+| Radio paths | ELRS/CRSF over UART and optional ESP-NOW |
+| Assembly goal | As much JLCPCB assembly as practical |
+| Project status | Prototype hardware, ready for assembled-board validation |
 
 ## Core Design Goals
 
@@ -21,17 +35,15 @@ Anubis is intended for experimentation as much as use. Builders should be able t
 - Support modern RC workflows such as ELRS and ESP-NOW.
 - Reduce hand wiring compared with the early prototype.
 - Make the board practical for JLCPCB assembly.
-- Keep power to external accessories switchable so the controller can shut down attached devices cleanly.
+- Keep external accessory power switchable from firmware.
 - Leave room for manual wiring where real-world modules and harnesses vary.
 
-## Current Hardware Overview
+## Hardware Overview
 
-The daughterboard is designed around the Hosyond 2.8 inch ESP32-S3 display/dev board. The Hosyond board provides the ESP32-S3, TFT display, touch input, USB programming interface, audio hardware, battery ADC input, UART, I2C, and expansion GPIO.
+The daughterboard adds the support electronics around the Hosyond ESP32-S3 board:
 
-The daughterboard adds:
-
-- USB-C 5 V input for charging/power input.
-- 2S battery connection through a standard 2S LiPo balance connector.
+- USB-C 5 V input for charging and power input.
+- Standard 2S LiPo balance connector for the battery pack.
 - Support for a 2S LiPo pack or two 18650 cells configured as a 2S pack.
 - 2S battery gauge/protection circuitry based around `BQ28Z610DRZR-R1`.
 - Dual-FET protection/power path using `CSD83325L`.
@@ -40,11 +52,11 @@ The daughterboard adds:
 - Two Pololu mini pushbutton power switch modules for rail control.
 - Two onboard ADS1115 ADC circuits for up to eight analog inputs.
 - One onboard MCP23017 GPIO expander for buttons and digital expansion.
-- JST and pin-header breakouts for UART, I2C, GPIO, gimbals, and accessory wiring.
+- JST and pin-header breakouts for UART, I2C, GPIO, gimbals, and accessories.
 - ESD protection for external signal connections.
 - Ground plane and wider routing rules for higher-current power paths.
 
-The current rail targets are:
+## Power Rails
 
 | Rail | Intended Use | Approximate Max Current |
 | --- | --- | --- |
@@ -52,11 +64,11 @@ The current rail targets are:
 | `+5V_SW` | ELRS/UART-side accessory power | about 1 A |
 | `+3V3_SW` | I2C, ADCs, MCP23017, gimbals, sensors | about 500 mA |
 
-## Firmware Relationship
+The switched rails are controlled through the two Pololu #2808 mini pushbutton power switch modules. The ESP32-S3 can shut down attached devices without relying on the attached devices to behave nicely.
 
-The daughterboard is part of the larger Anubis controller project. The main firmware lives in the companion Anubis firmware project and runs on the Hosyond ESP32-S3 board.
+## Firmware Map
 
-The firmware currently includes:
+The main Anubis firmware runs on the Hosyond ESP32-S3 board. Current daughterboard-aware firmware support includes:
 
 - Touchscreen UI for transmitter settings.
 - Model storage and configuration.
@@ -64,11 +76,11 @@ The firmware currently includes:
 - Expo, rates, trims, endpoints, failsafe, and mixing.
 - ELRS/CRSF support over UART.
 - ESP-NOW transmitter support.
-- ADS1115 analog stick input support.
-- MCP23017/PCF8575-style button and accessory support.
+- Dual ADS1115 support for onboard analog inputs at `0x48` and `0x49`.
+- MCP23017 GPIO expander support at `0x20`.
 - Battery monitoring and deep-sleep behavior.
 
-Current important firmware pin expectations include:
+### Pin Assignments
 
 | Function | ESP32-S3 Pin |
 | --- | --- |
@@ -77,12 +89,25 @@ Current important firmware pin expectations include:
 | ELRS/UART TX | GPIO44 |
 | ELRS/UART RX | GPIO43 |
 | Battery ADC | GPIO9 |
+| 5 V rail switch control | GPIO2 |
+| 3.3 V rail switch control | GPIO3 |
+| Deep-sleep/wake button sense | GPIO14 |
+| Deep-sleep/wake button reference | GPIO21 |
 
-Some pin assignments are intentionally flexible. For example, GPIO2/GPIO3 and GPIO14/GPIO21 may be reassigned in software depending on how the physical daughterboard and front-panel controls are wired. Likewise, UART-to-ELRS wiring can be crossed manually if a specific module harness expects the opposite order.
+GPIO2 and GPIO3 control the two Pololu rail-switch modules. GPIO14 and GPIO21 route to the two-pin deep-sleep/wake pushbutton header. UART-to-ELRS wiring can still be crossed manually if a specific module harness expects the opposite order.
 
-## Radio and Control Hardware
+### I2C Devices
 
-The controller is being designed around parts that are easy for hobby builders to source or substitute:
+| Device | Address | Role |
+| --- | --- | --- |
+| ADS1115 primary | `0x48` | Four gimbal/stick analog axes |
+| ADS1115 auxiliary | `0x49` | Spare analog inputs |
+| MCP23017 | `0x20` | GPIO expansion and active-low button/switch inputs |
+| BQ25887 charger | `0x6B` | 2S charger status and pack voltage reporting |
+
+## Control Hardware
+
+The controller is designed around parts that are easy for hobby builders to source or substitute:
 
 - Hosyond 2.8 inch ESP32-S3 display board as the main controller.
 - RadioMaster Pocket/Zorro X5-style gimbals.
@@ -91,11 +116,9 @@ The controller is being designed around parts that are easy for hobby builders t
 - D-pad/button input through the MCP23017 GPIO expander.
 - Auxiliary analog inputs through the ADS1115 circuits.
 
-The mechanical layout is designed to fit around the Hosyond board and controller shell constraints. The Hosyond board sits above the daughterboard on standoffs, with the daughterboard occupying the surrounding and lower internal space.
+The mechanical layout fits around the Hosyond board and controller shell constraints. The Hosyond board sits above the daughterboard on standoffs, with the daughterboard occupying the surrounding and lower internal space.
 
 ## Repository Contents
-
-Important project files:
 
 | Path | Purpose |
 | --- | --- |
@@ -107,7 +130,7 @@ Important project files:
 | `Daughterboard.net` | Exported netlist |
 | `Daughterboard_pcb_bom.csv` | Human-readable PCB BOM |
 | `Daughterboard_current_jlc_part_audit.csv` | JLC part audit/reference |
-| `fabrication/` | Current fabrication and assembly outputs |
+| `fabrication/` | Fabrication and assembly outputs |
 | `daughterboard2.dxf` | Board outline reference |
 | `Daughterboardv2.step` | Mechanical board reference |
 | `PROJECT_CONTEXT.md` | Detailed working context for future development |
@@ -118,7 +141,7 @@ Current fabrication package:
 fabrication/jlcpcb_2026-07-06_r12.zip
 ```
 
-This package is intended for JLCPCB board fabrication. Assembly files are included under:
+Assembly files are included under:
 
 ```text
 fabrication/jlcpcb_2026-07-06_r12/assembly/
@@ -146,25 +169,25 @@ Known current status from the latest R12 fabrication pass:
 - Silkscreen warnings should not normally prevent fabrication.
 - Copper, drill, outline, missing-net, and footprint-orientation issues should be treated as critical.
 
-## Battery and Power Safety
+## Battery And Power Safety
 
-This board works with lithium battery packs and charging/protection circuitry. That means mistakes can damage hardware or create a safety hazard.
+This board works with lithium battery packs and charging/protection circuitry. Mistakes can damage hardware or create a safety hazard.
 
 Do not assume a PCB revision is safe just because the schematic opens or the Gerbers generate. Review the battery path, charger configuration, protection FETs, current limits, connector polarity, and pack wiring before connecting real cells.
 
-Use protected cells or a known-good 2S pack during testing, current-limit the first power-up, and verify rails with a meter before plugging in the Hosyond board or radio hardware.
+Use protected cells or a known-good 2S pack during testing. Current-limit the first power-up and verify rails with a meter before plugging in the Hosyond board or radio hardware.
 
 ## Project Status
 
-This hardware is still a work in progress. The current board has been through several schematic, layout, footprint, BOM, and JLCPCB preparation passes, but it should still be treated as a prototype until assembled boards are tested.
+This hardware is still a prototype until assembled boards are tested.
 
 Open work includes:
 
 - Validate the physical PCB after manufacturing.
 - Confirm all connector orientations in the assembled board.
-- Update firmware for the final GPIO assignments.
-- Update firmware battery handling for the 2S power system.
-- Add or refine support for the second ADS1115 if all eight analog inputs are used.
+- Test the updated firmware GPIO assignments against the first assembled daughterboard.
+- Verify 2S battery reporting and charger/fuel-gauge behavior on hardware.
+- Confirm the auxiliary ADS1115 inputs and MCP23017 pads behave as expected with real devices attached.
 - Test ELRS and ESP-NOW behavior in the finished controller.
 - Document assembly steps after the first successful build.
 
