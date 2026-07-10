@@ -105,6 +105,102 @@ GPIO2 and GPIO3 control the two Pololu rail-switch modules. GPIO14 and GPIO21 ro
 | MCP23017 | `0x20` | GPIO expansion and active-low button/switch inputs |
 | BQ25887 charger | `0x6B` | 2S charger status and pack voltage reporting |
 
+## Board Connection Reference
+
+The following tables describe the designators and nets on the R14 PCB. Pin numbers are the KiCad footprint pin numbers and should be checked against connector orientation and pin-1 markings before making a cable.
+
+### Electrical Test Pads
+
+| Pad | Net | Signal source or intended measurement |
+| --- | --- | --- |
+| `TP1` | `USB_VBUS` | USB-C `J1` VBUS, before input fuse `F1` |
+| `TP2` | `CHG_IN` | Fused USB input after `F1`; charger `U1` pin 23 |
+| `TP3` | `BAT_SYS` | Protected battery/system bus feeding charger `U1` BAT pins and the 5 V/3.3 V regulators |
+| `TP4` | `CELL_MID` | 2S pack midpoint from `J7` pin 2; charger `U1` pin 9 sense connection |
+| `TP5` | `BAT_SYS` | Second protected battery/system-bus test point; electrically the same as `TP3` |
+| `TP6` | `+5V` | Unswitched 5 V regulator output after `L1`, before Pololu switch `SW1` |
+| `TP7` | `+3V3` | Unswitched 3.3 V regulator output after `L2`, before Pololu switch `SW2` |
+| `TP9` | `+3V3_SW` | Switched 3.3 V output from `SW2` |
+| `TP10` | `CHG_STAT` | Charger `U1` pin 2 charge-status output; also drives status LED `D2` |
+| `TP11` | `PG_STAT` | Charger `U1` pin 1 power-good output; also drives status LED `D3` |
+| `TP12` | `BATT_RAW_N` | Raw pack negative from `J7` pin 1, on the battery side of current-sense resistor `R46` |
+| `TP13` | `BATT_RAW_P` | Raw pack positive from `J7` pin 3 |
+| `TP14` | `GND` | System ground, on the system side of current-sense resistor `R46` |
+| `TP15` | `AIN4` | Auxiliary ADC `U6` (`0x49`) AIN0, pin 4 |
+| `TP16` | `AIN5` | Auxiliary ADC `U6` (`0x49`) AIN1, pin 5 |
+| `TP17` | `AIN6` | Auxiliary ADC `U6` (`0x49`) AIN2, pin 6 |
+| `TP18` | `AIN7` | Auxiliary ADC `U6` (`0x49`) AIN3, pin 7 |
+
+`TP8` is not fitted on the R14 PCB. Use `J30` or `J4` pin 1 to access `+5V_SW`. Also note that `BATT_RAW_N` and `GND` are separated by the 2 mOhm current-sense resistor; do not treat `TP12` and `TP14` as interchangeable measurement points.
+
+### Hosyond Manual Solder Pads
+
+These pads replace the original `J3` connector so individual wires from the Hosyond board can be soldered directly to the daughterboard.
+
+| Pad | Net | Hosyond/source mapping |
+| --- | --- | --- |
+| `J30` | `+5V_SW` | Switched 5 V output from `SW1`; also available at `J4` pin 1 |
+| `J31` | `UART_TX` | Hosyond ESP32-S3 GPIO44; routed to `J4` pin 3 |
+| `J32` | `UART_RX` | Hosyond ESP32-S3 GPIO43; routed to `J4` pin 4 |
+| `J33` | `I2C_SDA` | Hosyond ESP32-S3 GPIO16; shared daughterboard I2C data bus |
+| `J34` | `I2C_SCL` | Hosyond ESP32-S3 GPIO15; shared daughterboard I2C clock bus |
+| `J35` | `GPIO2` | Hosyond ESP32-S3 GPIO2; drives `SW1` 5 V control through `R17` |
+| `J36` | `GPIO3` | Hosyond ESP32-S3 GPIO3; drives `SW2` 3.3 V control through `R18` |
+| `J37` | `GPIO14` | Hosyond ESP32-S3 GPIO14; routed to wake-button header `J6` pin 1 |
+| `J38` | `GPIO21` | Hosyond ESP32-S3 GPIO21; routed to wake-button header `J6` pin 2 |
+| `J39` | `GND` | Daughterboard system ground |
+
+### MCP23017 Manual Solder Pads
+
+The `EXP_*` GPIO pads are on the protected external side of a 100 ohm series resistor and an ESD array. `U7` is the MCP23017 at I2C address `0x20`.
+
+| Pad | Net | Source |
+| --- | --- | --- |
+| `J91` | `EXP_GPA0` | `U7` GPA0 pin 21 through `R23`; ESD `D4` |
+| `J92` | `EXP_GPA1` | `U7` GPA1 pin 22 through `R24`; ESD `D4` |
+| `J93` | `EXP_GPA2` | `U7` GPA2 pin 23 through `R25`; ESD `D4` |
+| `J94` | `EXP_GPA3` | `U7` GPA3 pin 24 through `R26`; ESD `D4` |
+| `J95` | `EXP_GPA4` | `U7` GPA4 pin 25 through `R27`; ESD `D5` |
+| `J96` | `EXP_GPA5` | `U7` GPA5 pin 26 through `R28`; ESD `D5` |
+| `J97` | `EXP_GPA6` | `U7` GPA6 pin 27 through `R29`; ESD `D5` |
+| `J98` | `EXP_GPA7` | `U7` GPA7 pin 28 through `R30`; ESD `D5` |
+| `J99` | `EXP_GPB0` | `U7` GPB0 pin 1 through `R31`; ESD `D6` |
+| `J910` | `EXP_GPB1` | `U7` GPB1 pin 2 through `R32`; ESD `D6` |
+| `J911` | `EXP_GPB2` | `U7` GPB2 pin 3 through `R33`; ESD `D6` |
+| `J912` | `EXP_GPB3` | `U7` GPB3 pin 4 through `R34`; ESD `D6` |
+| `J913` | `EXP_GPB4` | `U7` GPB4 pin 5 through `R35`; ESD `D7` |
+| `J914` | `EXP_GPB5` | `U7` GPB5 pin 6 through `R36`; ESD `D7` |
+| `J915` | `EXP_GPB6` | `U7` GPB6 pin 7 through `R37`; ESD `D7` |
+| `J916` | `EXP_GPB7` | `U7` GPB7 pin 8 through `R38`; ESD `D7` |
+| `J925` | `MCP_INTA` | `U7` INTA pin 20 with pull-up `R43` |
+| `J926` | `MCP_INTB` | `U7` INTB pin 19 with pull-up `R44` |
+| `J927` | `MCP_RESET` | `U7` RESET pin 18 with pull-up `R42` and capacitor `C29` |
+| `J928` | `+3V3_SW_LOGIC` | Switched 3.3 V logic rail after isolation link `R45` |
+| `J929` | `GND` | Daughterboard system ground |
+
+### Connector Pinouts
+
+| Connector | Purpose | Pinout |
+| --- | --- | --- |
+| `J1` | USB-C 5 V input | A5 = `CC1`; B5 = `CC2`; A9/B9 = `USB_VBUS`; A12/B12 = `GND`; shield tabs = `GND` |
+| `J4` | 5-pin UART JST-GH, top-entry, 1.25 mm | 1 = `+5V_SW`; 2 = `GND`; 3 = `UART_TX`; 4 = `UART_RX`; 5 = `GND` |
+| `J5` | 4-pin I2C through-hole header, 2.54 mm | 1 = `+3V3_SW`; 2 = `GND`; 3 = `I2C_SDA`; 4 = `I2C_SCL` |
+| `J6` | 2-pin deep-sleep/wake button header, 2.54 mm | 1 = `GPIO14`; 2 = `GPIO21`; a momentary button connects the two pins |
+| `J7` | 2S balance input, side-entry JST-XH, 2.50 mm | 1 = `BATT_RAW_N`; 2 = `CELL_MID`; 3 = `BATT_RAW_P` |
+| `J8` | Left gimbal A, 3-pin JST-GH, 1.25 mm | 1 = `GND`; 2 = `AIN0`; 3 = `+3V3_SW` |
+| `J40` | Left gimbal B, 3-pin JST-GH, 1.25 mm | 1 = `GND`; 2 = `AIN1`; 3 = `+3V3_SW` |
+| `J41` | Right gimbal A, 3-pin JST-GH, 1.25 mm | 1 = `GND`; 2 = `AIN2`; 3 = `+3V3_SW` |
+| `J42` | Right gimbal B, 3-pin JST-GH, 1.25 mm | 1 = `GND`; 2 = `AIN3`; 3 = `+3V3_SW` |
+
+`J2` is a schematic-only switched-power-output symbol and has no footprint on the R14 PCB. `J3` is not a physical connector; its signals are implemented as solder pads `J30` through `J39`. JST-GH mounting pads marked `MP` are mechanical and have no electrical connection.
+
+### Pololu Power-Switch Module Headers
+
+| Header | Pin 1 | Pin 2 | Pin 3 | Pin 4 |
+| --- | --- | --- | --- | --- |
+| `SW1` Pololu #2808 5 V switch | `+5V` input | `+5V_SW` output | `GND` | `CTRL_5V_SW` |
+| `SW2` Pololu #2808 3.3 V switch | `+3V3` input | `+3V3_SW` output | `GND` | `CTRL_3V3_SW` |
+
 ## Control Hardware
 
 The controller is designed around parts that are easy for hobby builders to source or substitute:
@@ -138,13 +234,13 @@ The mechanical layout fits around the Hosyond board and controller shell constra
 Current fabrication package:
 
 ```text
-fabrication/jlcpcb_2026-07-10_r13.zip
+fabrication/jlcpcb_2026-07-10_r14.zip
 ```
 
 Assembly files are included under:
 
 ```text
-fabrication/jlcpcb_2026-07-10_r13/assembly/
+fabrication/jlcpcb_2026-07-10_r14/assembly/
 ```
 
 ## Manufacturing Notes
