@@ -20,6 +20,25 @@
 #include "cave_johnson_startup_audio.h"
 #include "dungeon_run_assets_rgb565.h"
 
+/*
+  Anubis / Hosyond ESP32-S3 transmitter firmware.
+
+  This sketch is intentionally organized as a single Arduino .ino so it stays
+  easy to open in the Arduino IDE. Major regions are marked with section
+  comments: storage/config, UI state, model/protocol helpers, setup/loop,
+  hardware bring-up, input processing, battery safety, drawing, and touch
+  dispatch.
+
+  Drawing convention used throughout:
+    * drawXStatic() paints the full screen or long-lived chrome.
+    * drawXDynamic() updates values that change while the screen is visible.
+    * fullRedraw/uiNeedsRedraw/topBarNeedsRedraw keep the small TFT responsive
+      by avoiding full-screen redraws unless something actually changed.
+*/
+
+  // Persistent storage layout and schema versions. These addresses are packed
+  // from the end of EEPROM downward so older model data can survive additions
+  // when the version checks below know how to repair the changed block.
   #define EEPROM_SIZE 1024
   #define MIX_STORAGE_VERSION 3
   #define ESPNOW_BIND_STORAGE_VERSION 1
@@ -45,10 +64,13 @@
   #define MIX_CHANNEL_MASK 0x0F
   #define MIX_REVERSE_SEPARATE_FLAG 0x80
 
+  // Hardware driver instances shared by the UI, touch, and input pipeline.
   TFT_eSPI tft = TFT_eSPI();
   TFT_eSprite stickBaseSprite = TFT_eSprite(&tft);
   FT6336U touchPanel;
 
+  // Screen and button IDs are the backbone of the UI state machine. Touch and
+  // D-pad handlers both resolve user input to these enum values.
   enum Screen {
   SCREEN_SPLASH,
   SCREEN_MAIN,
@@ -804,7 +826,7 @@ enum StickCalibrationState {
     STATUS_RGB_NO_BATTERY,
     STATUS_RGB_NO_ADS,
     STATUS_RGB_NO_ELRS,
-    STATUS_RGB_NO_PCF8575,
+    STATUS_RGB_NO_MCP23017,
     STATUS_RGB_DPAD_SELECT,
     STATUS_RGB_DPAD_LEFT,
     STATUS_RGB_DPAD_UP,
@@ -857,10 +879,10 @@ enum StickCalibrationState {
   #define STARTUP_THROTTLE_BYPASS_Y_MIN 232
   #define ELRS_AUTO_RETRY_NO_MODULE_MS 30000UL
   #define POWER_BUTTON_ENABLED true
-  #define POWER_BUTTON_SENSE_PIN 2
-  #define POWER_BUTTON_REF_PIN 3
+  #define POWER_BUTTON_SENSE_PIN 14
+  #define POWER_BUTTON_REF_PIN 21
   #define POWER_BUTTON_HOLD_MS 3000UL
-  #define POWER_LED_ENABLED true
+  #define POWER_LED_ENABLED false
   #define POWER_LED_POS_PIN 14
   #define POWER_LED_NEG_PIN 21
   #define POWER_LED_SHUTDOWN_BLINK_MS 250UL
@@ -949,32 +971,38 @@ enum StickCalibrationState {
   #define BATTERY_ADC_PIN 9
   #define I2C_SDA_PIN 16
   #define I2C_SCL_PIN 15
-  #define PERIPHERAL_POWER_SWITCHES_ENABLED false
-  #define UART_5V_ENABLE_PIN -1
-  #define I2C_3V3_ENABLE_PIN -1
+  #define PERIPHERAL_POWER_SWITCHES_ENABLED true
+  #define UART_5V_ENABLE_PIN 2
+  #define I2C_3V3_ENABLE_PIN 3
   #define PERIPHERAL_POWER_ENABLE_ACTIVE_HIGH true
-  #define ADS1115_I2C_ADDR 0x48
-  #define MCP23017_I2C_ADDR_MIN 0x20
-  #define MCP23017_I2C_ADDR_MAX 0x27
-  #define PCF8575_I2C_ADDR_MIN 0x20
-  #define PCF8575_I2C_ADDR_MAX 0x27
-  #define PCF8575_RECONNECT_INTERVAL_MS 1000UL
+  #define BQ25887_I2C_ADDR 0x6B
+  #define BQ25887_REG_CHARGER_CONTROL1 0x05
+  #define BQ25887_REG_STATUS1 0x0B
+  #define BQ25887_REG_STATUS2 0x0C
+  #define BQ25887_REG_FAULT 0x0E
+  #define BQ25887_REG_ADC_CONTROL 0x15
+  #define BQ25887_REG_VBAT_ADC_MSB 0x1D
+  #define BQ25887_REG_PART_INFO 0x25
+  #define ADS1115_PRIMARY_I2C_ADDR 0x48
+  #define ADS1115_AUX_I2C_ADDR 0x49
+  #define ADS1115_TOTAL_ANALOG_INPUTS 8
+  #define ADS1115_PRIMARY_ANALOG_COUNT 4
+  #define MCP23017_I2C_ADDR 0x20
+  #define MCP23017_RECONNECT_INTERVAL_MS 1000UL
   #define I2C_STARTUP_SCAN_ENABLED false
-  #define PCF8575_DPAD_SELECT_BIT 0
-  #define PCF8575_DPAD_LEFT_BIT 1
-  #define PCF8575_DPAD_UP_BIT 2
-  #define PCF8575_DPAD_DOWN_BIT 3
-  #define PCF8575_DPAD_RIGHT_BIT 4
-  #define PCF8575_SWITCH_LOW_BIT 5
-  #define PCF8575_SWITCH_HIGH_BIT 6
+  #define MCP23017_IODIRA_REG 0x00
   #define MCP23017_IODIRB_REG 0x01
+  #define MCP23017_GPPUA_REG 0x0C
   #define MCP23017_GPPUB_REG 0x0D
+  #define MCP23017_GPIOA_REG 0x12
   #define MCP23017_GPIOB_REG 0x13
   #define MCP23017_DPAD_SELECT_BIT 0
   #define MCP23017_DPAD_LEFT_BIT 1
   #define MCP23017_DPAD_UP_BIT 2
   #define MCP23017_DPAD_DOWN_BIT 3
   #define MCP23017_DPAD_RIGHT_BIT 4
+  #define MCP23017_SWITCH_LOW_BIT 5
+  #define MCP23017_SWITCH_HIGH_BIT 6
   #define ADS1115_REG_CONVERSION 0x00
   #define ADS1115_REG_CONFIG 0x01
   #define ADS1115_GAIN_4_096V 0x0200
@@ -1003,6 +1031,11 @@ enum StickCalibrationState {
   #define BATTERY_PRESENT_MIN_V 2.50f
   #define BATTERY_EMPTY_V 3.30f
   #define BATTERY_FULL_V 4.20f
+  #define BATTERY_2S_PRESENT_MIN_V 5.00f
+  #define BATTERY_2S_EMPTY_V 6.60f
+  #define BATTERY_2S_FULL_V 8.40f
+  #define BATTERY_2S_LOW_WARN_V 7.00f
+  #define BATTERY_2S_CRITICAL_SLEEP_V 6.60f
   #define BATTERY_SAMPLE_INTERVAL_MS 500
   #define BATTERY_CHARGE_WINDOW_MS 5000
   #define BATTERY_CHARGING_DELTA_V 0.006f
@@ -1419,23 +1452,40 @@ enum StickCalibrationState {
   bool lowBatteryWarningVisible = false;
   bool lowBatteryWarningScreenDrawn = false;
   bool ads1115Ready = false;
+  bool ads1115PrimaryReady = false;
+  bool ads1115AuxReady = false;
   bool ads1115StatusLogged = false;
   bool ads1115LastLoggedReady = false;
+  bool bq25887Ready = false;
+  bool bq25887AdcReady = false;
+  bool bq25887StatusLogged = false;
+  bool bq25887LastLoggedReady = false;
   bool mcp23017Ready = false;
-  bool pcf8575Ready = false;
   bool adsStickCalibrationValid = false;
   bool stickFilterInitialized = false;
-  uint8_t mcp23017Address = MCP23017_I2C_ADDR_MIN;
-  uint8_t pcf8575Address = PCF8575_I2C_ADDR_MIN;
-  uint16_t pcf8575LastValue = 0xFFFF;
+  uint8_t mcp23017Address = MCP23017_I2C_ADDR;
+  uint16_t mcp23017LastValue = 0xFFFF;
   uint8_t adsConsecutiveReadFails = 0;
   unsigned long lastAdsReconnectAttemptMs = 0;
   unsigned long lastMcpReconnectAttemptMs = 0;
-  unsigned long lastPcfReconnectAttemptMs = 0;
   unsigned long lastBatterySampleTime = 0;
   unsigned long lastStickSampleTime = 0;
   float batteryFilteredVoltage = 0.0f;
   bool batteryFilterInitialized = false;
+  bool batteryUsingBq25887Voltage = false;
+  float batteryPresentMinVoltage = BATTERY_PRESENT_MIN_V;
+  float batteryEmptyVoltage = BATTERY_EMPTY_V;
+  float batteryFullVoltage = BATTERY_FULL_V;
+  float batteryLowWarnVoltage = BATTERY_LOW_WARN_V;
+  float batteryCriticalSleepVoltage = BATTERY_CRITICAL_SLEEP_V;
+  uint8_t bq25887ChargeStatus = 0;
+  uint8_t bq25887VbusStatus = 0;
+  uint8_t bq25887FaultStatus = 0;
+  bool bq25887PowerGood = false;
+  bool bq25887FaultActive = false;
+  uint8_t lastLoggedBq25887ChargeStatus = 0xFF;
+  uint8_t lastLoggedBq25887VbusStatus = 0xFF;
+  uint8_t lastLoggedBq25887FaultStatus = 0xFF;
   unsigned long batteryChargeWindowStart = 0;
   float batteryChargeWindowVoltage = 0.0f;
   unsigned long batteryChargingHoldUntil = 0;
@@ -1455,6 +1505,10 @@ enum StickCalibrationState {
     ADS1115_JOYSTICK_MAX_COUNT
   };
   int16_t adsLastRawValues[STICK_AXIS_COUNT] = { 0, 0, 0, 0 };
+  int16_t adsRawInputs[ADS1115_TOTAL_ANALOG_INPUTS] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  float adsNormalizedInputs[ADS1115_TOTAL_ANALOG_INPUTS] = {
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
+  };
   float filteredStickAxis[STICK_AXIS_COUNT] = { 0.0f, 0.0f, 0.0f, 0.0f };
   float accessoryInputChannels[CHANNEL_COUNT - STICK_AXIS_COUNT] = { 0.0f, 0.0f };
   float lastDisplayWakeStickChannels[STICK_AXIS_COUNT] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -1778,6 +1832,16 @@ enum StickCalibrationState {
   const char* getMixPageLabel(int page);
   void drawStickCalibrationScreen();
   void updateBatteryState();
+  bool initBq25887Charger();
+  bool readBq25887Reg(uint8_t reg, uint8_t &value);
+  bool writeBq25887Reg(uint8_t reg, uint8_t value);
+  bool readBq25887Word(uint8_t msbReg, uint16_t &value);
+  bool configureBq25887Adc();
+  bool readBq25887BatteryVoltage(float &voltage);
+  bool updateBq25887Status();
+  bool isBq25887ChargingState(uint8_t chargeStatus);
+  const char* getBq25887ChargeStatusName(uint8_t chargeStatus);
+  const char* getBq25887VbusStatusName(uint8_t vbusStatus);
   void drawSplash();
   bool isStartupThrottleSafe();
   bool handleStartupThrottleSafetyBypass(uint8_t touchCount, int rawX, int rawY, unsigned long now);
@@ -1802,6 +1866,7 @@ enum StickCalibrationState {
   void drawTimerDynamic();
   void handleTimerTouch(int x, int y);
   bool initAds1115();
+  bool isAds1115Present(uint8_t address);
   bool readAds1115SingleEnded(uint8_t channel, int16_t &value);
   void loadStickCalibration();
   void saveStickCalibration();
@@ -1811,10 +1876,10 @@ enum StickCalibrationState {
   bool finalizeStickCalibration();
   ButtonID getControllerSettingsDefaultButtonForPage(int page);
   bool initMcp23017();
-  uint8_t readMcp23017PortB();
+  bool writeMcp23017Reg(uint8_t reg, uint8_t value);
+  bool readMcp23017Reg(uint8_t reg, uint8_t &value);
+  bool readMcp23017(uint16_t &value);
   void printI2cStartupScan();
-  bool initPcf8575();
-  bool readPcf8575(uint16_t &value);
   void updateStickInputs(unsigned long now);
   void updateAccessoryInputs(unsigned long now);
   bool updateStickDisplayWake(unsigned long now);
@@ -3009,8 +3074,8 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
         else blue = 255;
         break;
 
-      case STATUS_RGB_NO_PCF8575:
-        // No accessory expander: red, green, red.
+      case STATUS_RGB_NO_MCP23017:
+        // No daughterboard GPIO expander: red, green, red.
         if (step == 1) green = 255;
         else red = 255;
         break;
@@ -3087,17 +3152,17 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
     if (!batteryPresent) addCode(STATUS_RGB_NO_BATTERY);
     if (!ads1115Ready) addCode(STATUS_RGB_NO_ADS);
     if (isElrsModuleMissingForStatus(millis())) addCode(STATUS_RGB_NO_ELRS);
-    if (!pcf8575Ready) {
-      addCode(STATUS_RGB_NO_PCF8575);
+    if (!mcp23017Ready) {
+      addCode(STATUS_RGB_NO_MCP23017);
       return count;
     }
 
 #if STATUS_RGB_DPAD_DIAGNOSTICS
-    bool selectPressed = ((pcf8575LastValue & (1U << PCF8575_DPAD_SELECT_BIT)) == 0);
-    bool leftPressed = ((pcf8575LastValue & (1U << PCF8575_DPAD_LEFT_BIT)) == 0);
-    bool upPressed = ((pcf8575LastValue & (1U << PCF8575_DPAD_UP_BIT)) == 0);
-    bool downPressed = ((pcf8575LastValue & (1U << PCF8575_DPAD_DOWN_BIT)) == 0);
-    bool rightPressed = ((pcf8575LastValue & (1U << PCF8575_DPAD_RIGHT_BIT)) == 0);
+    bool selectPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_SELECT_BIT)) == 0);
+    bool leftPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_LEFT_BIT)) == 0);
+    bool upPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_UP_BIT)) == 0);
+    bool downPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_DOWN_BIT)) == 0);
+    bool rightPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_RIGHT_BIT)) == 0);
 
     if (selectPressed) addCode(STATUS_RGB_DPAD_SELECT);
     else if (leftPressed) addCode(STATUS_RGB_DPAD_LEFT);
@@ -3438,10 +3503,12 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
     pinMode(POWER_BUTTON_REF_PIN, OUTPUT);
     digitalWrite(POWER_BUTTON_REF_PIN, LOW);
     pinMode(POWER_BUTTON_SENSE_PIN, INPUT_PULLUP);
-    pinMode(POWER_LED_POS_PIN, OUTPUT);
-    digitalWrite(POWER_LED_POS_PIN, LOW);
-    pinMode(POWER_LED_NEG_PIN, OUTPUT);
-    digitalWrite(POWER_LED_NEG_PIN, LOW);
+    if (POWER_LED_ENABLED) {
+      pinMode(POWER_LED_POS_PIN, OUTPUT);
+      digitalWrite(POWER_LED_POS_PIN, LOW);
+      pinMode(POWER_LED_NEG_PIN, OUTPUT);
+      digitalWrite(POWER_LED_NEG_PIN, LOW);
+    }
 
     if (rtc_gpio_is_valid_gpio(refPin)) {
       rtc_gpio_init(refPin);
@@ -3450,19 +3517,21 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
       rtc_gpio_hold_en(refPin);
     }
 
-    gpio_num_t ledPosPin = (gpio_num_t)POWER_LED_POS_PIN;
-    gpio_num_t ledNegPin = (gpio_num_t)POWER_LED_NEG_PIN;
-    if (rtc_gpio_is_valid_gpio(ledPosPin)) {
-      rtc_gpio_init(ledPosPin);
-      rtc_gpio_set_direction(ledPosPin, RTC_GPIO_MODE_OUTPUT_ONLY);
-      rtc_gpio_set_level(ledPosPin, 0);
-      rtc_gpio_hold_en(ledPosPin);
-    }
-    if (rtc_gpio_is_valid_gpio(ledNegPin)) {
-      rtc_gpio_init(ledNegPin);
-      rtc_gpio_set_direction(ledNegPin, RTC_GPIO_MODE_OUTPUT_ONLY);
-      rtc_gpio_set_level(ledNegPin, 0);
-      rtc_gpio_hold_en(ledNegPin);
+    if (POWER_LED_ENABLED) {
+      gpio_num_t ledPosPin = (gpio_num_t)POWER_LED_POS_PIN;
+      gpio_num_t ledNegPin = (gpio_num_t)POWER_LED_NEG_PIN;
+      if (rtc_gpio_is_valid_gpio(ledPosPin)) {
+        rtc_gpio_init(ledPosPin);
+        rtc_gpio_set_direction(ledPosPin, RTC_GPIO_MODE_OUTPUT_ONLY);
+        rtc_gpio_set_level(ledPosPin, 0);
+        rtc_gpio_hold_en(ledPosPin);
+      }
+      if (rtc_gpio_is_valid_gpio(ledNegPin)) {
+        rtc_gpio_init(ledNegPin);
+        rtc_gpio_set_direction(ledNegPin, RTC_GPIO_MODE_OUTPUT_ONLY);
+        rtc_gpio_set_level(ledNegPin, 0);
+        rtc_gpio_hold_en(ledNegPin);
+      }
     }
 
     if (rtc_gpio_is_valid_gpio(sensePin)) {
@@ -4175,6 +4244,9 @@ const int KB_TOUCH_X_MAX = 232;
   bool otaSettingsNeedsRedraw = true;
   bool txUpdateNeedsRedraw = true;
 
+// On-screen text entry is shared by model naming, OTA network fields, and the
+// 20 Questions learning prompt. Keep target-specific behavior in
+// applyKeyboardBufferToTarget() so the key grid stays generic.
 const char* getKeyboardKey(int row, int col) {
   if (row < 0 || row >= KB_ROWS || col < 0 || col >= KB_COLS) return "";
   return keyboardLowercase ? keyboardLayoutLower[row][col] : keyboardLayoutUpper[row][col];
@@ -4307,6 +4379,9 @@ void processKeyboardKey(const char* key) {
   uiNeedsRedraw = true;
 }
 
+// Model selection owns the runtime handoff between saved configuration and the
+// live transmitter state. Protocol changes happen here because ELRS/ESP-NOW
+// need different hardware services running.
 void selectModelSlot(int modelIndex) {
   activeModel = modelIndex;
   selectedModelIndex = modelIndex;
@@ -4405,6 +4480,8 @@ bool ensureEspNowPeer(const uint8_t *peerAddress) {
   return true;
 }
 
+// ESP-NOW is the lightweight receiver link used by non-ELRS models. Binding,
+// telemetry, and control packets all share this peer/session state.
 bool initEspNowLink() {
   if (otaModeActive) {
     return false;
@@ -4519,6 +4596,9 @@ const char* getKeyboardTargetLabel(KeyboardTarget target) {
   return "Text";
 }
 
+// OTA mode temporarily turns the transmitter into a Wi-Fi update target. The
+// normal control loop keeps running, but radio and UI screens should treat OTA
+// as a special service mode while it is active.
 void startOtaMode() {
   if (otaModeActive || otaUpdateInProgress) return;
 
@@ -5656,6 +5736,8 @@ void updateElrsReceiverConfig() {
   }
 }
 
+// ESP-NOW telemetry is deliberately volatile. Clearing it on bind/model changes
+// prevents old receiver data from looking like a live link.
 void resetEspNowTelemetry() {
   espNowLatency = 0;
   telemetryVoltage = 0.0f;
@@ -6028,6 +6110,8 @@ void updateEspNowLink(unsigned long now) {
 
 }
 
+// ELRS uses CRSF frames over UART. The helpers below build channel packets,
+// parse module telemetry/config replies, and manage profile auto-detection.
 uint8_t crsfCrc8Poly(const uint8_t *data, size_t length, uint8_t poly) {
   uint8_t crc = 0;
   for (size_t i = 0; i < length; i++) {
@@ -7583,6 +7667,15 @@ void onEspNowReceive(const esp_now_recv_info_t *info, const uint8_t *data, int l
   handleEspNowPingAckPacket(info, data, len);
 }
 
+/*
+  Boot sequence.
+
+  Order matters here:
+    1. Bring up serial, soft-power, EEPROM, SPI, display, and ADC basics.
+    2. Start I2C before probing daughterboard peripherals.
+    3. Load persistent settings before selecting the active model.
+    4. Start the radio service that matches the active model protocol.
+*/
 void setup() {
   Serial.begin(115200);
   delay(150);
@@ -7612,9 +7705,11 @@ void setup() {
     
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
   printI2cStartupScan();
+  initBq25887Charger();
   loadStickCalibration();
   touchPanel.begin();
   initAds1115();
+  initMcp23017();
   initAudio();
   lastActivityTime = millis();
   splashStartTime = millis();
@@ -7636,7 +7731,8 @@ void setup() {
     saveDisplaySettings();
   }
 
-  // FIRST BOOT CHECK
+  // First-boot and schema migration repair. Each saved block has its own
+  // version byte so new firmware can reset only the data that changed shape.
   bool initializedAnyModel = false;
   bool repairedAnyMix = false;
   bool resetMixSchema = (EEPROM.read(EEPROM_MIX_VERSION_ADDR) != MIX_STORAGE_VERSION);
@@ -7741,12 +7837,13 @@ void setup() {
     saveDisplaySettings();
   }
 
-  // sync names
+  // Keep the legacy String array in sync with the packed model structs used for
+  // persistent storage.
   for (int i = 0; i < 4; i++) {
     modelNames[i] = String(models[i].name);
   }
 
-  // SET ACTIVE MODEL
+  // Select the startup model after all stored models have been repaired.
   int startupModel = loadActiveModelIndex();
   if (startupModel < 0 || startupModel >= MAX_MODELS || strlen(models[startupModel].name) == 0) {
     startupModel = 0;
@@ -7759,7 +7856,7 @@ void setup() {
   elrsLowPowerFallbackActive = true;
   elrsTxPowerMw = clampElrsTxPowerMw(ELRS_LOW_POWER_FALLBACK_MW);
 
-  // optional polish
+  // Seed the UI and radio runtime from the active model.
   trimRenderX = models[activeModel].trimX[currentTrimPage];
   trimRenderY = models[activeModel].trimY[currentTrimPage];
   if (getModelProtocol(activeModel) == PROTOCOL_ELRS) {
@@ -7771,8 +7868,18 @@ void setup() {
 #endif
   }
 
+/*
+  Main control/UI frame.
+
+  Each pass polls human input, samples daughterboard hardware, updates battery
+  and safety state, services the active radio protocol, then redraws only the
+  parts of the current screen that changed.
+*/
 void loop() {
   unsigned long now = millis();
+
+  // Soft-power and diagnostics run first so shutdown requests interrupt the
+  // rest of the frame quickly.
   updatePowerButton(now);
   if (powerButtonShutdownPending) {
     delay(10);
@@ -7781,6 +7888,7 @@ void loop() {
   updatePowerLed(now);
   updateAudioDiagnostics(now);
     
+  // A screen change turns the next draw pass into a full repaint.
   if (currentScreen != lastScreen) {
 
     fullRedraw = true;
@@ -7794,6 +7902,7 @@ void loop() {
   static uint8_t touchCount = 0;
   static unsigned long lastTouchPollTime = 0;
 
+  // Touch is rate-limited to avoid burning time on the I2C touch controller.
   if (now - lastTouchPollTime >= TOUCH_POLL_INTERVAL_MS) {
     touchCount = touchPanel.read_touch_number();
 
@@ -7808,21 +7917,23 @@ void loop() {
     lastTouchPollTime = now;
   }
 
-  if (pcf8575Ready) {
-    uint16_t pcfValue = 0xFFFF;
-    readPcf8575(pcfValue);
+  // The D-pad is active-low through the daughterboard MCP23017.
+  if (mcp23017Ready) {
+    uint16_t mcpValue = 0xFFFF;
+    readMcp23017(mcpValue);
   }
-  uint16_t dpadPort = pcf8575Ready ? pcf8575LastValue : 0xFFFF;
-  bool select = ((dpadPort & (1U << PCF8575_DPAD_SELECT_BIT)) == 0);
-  bool left   = ((dpadPort & (1U << PCF8575_DPAD_LEFT_BIT)) == 0);
-  bool up     = ((dpadPort & (1U << PCF8575_DPAD_UP_BIT)) == 0);
-  bool down   = ((dpadPort & (1U << PCF8575_DPAD_DOWN_BIT)) == 0);
-  bool right  = ((dpadPort & (1U << PCF8575_DPAD_RIGHT_BIT)) == 0);
+  uint16_t dpadPort = mcp23017Ready ? mcp23017LastValue : 0xFFFF;
+  bool select = ((dpadPort & (1U << MCP23017_DPAD_SELECT_BIT)) == 0);
+  bool left   = ((dpadPort & (1U << MCP23017_DPAD_LEFT_BIT)) == 0);
+  bool up     = ((dpadPort & (1U << MCP23017_DPAD_UP_BIT)) == 0);
+  bool down   = ((dpadPort & (1U << MCP23017_DPAD_DOWN_BIT)) == 0);
+  bool right  = ((dpadPort & (1U << MCP23017_DPAD_RIGHT_BIT)) == 0);
   bool powerButtonInput = POWER_BUTTON_ENABLED && isPowerButtonPressed();
   bool earlyInputDetected = (touchCount > 0) || select || up || down || left || right || powerButtonInput;
 
   bool userActive = false;
 
+  // Games get first chance at D-pad input because they have frame-based logic.
   if (currentScreen == SCREEN_SPACE_GAME) {
     updateSpaceGame(now, left, right, select, down);
     if (left || right || select || down) {
@@ -7842,6 +7953,8 @@ void loop() {
     }
   }
 
+  // Sample hardware inputs and power telemetry before any protocol packet is
+  // built or any safety overlay is evaluated.
   updateAccessoryInputs(now);
   updateStickInputs(now);
   updateBatteryState();
@@ -7855,6 +7968,8 @@ void loop() {
     return;
   }
 
+  // Block normal operation until throttle is safe or the user deliberately
+  // bypasses the startup warning.
   if (!startupThrottleSafetyCleared) {
     if (isStartupThrottleSafe()) {
       startupThrottleSafetyCleared = true;
@@ -7881,6 +7996,7 @@ void loop() {
     }
   }
 
+  // Service background communications after safety gates but before UI redraw.
   updateOtaService();
   updateElrsReceiverConfig();
 #if !ELRS_PASSIVE_SNIFF_MODE
@@ -7894,6 +8010,8 @@ void loop() {
     return;
   }
 
+  // Endpoint tuning tracks the stick being moved so the correct channel/side is
+  // selected without forcing the user through a lot of menu navigation.
   if (currentScreen == SCREEN_ENDPOINTS) {
     bool endpointFocusChanged = updateEndpointAutoFocus();
     bool endpointSideChanged = false;
@@ -7977,6 +8095,7 @@ void loop() {
   static unsigned long lastMainFrameTime = 0;
   static bool displaySettingsSelectHeld = false;
 
+  // Modal editors consume D-pad input before the current screen handler sees it.
   if (keyboardActive) {
 
   if (millis() - lastDpadTime > 150) {
@@ -8021,6 +8140,8 @@ void loop() {
     uiNeedsRedraw = true;
   }
 
+  // Top bar has its own dirty check because signal/battery state changes even
+  // while the body of the screen is static.
   updateTopBarDirtyState(now);
 
   if (currentScreen == SCREEN_SPLASH) {
@@ -10121,11 +10242,16 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
   }
 }
 
+// I2C peripheral bring-up and low-level register helpers. These functions
+// return false instead of blocking so the transmitter can still boot if a
+// daughterboard device is missing or unplugged.
 bool initAds1115() {
-  Wire.beginTransmission(ADS1115_I2C_ADDR);
-  if (Wire.endTransmission() != 0) {
+  ads1115PrimaryReady = isAds1115Present(ADS1115_PRIMARY_I2C_ADDR);
+  ads1115AuxReady = isAds1115Present(ADS1115_AUX_I2C_ADDR);
+
+  if (!ads1115PrimaryReady) {
     if (!ads1115StatusLogged || ads1115LastLoggedReady) {
-      Serial.println("ADS1115 not detected, using neutral stick inputs.");
+      Serial.println("Primary ADS1115 at 0x48 not detected, using neutral stick inputs.");
     }
     ads1115StatusLogged = true;
     ads1115LastLoggedReady = false;
@@ -10170,24 +10296,227 @@ bool initAds1115() {
 
     if (!ads1115StatusLogged || !ads1115LastLoggedReady) {
       Serial.printf(
-        "ADS1115 ready. Centers A0=%d A1=%d A2=%d A3=%d\n",
-        adsStickCenter[0], adsStickCenter[1], adsStickCenter[2], adsStickCenter[3]
+        "ADS1115 ready. 0x48 centers AIN0=%d AIN1=%d AIN2=%d AIN3=%d, 0x49=%s\n",
+        adsStickCenter[0], adsStickCenter[1], adsStickCenter[2], adsStickCenter[3],
+        ads1115AuxReady ? "present" : "missing"
       );
     }
   } else {
     if (!ads1115StatusLogged || !ads1115LastLoggedReady) {
       Serial.printf(
-        "ADS1115 ready. Cal A0=%d/%d/%d A1=%d/%d/%d A2=%d/%d/%d A3=%d/%d/%d\n",
+        "ADS1115 ready. 0x48 cal AIN0=%d/%d/%d AIN1=%d/%d/%d AIN2=%d/%d/%d AIN3=%d/%d/%d, 0x49=%s\n",
         adsStickMin[0], adsStickCenter[0], adsStickMax[0],
         adsStickMin[1], adsStickCenter[1], adsStickMax[1],
         adsStickMin[2], adsStickCenter[2], adsStickMax[2],
-        adsStickMin[3], adsStickCenter[3], adsStickMax[3]
+        adsStickMin[3], adsStickCenter[3], adsStickMax[3],
+        ads1115AuxReady ? "present" : "missing"
       );
     }
   }
   ads1115StatusLogged = true;
   ads1115LastLoggedReady = true;
   return true;
+}
+
+bool isAds1115Present(uint8_t address) {
+  Wire.beginTransmission(address);
+  return Wire.endTransmission() == 0;
+}
+
+// BQ25887 charger and 2S battery reporting. When the daughterboard charger is
+// present, this becomes the preferred source for pack voltage and charge state.
+// The legacy ADC path remains available so older hardware still shows battery
+// level and charging inference.
+bool initBq25887Charger() {
+  Wire.beginTransmission(BQ25887_I2C_ADDR);
+  if (Wire.endTransmission() != 0) {
+    if (!bq25887StatusLogged || bq25887LastLoggedReady) {
+      Serial.println("BQ25887 charger not detected; using legacy battery charge inference.");
+    }
+    bq25887Ready = false;
+    bq25887AdcReady = false;
+    bq25887StatusLogged = true;
+    bq25887LastLoggedReady = false;
+    return false;
+  }
+
+  uint8_t partInfo = 0;
+  if (!readBq25887Reg(BQ25887_REG_PART_INFO, partInfo)) {
+    Serial.println("BQ25887 charger detected but part-info read failed.");
+    bq25887Ready = false;
+    bq25887AdcReady = false;
+    bq25887StatusLogged = true;
+    bq25887LastLoggedReady = false;
+    return false;
+  }
+
+  bq25887Ready = true;
+  bq25887AdcReady = configureBq25887Adc();
+  bq25887StatusLogged = true;
+  bq25887LastLoggedReady = true;
+  Serial.printf(
+    "BQ25887 charger ready at 0x%02X, part info 0x%02X, adc=%s\n",
+    BQ25887_I2C_ADDR,
+    partInfo,
+    bq25887AdcReady ? "on" : "unavailable"
+  );
+  updateBq25887Status();
+  return true;
+}
+
+bool readBq25887Reg(uint8_t reg, uint8_t &value) {
+  Wire.beginTransmission(BQ25887_I2C_ADDR);
+  Wire.write(reg);
+  if (Wire.endTransmission(false) != 0) {
+    return false;
+  }
+
+  if (Wire.requestFrom((int)BQ25887_I2C_ADDR, 1) != 1) {
+    return false;
+  }
+
+  value = Wire.read();
+  return true;
+}
+
+bool writeBq25887Reg(uint8_t reg, uint8_t value) {
+  Wire.beginTransmission(BQ25887_I2C_ADDR);
+  Wire.write(reg);
+  Wire.write(value);
+  return Wire.endTransmission() == 0;
+}
+
+bool readBq25887Word(uint8_t msbReg, uint16_t &value) {
+  Wire.beginTransmission(BQ25887_I2C_ADDR);
+  Wire.write(msbReg);
+  if (Wire.endTransmission(false) != 0) {
+    return false;
+  }
+
+  if (Wire.requestFrom((int)BQ25887_I2C_ADDR, 2) != 2) {
+    return false;
+  }
+
+  value = ((uint16_t)Wire.read() << 8) | Wire.read();
+  return true;
+}
+
+// Enable the BQ25887 ADC used for pack-voltage reporting. The watchdog is
+// disabled because any register write puts the charger in host mode, and the
+// default watchdog would later reset this configuration.
+bool configureBq25887Adc() {
+  uint8_t control1 = 0;
+  if (!readBq25887Reg(BQ25887_REG_CHARGER_CONTROL1, control1)) {
+    return false;
+  }
+
+  // Any BQ25887 write enters host mode. Disable the charger watchdog so the
+  // ADC enable bit is not reset every 40 seconds while the UI is running.
+  control1 &= (uint8_t)~0x30;
+  if (!writeBq25887Reg(BQ25887_REG_CHARGER_CONTROL1, control1)) {
+    return false;
+  }
+
+  // ADC_EN=1, ADC_RATE=0 continuous, ADC_SAMPLE=11 default resolution.
+  return writeBq25887Reg(BQ25887_REG_ADC_CONTROL, 0xB0);
+}
+
+bool readBq25887BatteryVoltage(float &voltage) {
+  if (!bq25887Ready) {
+    return false;
+  }
+
+  if (!bq25887AdcReady) {
+    bq25887AdcReady = configureBq25887Adc();
+    if (!bq25887AdcReady) {
+      return false;
+    }
+  }
+
+  uint16_t vbatMv = 0;
+  if (!readBq25887Word(BQ25887_REG_VBAT_ADC_MSB, vbatMv) || vbatMv < 1000) {
+    return false;
+  }
+
+  voltage = (float)vbatMv / 1000.0f;
+  return true;
+}
+
+bool updateBq25887Status() {
+  if (!bq25887Ready) {
+    return false;
+  }
+
+  uint8_t status1 = 0;
+  uint8_t status2 = 0;
+  uint8_t fault = 0;
+  if (!readBq25887Reg(BQ25887_REG_STATUS1, status1) ||
+      !readBq25887Reg(BQ25887_REG_STATUS2, status2) ||
+      !readBq25887Reg(BQ25887_REG_FAULT, fault)) {
+    if (!bq25887StatusLogged || bq25887LastLoggedReady) {
+      Serial.println("BQ25887 charger status read failed; falling back to legacy charge inference.");
+    }
+    bq25887Ready = false;
+    bq25887AdcReady = false;
+    bq25887StatusLogged = true;
+    bq25887LastLoggedReady = false;
+    return false;
+  }
+
+  bq25887ChargeStatus = status1 & 0x07;
+  bq25887VbusStatus = (status2 >> 4) & 0x07;
+  bq25887PowerGood = (status2 & 0x80) != 0;
+  bq25887FaultStatus = fault;
+  bq25887FaultActive = (fault & 0xD0) != 0;
+
+  if (bq25887ChargeStatus != lastLoggedBq25887ChargeStatus ||
+      bq25887VbusStatus != lastLoggedBq25887VbusStatus ||
+      bq25887FaultStatus != lastLoggedBq25887FaultStatus) {
+    Serial.printf(
+      "BQ25887: charge=%s (%u), vbus=%s (%u), pg=%d, fault=0x%02X\n",
+      getBq25887ChargeStatusName(bq25887ChargeStatus),
+      (unsigned int)bq25887ChargeStatus,
+      getBq25887VbusStatusName(bq25887VbusStatus),
+      (unsigned int)bq25887VbusStatus,
+      bq25887PowerGood ? 1 : 0,
+      bq25887FaultStatus
+    );
+    lastLoggedBq25887ChargeStatus = bq25887ChargeStatus;
+    lastLoggedBq25887VbusStatus = bq25887VbusStatus;
+    lastLoggedBq25887FaultStatus = bq25887FaultStatus;
+  }
+
+  return true;
+}
+
+bool isBq25887ChargingState(uint8_t chargeStatus) {
+  return chargeStatus >= 1 && chargeStatus <= 5;
+}
+
+const char* getBq25887ChargeStatusName(uint8_t chargeStatus) {
+  switch (chargeStatus) {
+    case 0: return "not charging";
+    case 1: return "trickle";
+    case 2: return "precharge";
+    case 3: return "fast charge";
+    case 4: return "taper";
+    case 5: return "top-off";
+    case 6: return "done";
+    default: return "reserved";
+  }
+}
+
+const char* getBq25887VbusStatusName(uint8_t vbusStatus) {
+  switch (vbusStatus) {
+    case 0: return "no input";
+    case 1: return "USB host";
+    case 2: return "USB CDP";
+    case 3: return "adapter";
+    case 4: return "poor source";
+    case 5: return "unknown adapter";
+    case 6: return "non-standard adapter";
+    default: return "reserved";
+  }
 }
 
 bool captureStickCalibrationCenter() {
@@ -10241,73 +10570,80 @@ bool finalizeStickCalibration() {
   return true;
 }
 
+// GPIO expander helpers for the daughterboard MCP23017 at 0x20.
 bool initMcp23017() {
-  bool found = false;
-  for (uint8_t addr = MCP23017_I2C_ADDR_MIN; addr <= MCP23017_I2C_ADDR_MAX; addr++) {
-    Wire.beginTransmission(addr);
-    if (Wire.endTransmission() == 0) {
-      mcp23017Address = addr;
-      found = true;
-      break;
-    }
-  }
-
-  if (!found) {
-    Serial.println("MCP23017 not detected, D-pad unavailable.");
+  mcp23017Address = MCP23017_I2C_ADDR;
+  Wire.beginTransmission(mcp23017Address);
+  if (Wire.endTransmission() != 0) {
+    Serial.println("MCP23017 not detected at 0x20, GPIO expander inputs unavailable.");
     mcp23017Ready = false;
+    mcp23017LastValue = 0xFFFF;
     return false;
   }
 
-  // Configure all of port B as pulled-up inputs.
-  Wire.beginTransmission(mcp23017Address);
-  Wire.write(MCP23017_IODIRB_REG);
-  Wire.write(0xFF);
-  if (Wire.endTransmission() != 0) {
-    Serial.println("MCP23017 IODIRB config failed.");
+  // The daughterboard exposes both ports on protected solder pads. Default all
+  // pins to pulled-up inputs so unconnected pads read high and active-low
+  // buttons/switches can be wired without extra parts.
+  if (!writeMcp23017Reg(MCP23017_IODIRA_REG, 0xFF) ||
+      !writeMcp23017Reg(MCP23017_IODIRB_REG, 0xFF) ||
+      !writeMcp23017Reg(MCP23017_GPPUA_REG, 0xFF) ||
+      !writeMcp23017Reg(MCP23017_GPPUB_REG, 0xFF)) {
+    Serial.println("MCP23017 input/pullup config failed.");
     mcp23017Ready = false;
-    return false;
-  }
-
-  Wire.beginTransmission(mcp23017Address);
-  Wire.write(MCP23017_GPPUB_REG);
-  Wire.write(0xFF);
-  if (Wire.endTransmission() != 0) {
-    Serial.println("MCP23017 GPPUB config failed.");
-    mcp23017Ready = false;
+    mcp23017LastValue = 0xFFFF;
     return false;
   }
 
   mcp23017Ready = true;
-  Serial.printf("MCP23017 ready at 0x%02X for D-pad on PB0..PB4\n", mcp23017Address);
+  readMcp23017(mcp23017LastValue);
+  Serial.printf("MCP23017 ready at 0x%02X for GPIO expander inputs\n", mcp23017Address);
   return true;
 }
 
-uint8_t readMcp23017PortB() {
-  if (!mcp23017Ready) return 0xFF;
+bool writeMcp23017Reg(uint8_t reg, uint8_t value) {
+  Wire.beginTransmission(mcp23017Address);
+  Wire.write(reg);
+  Wire.write(value);
+  return Wire.endTransmission() == 0;
+}
+
+bool readMcp23017Reg(uint8_t reg, uint8_t &value) {
+  if (!mcp23017Ready) return false;
 
   Wire.beginTransmission(mcp23017Address);
-  Wire.write(MCP23017_GPIOB_REG);
-  if (Wire.endTransmission(false) != 0) {
-    mcp23017Ready = false;
-    Serial.println("MCP23017 read start failed, retrying later.");
-    return 0xFF;
-  }
+  Wire.write(reg);
+  if (Wire.endTransmission(false) != 0) return false;
 
   if (Wire.requestFrom((int)mcp23017Address, 1) != 1) {
-    mcp23017Ready = false;
-    Serial.println("MCP23017 read failed, retrying later.");
-    return 0xFF;
+    return false;
   }
 
-  return Wire.read();
+  value = Wire.read();
+  return true;
+}
+
+bool readMcp23017(uint16_t &value) {
+  uint8_t gpioA = 0xFF;
+  uint8_t gpioB = 0xFF;
+  if (!readMcp23017Reg(MCP23017_GPIOA_REG, gpioA) ||
+      !readMcp23017Reg(MCP23017_GPIOB_REG, gpioB)) {
+    mcp23017Ready = false;
+    mcp23017LastValue = 0xFFFF;
+    Serial.println("MCP23017 read failed, retrying later.");
+    return false;
+  }
+
+  value = (uint16_t)gpioA | ((uint16_t)gpioB << 8);
+  mcp23017LastValue = value;
+  return true;
 }
 
 const char* identifyI2cDevice(uint8_t addr) {
-  if (addr >= PCF8575_I2C_ADDR_MIN && addr <= PCF8575_I2C_ADDR_MAX) {
-    return "PCF8575/MCP23017 range";
-  }
+  if (addr == MCP23017_I2C_ADDR) return "MCP23017 GPIO expander";
   if (addr == 0x38) return "touch-controller?";
-  if (addr == ADS1115_I2C_ADDR) return "ADS1115";
+  if (addr == ADS1115_PRIMARY_I2C_ADDR) return "ADS1115 primary";
+  if (addr == ADS1115_AUX_I2C_ADDR) return "ADS1115 auxiliary";
+  if (addr == BQ25887_I2C_ADDR) return "BQ25887 charger";
   return "unknown";
 }
 
@@ -10328,44 +10664,16 @@ void printI2cStartupScan() {
   }
 }
 
-bool initPcf8575() {
-  for (uint8_t addr = PCF8575_I2C_ADDR_MIN; addr <= PCF8575_I2C_ADDR_MAX; addr++) {
-    if (addr == ADS1115_I2C_ADDR) continue;
-    Wire.beginTransmission(addr);
-    if (Wire.endTransmission() != 0) continue;
-
-    pcf8575Address = addr;
-    Wire.beginTransmission(pcf8575Address);
-    Wire.write(0xFF);
-    Wire.write(0xFF);
-    if (Wire.endTransmission() == 0) {
-      pcf8575Ready = true;
-      Serial.printf("PCF8575 ready at 0x%02X for accessory channels\n", pcf8575Address);
-      return true;
-    }
-  }
-
-  pcf8575Ready = false;
-  return false;
-}
-
-bool readPcf8575(uint16_t &value) {
-  if (!pcf8575Ready) return false;
-
-  if (Wire.requestFrom((int)pcf8575Address, 2) != 2) {
-    pcf8575Ready = false;
-    return false;
-  }
-
-  uint8_t lowByte = Wire.read();
-  uint8_t highByte = Wire.read();
-  value = (uint16_t)lowByte | ((uint16_t)highByte << 8);
-  pcf8575LastValue = value;
-  return true;
-}
-
 bool readAds1115SingleEnded(uint8_t channel, int16_t &value) {
-  if (channel > 3) return false;
+  if (channel >= ADS1115_TOTAL_ANALOG_INPUTS) return false;
+
+  uint8_t address = (channel < ADS1115_PRIMARY_ANALOG_COUNT)
+    ? ADS1115_PRIMARY_I2C_ADDR
+    : ADS1115_AUX_I2C_ADDR;
+  uint8_t localChannel = channel % ADS1115_PRIMARY_ANALOG_COUNT;
+
+  if (address == ADS1115_PRIMARY_I2C_ADDR && !ads1115PrimaryReady) return false;
+  if (address == ADS1115_AUX_I2C_ADDR && !ads1115AuxReady) return false;
 
   static const uint16_t muxByChannel[4] = {
     0x4000, // AIN0 vs GND
@@ -10376,13 +10684,13 @@ bool readAds1115SingleEnded(uint8_t channel, int16_t &value) {
 
   uint16_t config =
     0x8000 |
-    muxByChannel[channel] |
+    muxByChannel[localChannel] |
     ADS1115_GAIN_4_096V |
     ADS1115_MODE_SINGLE |
     ADS1115_DATA_RATE_860 |
     ADS1115_COMP_DISABLE;
 
-  Wire.beginTransmission(ADS1115_I2C_ADDR);
+  Wire.beginTransmission(address);
   Wire.write(ADS1115_REG_CONFIG);
   Wire.write((uint8_t)(config >> 8));
   Wire.write((uint8_t)(config & 0xFF));
@@ -10392,20 +10700,24 @@ bool readAds1115SingleEnded(uint8_t channel, int16_t &value) {
 
   delay(2);
 
-  Wire.beginTransmission(ADS1115_I2C_ADDR);
+  Wire.beginTransmission(address);
   Wire.write(ADS1115_REG_CONVERSION);
   if (Wire.endTransmission(false) != 0) {
     return false;
   }
 
-  if (Wire.requestFrom((int)ADS1115_I2C_ADDR, 2) != 2) {
+  if (Wire.requestFrom((int)address, 2) != 2) {
     return false;
   }
 
   value = (int16_t)((Wire.read() << 8) | Wire.read());
+  adsRawInputs[channel] = value;
   return true;
 }
 
+// Convert raw ADS1115 counts into a centered -1.0..1.0 control value with a
+// deadzone. Calibration data is preferred, but a sane fallback keeps sticks
+// usable if calibration storage is missing.
 float normalizeStickAxis(int16_t raw, int channel) {
   int16_t center = adsStickCenter[channel];
   int32_t delta = (int32_t)raw - (int32_t)center;
@@ -10438,29 +10750,55 @@ float normalizeStickAxis(int16_t raw, int channel) {
   return (normalized < 0.0f) ? -scaled : scaled;
 }
 
+// Read non-stick controls from U6 and the GPIO expander, then convert them into
+// spare channel values used by the model mixer. U6 AIN4/AIN5 are the preferred
+// analog accessory inputs; MCP bits are kept for simple active-low switches.
 void updateAccessoryInputs(unsigned long now) {
   accessoryInputChannels[0] = 0.0f;
   accessoryInputChannels[1] = 0.0f;
 
-  if (!pcf8575Ready && now - lastPcfReconnectAttemptMs >= PCF8575_RECONNECT_INTERVAL_MS) {
-    lastPcfReconnectAttemptMs = now;
-    initPcf8575();
+  if (!mcp23017Ready && now - lastMcpReconnectAttemptMs >= MCP23017_RECONNECT_INTERVAL_MS) {
+    lastMcpReconnectAttemptMs = now;
+    initMcp23017();
   }
 
-  uint16_t pcfValue = 0xFFFF;
-  if (!readPcf8575(pcfValue)) {
-    return;
+  if (!ads1115AuxReady && now - lastAdsReconnectAttemptMs >= ADS1115_RECONNECT_INTERVAL_MS) {
+    ads1115AuxReady = isAds1115Present(ADS1115_AUX_I2C_ADDR);
   }
 
-  // PCF8575 is digital-only. CH5 is reserved for the future pot hardware
-  // mapping; CH6 uses a two-bit active-low three-position switch.
-  bool lowSide = ((pcfValue & (1U << PCF8575_SWITCH_LOW_BIT)) == 0);
-  bool highSide = ((pcfValue & (1U << PCF8575_SWITCH_HIGH_BIT)) == 0);
-  if (lowSide && !highSide) accessoryInputChannels[1] = -1.0f;
-  else if (highSide && !lowSide) accessoryInputChannels[1] = 1.0f;
-  else accessoryInputChannels[1] = 0.0f;
+  if (ads1115AuxReady) {
+    int16_t auxRaw0 = 0;
+    int16_t auxRaw1 = 0;
+    if (readAds1115SingleEnded(4, auxRaw0)) {
+      float normalized = constrain((float)auxRaw0 / (float)ADS1115_JOYSTICK_MAX_COUNT, 0.0f, 1.0f);
+      adsNormalizedInputs[4] = normalized;
+      accessoryInputChannels[0] = (normalized * 2.0f) - 1.0f;
+    }
+    if (readAds1115SingleEnded(5, auxRaw1)) {
+      float normalized = constrain((float)auxRaw1 / (float)ADS1115_JOYSTICK_MAX_COUNT, 0.0f, 1.0f);
+      adsNormalizedInputs[5] = normalized;
+      accessoryInputChannels[1] = (normalized * 2.0f) - 1.0f;
+    }
+    for (uint8_t channel = 6; channel < ADS1115_TOTAL_ANALOG_INPUTS; channel++) {
+      int16_t rawValue = 0;
+      if (readAds1115SingleEnded(channel, rawValue)) {
+        adsNormalizedInputs[channel] =
+          constrain((float)rawValue / (float)ADS1115_JOYSTICK_MAX_COUNT, 0.0f, 1.0f);
+      }
+    }
+  }
+
+  uint16_t mcpValue = 0xFFFF;
+  if (readMcp23017(mcpValue)) {
+    bool lowSide = ((mcpValue & (1U << MCP23017_SWITCH_LOW_BIT)) == 0);
+    bool highSide = ((mcpValue & (1U << MCP23017_SWITCH_HIGH_BIT)) == 0);
+    if (lowSide && !highSide) accessoryInputChannels[1] = -1.0f;
+    else if (highSide && !lowSide) accessoryInputChannels[1] = 1.0f;
+  }
 }
 
+// Main input sampler. Reads the ADS1115 gimbal channels, filters movement,
+// applies the physical wiring map, then rebuilds the output channel state.
 void updateStickInputs(unsigned long now) {
   if (!ads1115Ready) {
     if (now - lastAdsReconnectAttemptMs >= ADS1115_RECONNECT_INTERVAL_MS) {
@@ -10510,7 +10848,9 @@ void updateStickInputs(unsigned long now) {
 
   for (uint8_t channel = 0; channel < STICK_AXIS_COUNT; channel++) {
     adsLastRawValues[channel] = rawValues[channel];
+    adsRawInputs[channel] = rawValues[channel];
     float normalized = normalizeStickAxis(rawValues[channel], channel);
+    adsNormalizedInputs[channel] = normalized;
 
     if (!stickFilterInitialized) {
       filteredStickAxis[channel] = normalized;
@@ -10606,6 +10946,8 @@ const char* getChannelAxisName(uint8_t channel) {
   }
 }
 
+// Input-to-channel pipeline helpers: trim, expo, endpoints, user mixes, and
+// per-vehicle output mapping are applied in this order.
 float applyExpoCurve(float value, int expoPercent) {
   float x = constrain(value, -1.0f, 1.0f);
   float expo = constrain(expoPercent, -100, 100) / 100.0f;
@@ -10709,6 +11051,9 @@ void updateChannelOutputs() {
   leftThrottle = outputChannels[3];
 }
 
+// Convert UI/model channel state into the actual packet values for the selected
+// vehicle preset. This keeps display math and radio output using one source of
+// truth while still allowing tank/car/drone-specific mappings.
 void buildProtocolOutputChannels(float channels[CHANNEL_COUNT]) {
   for (int i = 0; i < CHANNEL_COUNT; i++) {
     channels[i] = outputChannels[i];
@@ -10779,10 +11124,19 @@ float getVehicleDisplayOutput(const float channels[CHANNEL_COUNT], uint8_t chann
   return constrain(value, -1.0f, 1.0f);
 }
 
+// Battery monitor. Prefer the BQ25887 charger ADC/status when present; otherwise
+// fall back to the Hosyond battery ADC and a voltage-rise charging heuristic.
+// The resulting batteryLevel/batteryCharging values feed the top-bar icon.
 void updateBatteryState() {
   unsigned long now = millis();
   if (now - lastBatterySampleTime < BATTERY_SAMPLE_INTERVAL_MS) return;
   lastBatterySampleTime = now;
+
+  bool chargerStatusOk = updateBq25887Status();
+  if (!chargerStatusOk && !bq25887Ready) {
+    chargerStatusOk = initBq25887Charger();
+  }
+  bool chargerReportsCharging = chargerStatusOk && isBq25887ChargingState(bq25887ChargeStatus);
 
   uint32_t totalMv = 0;
   const int sampleCount = 8;
@@ -10792,6 +11146,18 @@ void updateBatteryState() {
 
   float adcVoltage = ((float)totalMv / (float)sampleCount) / 1000.0f;
   float measuredBatteryVoltage = adcVoltage * BATTERY_DIVIDER_RATIO;
+  float chargerBatteryVoltage = 0.0f;
+  bool chargerVoltageOk = readBq25887BatteryVoltage(chargerBatteryVoltage);
+  if (chargerVoltageOk) {
+    measuredBatteryVoltage = chargerBatteryVoltage;
+  }
+
+  batteryUsingBq25887Voltage = chargerVoltageOk;
+  batteryPresentMinVoltage = chargerVoltageOk ? BATTERY_2S_PRESENT_MIN_V : BATTERY_PRESENT_MIN_V;
+  batteryEmptyVoltage = chargerVoltageOk ? BATTERY_2S_EMPTY_V : BATTERY_EMPTY_V;
+  batteryFullVoltage = chargerVoltageOk ? BATTERY_2S_FULL_V : BATTERY_FULL_V;
+  batteryLowWarnVoltage = chargerVoltageOk ? BATTERY_2S_LOW_WARN_V : BATTERY_LOW_WARN_V;
+  batteryCriticalSleepVoltage = chargerVoltageOk ? BATTERY_2S_CRITICAL_SLEEP_V : BATTERY_CRITICAL_SLEEP_V;
 
   if (!batteryFilterInitialized) {
     batteryFilteredVoltage = measuredBatteryVoltage;
@@ -10803,10 +11169,10 @@ void updateBatteryState() {
   }
 
   transmitterBatteryVoltage = batteryFilteredVoltage;
-  batteryPresent = (transmitterBatteryVoltage >= BATTERY_PRESENT_MIN_V);
+  batteryPresent = (transmitterBatteryVoltage >= batteryPresentMinVoltage);
 
   if (!batteryPresent) {
-    batteryCharging = false;
+    batteryCharging = chargerReportsCharging;
     batteryChargingHoldUntil = 0;
     batteryCriticalSince = 0;
     lowBatteryWarningVisible = false;
@@ -10818,7 +11184,7 @@ void updateBatteryState() {
   }
 
   batteryLevel = constrain((int)roundf(
-    ((transmitterBatteryVoltage - BATTERY_EMPTY_V) / (BATTERY_FULL_V - BATTERY_EMPTY_V)) * 100.0f), 0, 100);
+    ((transmitterBatteryVoltage - batteryEmptyVoltage) / (batteryFullVoltage - batteryEmptyVoltage)) * 100.0f), 0, 100);
 
   if (batteryChargeWindowStart == 0) {
     batteryChargeWindowStart = now;
@@ -10834,9 +11200,11 @@ void updateBatteryState() {
     batteryChargeWindowVoltage = transmitterBatteryVoltage;
   }
 
-  batteryCharging = (batteryChargingHoldUntil > now);
+  batteryCharging = chargerStatusOk ? chargerReportsCharging : (batteryChargingHoldUntil > now);
 }
 
+// Low and critical battery protection. Critical voltage takes over the screen
+// and then enters deep sleep to protect the pack.
 bool updateBatterySafety(unsigned long now, bool userDismiss) {
   if (!batteryPresent || transmitterBatteryVoltage < 0.5f) {
     batteryCriticalSince = 0;
@@ -10845,7 +11213,7 @@ bool updateBatterySafety(unsigned long now, bool userDismiss) {
     return false;
   }
 
-  bool critical = (transmitterBatteryVoltage <= BATTERY_CRITICAL_SLEEP_V && !batteryCharging);
+  bool critical = (transmitterBatteryVoltage <= batteryCriticalSleepVoltage && !batteryCharging);
   if (critical) {
     if (batteryCriticalSince == 0) {
       batteryCriticalSince = now;
@@ -10867,7 +11235,7 @@ bool updateBatterySafety(unsigned long now, bool userDismiss) {
 
   batteryCriticalSince = 0;
 
-  bool low = (transmitterBatteryVoltage <= BATTERY_LOW_WARN_V && !batteryCharging);
+  bool low = (transmitterBatteryVoltage <= batteryLowWarnVoltage && !batteryCharging);
   if (!low) {
     lowBatteryWarningVisible = false;
     lowBatteryWarningScreenDrawn = false;
@@ -10942,6 +11310,8 @@ void drawBatterySafetyScreen(bool critical, unsigned long now) {
   }
 }
 
+// Idle shutdown guard. This is separate from display dim/off so the transmitter
+// can fully power down when it has been left untouched.
 bool updateAutoDeepSleep(unsigned long now, bool inputDetected, bool powerButtonInput) {
   if (!AUTO_DEEP_SLEEP_ENABLED || powerButtonShutdownPending) return false;
   if (otaUpdateInProgress) return false;
@@ -11035,7 +11405,8 @@ void drawAutoDeepSleepWarningScreen(unsigned long now) {
 
 // !!!---- DRAWING ----!!!
 
-// ===== THICK DRAW HELPERS =====
+// Shared drawing primitives. These are intentionally small wrappers around
+// TFT_eSPI calls so screen code can stay focused on layout and state.
 void drawThickLine(int x1, int y1, int x2, int y2, uint16_t c) {
   tft.drawLine(x1, y1, x2, y2, c);
   tft.drawLine(x1+1, y1, x2+1, y2, c);
@@ -11106,6 +11477,8 @@ void drawTopLeftBevelHighlight(int x, int y, int w, int h, int radius,
   }
 }
 
+// Reusable beveled controls and buttons. Most screens use these helpers for a
+// consistent Anubis UI style instead of hand-drawing each panel differently.
 void drawGradientControl(int x, int y, int w, int h, int radius,
                          uint16_t baseColor, uint16_t outlineColor) {
   for (int i = 0; i < h; i++) {
@@ -11501,6 +11874,9 @@ void drawGameMenuButton() {
     -1);
 }
 
+// Built-in mini games live in this sketch to keep the transmitter self-contained.
+// They still use the shared inputChannels array, so stick calibration/rates stay
+// consistent with the rest of the controller.
 struct GameMenuEntry {
   const char *label;
   ButtonID button;
@@ -13646,6 +14022,8 @@ void drawDungeonRunDynamic() {
   }
   }
 
+// Controller tuning screens. Static functions draw labels/chrome; dynamic
+// functions refresh live values, focus, and selection state.
 void drawEndpointStatic() {
   tft.fillScreen(COLOR_BG);
 
@@ -14001,6 +14379,8 @@ void drawEndpointDynamic() {
   ratesNeedsRedraw = false;
   }
 
+// Protocol settings screens share status composition helpers so ELRS, ESP-NOW,
+// binding, and OTA state appear consistently in the UI and top bar.
 void composeProtocolStatusText(char *bindStatus, size_t bindStatusSize, uint16_t *statusColor) {
   if (bindStatus == nullptr || bindStatusSize == 0) return;
 
@@ -15353,6 +15733,8 @@ ButtonID cycleButtonOrder(ButtonID current, const ButtonID *order, int count, bo
   return order[next];
 }
 
+// Centralized screen transition reset. Put per-screen "enter" cleanup here so
+// both touch and D-pad navigation land in the same state.
 void setScreen(Screen screen) {
   Screen previousScreen = currentScreen;
   if (previousScreen == screen) return;
@@ -15762,6 +16144,9 @@ void loadModels() {
 }
 
 // !!!!==== TOUCH HANDELING ====!!!!
+// Touch dispatcher. It routes coordinates to modal editors first, then to the
+// active screen. D-pad handling lives in loop(), but both paths eventually
+// mutate the same selectedButton/currentScreen state.
 void handleTouch(int x, int y) {
 
   if (keyboardActive) {
@@ -17370,6 +17755,8 @@ bool handleMixNumpadTouch(int x, int y) {
 }
 
 // ==== SPLASH SCREEN ====
+// Startup throttle lockout prevents a model from receiving an unexpected drive
+// command immediately after boot.
 bool isStartupThrottleSafe() {
   if (!STARTUP_THROTTLE_SAFETY_ENABLED) return true;
   if (!ads1115Ready) return false;
@@ -17452,6 +17839,8 @@ void updateStartupThrottleSafetyScreen(unsigned long now) {
   }
 }
 
+// Boot splash and main screen. The splash keeps startup work from looking like a
+// freeze; the main screen is split into static/dynamic passes for speed.
 void drawSplash() {
 
   static bool drawn = false;
@@ -18777,6 +19166,8 @@ void drawBottomBar(int x, int y, int w, int h, float value) {
   }
 }
 
+// Header/top bar indicators are small but important: battery, charge state,
+// link quality, latency, and protocol health all update here.
 void drawTopBarStatic() {
   // ===== CLEAR AREA =====
   tft.fillRect(0, 0, 240, 35, COLOR_BG);
@@ -19996,6 +20387,8 @@ void drawRgb565IconTinted(int x, int y, int w, int h, const uint16_t* iconData, 
 }
 
 // ==== CONTROLLER ICON ====
+// Small icon wrappers. RGB565 assets are tinted at draw time so a single icon
+// set can match dark/light theme palettes.
 void drawControllerIcon(int x, int y, int s, uint16_t iconColor) {
   int size = 24 * s;
   drawRgb565IconTinted(x, y, size, size, icon_CONTROLLER, ICON_CONTROLLER_W, ICON_CONTROLLER_H, iconColor);
