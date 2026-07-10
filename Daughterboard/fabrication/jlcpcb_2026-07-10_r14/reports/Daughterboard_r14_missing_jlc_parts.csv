@@ -1,0 +1,5 @@
+Status,Designator,Comment,Footprint,Quantity,LCSC,MPN,JLCType,Note
+Needs audit,J5,I2C male header 2.54mm,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,,,,No carried-forward JLC part match found for this R14 item.
+Needs audit,J6,Deep sleep pushbutton header,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,1,,,,No carried-forward JLC part match found for this R14 item.
+Needs JLC selection,R49,10M,Resistor_SMD:R_0603_1608Metric,1,,10M 0603 resistor,,R14 gate-source bleed resistor; select a JLC 0603 10M part before assembly upload.
+Needs JLC selection,R50,10M,Resistor_SMD:R_0603_1608Metric,1,,10M 0603 resistor,,R14 gate-source bleed resistor; select a JLC 0603 10M part before assembly upload.

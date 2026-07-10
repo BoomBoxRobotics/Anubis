@@ -1,0 +1,21 @@
+R14 fabrication package - 2026-07-10
+
+Major R14 changes:
+- Q1 and Q2 changed to TI CSD18502Q5B using project-local DNK/VSON-CLIP footprint.
+- Q1/Q2 JLC/LCSC part number is C473915.
+- PCB was rerouted after the Q1/Q2 footprint swap.
+- GND copper zone was refilled before DRC and Gerber export.
+
+Checks:
+- ERC: 0 errors, 0 warnings.
+- R14 power topology audit: PASS.
+- DRC: 40 non-connectivity violations, 0 unconnected pads/items.
+
+Known DRC items:
+- 6 U1 clearance items around the BQ25887 footprint, approximately 0.200-0.225 mm vs the 0.250 mm configured rule.
+- Remaining items are silkscreen/text height/overlap or silkscreen-over-copper warnings.
+
+Assembly notes:
+- Q1/Q2 are selected as CSD18502Q5B, JLC/LCSC C473915.
+- Missing-parts report still lists J5/J6 through-hole headers and R49/R50 10M gate-source bleed resistors.
+- If J5/J6 are not being assembled by JLC, remove them from the assembly upload or mark them user-installed.
