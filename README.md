@@ -138,13 +138,13 @@ The mechanical layout fits around the Hosyond board and controller shell constra
 Current fabrication package:
 
 ```text
-fabrication/jlcpcb_2026-07-10_r13.zip
+fabrication/jlcpcb_2026-07-10_r14.zip
 ```
 
 Assembly files are included under:
 
 ```text
-fabrication/jlcpcb_2026-07-10_r13/assembly/
+fabrication/jlcpcb_2026-07-10_r14/assembly/
 ```
 
 ## Manufacturing Notes
