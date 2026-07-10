@@ -1,0 +1,29 @@
+Anubis daughterboard R13 review package
+Generated: 2026-07-10
+
+Primary change from R12:
+- The BQ28Z610 protection section was rewired from the incorrect low-side FET arrangement to a high-side N-FET protection path.
+- Q1 and Q2 are now CSD16412Q5A high-side protection FETs.
+- Charger BAT/SNS and downstream regulators now use protected BAT_SYS.
+- R46 is the series low-side current-sense resistor between BATT_RAW_N and GND.
+- USB-C A12/B12/shield are on GND.
+
+Validation summary:
+- ERC: 0 violations.
+- DRC: 38 violations, 0 unconnected items.
+- Known copper DRC items are local U1 clearance deltas around 0.20 mm to 0.225 mm versus the configured 0.25 mm rule.
+- Remaining non-copper items are silkscreen/text warnings.
+- R13 power-topology audit: PASS.
+
+Assembly notes:
+- JLC BOM/CPL files are in the assembly folder.
+- Gerber/drill upload zip is Daughterboard_jlcpcb_gerber_drill.zip.
+- Four assembly rows still need JLC part confirmation before final assembly upload:
+  - Q1, Q2: CSD16412Q5A high-side protection FETs.
+  - R49, R50: 10M 0603 gate-source bleed resistors.
+- See reports/Daughterboard_r13_missing_jlc_parts.csv.
+
+Critical review focus:
+- Confirm Q1/Q2 footprint and pin orientation against the selected JLC-available FET.
+- Confirm U1, U2, JST connectors, USB-C, and D4-D7 orientations in the JLC assembly preview.
+- Confirm JLC accepts the known U1 clearances or adjust the local routing/rules before ordering.

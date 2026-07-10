@@ -1,0 +1,9 @@
+R13 topology audit
+Board: Daughterboard.kicad_pcb
+PASS
+- USB-C A12/B12/shield are GND.
+- Charger BAT/SNS pins are protected BAT_SYS, not raw BATT_RAW_P.
+- High-side Q1/Q2 FET pads match the R13 common-source topology.
+- R46 is in series between BATT_RAW_N and GND.
+- SRP/SRN filter polarity matches charge-positive/discharge-negative current convention.
+- Legacy PACK_P/Q1_DRAIN_COMMON nets are absent.

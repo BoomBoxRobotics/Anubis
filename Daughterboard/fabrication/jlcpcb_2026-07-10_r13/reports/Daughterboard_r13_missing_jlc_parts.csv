@@ -1,0 +1,5 @@
+Status,Designator,Comment,Footprint,Quantity,LCSC,MPN,JLCType,Note
+Needs JLC selection,Q1,CSD16412Q5A charge FET,Package_SON:VSONP-8-1EP_5x6_P1.27mm,1,,CSD16412Q5A,,R13 high-side protection FET; choose JLC-compatible part/footprint or accept outside-sourced assembly.
+Needs JLC selection,Q2,CSD16412Q5A discharge FET,Package_SON:VSONP-8-1EP_5x6_P1.27mm,1,,CSD16412Q5A,,R13 high-side protection FET; choose JLC-compatible part/footprint or accept outside-sourced assembly.
+Needs JLC selection,R49,10M,Resistor_SMD:R_0603_1608Metric,1,,10M 0603 resistor,,R13 gate-source bleed resistor; select a JLC 0603 10M part before assembly upload.
+Needs JLC selection,R50,10M,Resistor_SMD:R_0603_1608Metric,1,,10M 0603 resistor,,R13 gate-source bleed resistor; select a JLC 0603 10M part before assembly upload.

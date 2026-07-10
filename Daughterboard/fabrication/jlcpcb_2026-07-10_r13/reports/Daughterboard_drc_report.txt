@@ -1,0 +1,159 @@
+** Drc report for Daughterboard.kicad_pcb **
+** Created on 2026-07-09T23:27:31 **
+** Report includes: Errors, Warnings **
+
+** Found 38 DRC violations **
+[clearance]: Clearance violation ( clearance 0.2500 mm; actual 0.2000 mm)
+    Local override; error
+    @(31.9625 mm, 35.2500 mm): Pad 13 [BAT_SYS] of U1 on F.Cu
+    @(30.0000 mm, 34.0000 mm): Pad 25 [GND] of U1 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2500 mm; actual 0.2000 mm)
+    Local override; error
+    @(31.9625 mm, 34.7500 mm): Pad 14 [BAT_SYS] of U1 on F.Cu
+    @(30.0000 mm, 34.0000 mm): Pad 25 [GND] of U1 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2500 mm; actual 0.2000 mm)
+    Local override; error
+    @(31.9625 mm, 34.2500 mm): Pad 15 [BAT_SYS] of U1 on F.Cu
+    @(30.0000 mm, 34.0000 mm): Pad 25 [GND] of U1 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2500 mm; actual 0.2000 mm)
+    Local override; error
+    @(31.9625 mm, 33.7500 mm): Pad 16 [BAT_SYS] of U1 on F.Cu
+    @(30.0000 mm, 34.0000 mm): Pad 25 [GND] of U1 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2500 mm; actual 0.2000 mm)
+    Local override; error
+    @(29.2500 mm, 32.0375 mm): Pad 23 [CHG_IN] of U1 on F.Cu
+    @(30.0000 mm, 34.0000 mm): Pad 25 [GND] of U1 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2500 mm; actual 0.2250 mm)
+    Local override; error
+    @(29.7500 mm, 32.0375 mm): Pad 22 [PMID] of U1 on F.Cu
+    @(29.3000 mm, 31.7000 mm): Segment [CHG_IN] on F.Cu
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
+    Rule: board setup constraints silk text height; warning
+    @(41.3000 mm, 13.6500 mm): Footprint text of SW1 (VIN)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(41.6000 mm, 18.7300 mm): Footprint text of SW1 (GND)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(42.0000 mm, 27.6200 mm): Footprint text of SW1 (CTRL)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(49.8000 mm, 13.6500 mm): Footprint text of SW1 (VOUT)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(50.4000 mm, 18.7300 mm): Footprint text of SW1 (GND)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
+    Rule: board setup constraints silk text height; warning
+    @(84.5500 mm, 33.0700 mm): Footprint text of SW2 (VIN)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(84.8500 mm, 38.1500 mm): Footprint text of SW2 (GND)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(85.2500 mm, 47.0400 mm): Footprint text of SW2 (CTRL)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(93.0500 mm, 33.0700 mm): Footprint text of SW2 (VOUT)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(93.6500 mm, 38.1500 mm): Footprint text of SW2 (GND)
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
+    Rule: board setup constraints silk text height; warning
+    @(64.6625 mm, 34.0500 mm): Reference field of U2
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(132.8000 mm, 12.7520 mm): Reference field of J910
+    @(129.4000 mm, 12.7520 mm): Reference field of J911
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(26.6700 mm, 48.6250 mm): Reference field of R50
+    @(26.0250 mm, 50.4700 mm): Reference field of C15
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(145.6775 mm, 26.1877 mm): Segment of R34 on F.Silkscreen
+    @(145.2000 mm, 26.4250 mm): Reference field of R34
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(142.8000 mm, 26.4250 mm): Reference field of R36
+    @(143.2775 mm, 26.1877 mm): Segment of R36 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(148.0775 mm, 26.1877 mm): Segment of R33 on F.Silkscreen
+    @(147.6000 mm, 26.4250 mm): Reference field of R33
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.6775 mm, 26.1877 mm): Segment of R38 on F.Silkscreen
+    @(140.2000 mm, 26.4250 mm): Reference field of R38
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(135.8775 mm, 26.1877 mm): Segment of R35 on F.Silkscreen
+    @(135.4000 mm, 26.4250 mm): Reference field of R35
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(138.2775 mm, 26.1377 mm): Segment of R37 on F.Silkscreen
+    @(137.8000 mm, 26.3750 mm): Reference field of R37
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(84.5500 mm, 33.0700 mm): Footprint text of SW2 (VIN)
+    @(82.9000 mm, 31.8000 mm): PTH pad 1 [+3V3] of SW2
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(41.3000 mm, 13.6500 mm): Footprint text of SW1 (VIN)
+    @(39.6500 mm, 12.3800 mm): PTH pad 1 [+5V] of SW1
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(145.2000 mm, 26.4250 mm): Reference field of R34
+    @(146.2000 mm, 27.2500 mm): Pad 2 [EXP_GPB3] of R34 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(142.8000 mm, 26.4250 mm): Reference field of R36
+    @(143.8000 mm, 25.6000 mm): Pad 1 [MCP_GPB5] of R36 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(142.8000 mm, 26.4250 mm): Reference field of R36
+    @(143.8000 mm, 27.2500 mm): Pad 2 [EXP_GPB5] of R36 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(147.6000 mm, 26.4250 mm): Reference field of R33
+    @(148.6000 mm, 27.2500 mm): Pad 2 [EXP_GPB2] of R33 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(147.6000 mm, 26.4250 mm): Reference field of R33
+    @(148.6000 mm, 25.6000 mm): Pad 1 [MCP_GPB2] of R33 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(140.2000 mm, 26.4250 mm): Reference field of R38
+    @(141.2000 mm, 27.2500 mm): Pad 2 [EXP_GPB7] of R38 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(140.2000 mm, 26.4250 mm): Reference field of R38
+    @(141.2000 mm, 25.6000 mm): Pad 1 [MCP_GPB7] of R38 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(135.4000 mm, 26.4250 mm): Reference field of R35
+    @(136.4000 mm, 25.6000 mm): Pad 1 [MCP_GPB4] of R35 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(135.4000 mm, 26.4250 mm): Reference field of R35
+    @(136.4000 mm, 27.2500 mm): Pad 2 [EXP_GPB4] of R35 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(137.8000 mm, 26.3750 mm): Reference field of R37
+    @(138.8000 mm, 27.2000 mm): Pad 2 [EXP_GPB6] of R37 on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(137.8000 mm, 26.3750 mm): Reference field of R37
+    @(138.8000 mm, 25.5500 mm): Pad 1 [MCP_GPB6] of R37 on F.Cu
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **
