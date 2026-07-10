@@ -46,7 +46,7 @@ The daughterboard adds the support electronics around the Hosyond ESP32-S3 board
 - Standard 2S LiPo balance connector for the battery pack.
 - Support for a 2S LiPo pack or two 18650 cells configured as a 2S pack.
 - 2S battery gauge/protection circuitry based around `BQ28Z610DRZR-R1`.
-- Dual-FET protection/power path using `CSD83325L`.
+- R13 high-side protection path using two `CSD16412Q5A` N-FETs, with the charger and buck regulators fed from protected `BAT_SYS`.
 - Switched 5 V rail for UART/ELRS-side accessories.
 - Switched 3.3 V rail for I2C, analog, and low-voltage peripherals.
 - Two Pololu mini pushbutton power switch modules for rail control.
@@ -138,13 +138,13 @@ The mechanical layout fits around the Hosyond board and controller shell constra
 Current fabrication package:
 
 ```text
-fabrication/jlcpcb_2026-07-06_r12.zip
+fabrication/jlcpcb_2026-07-10_r13.zip
 ```
 
 Assembly files are included under:
 
 ```text
-fabrication/jlcpcb_2026-07-06_r12/assembly/
+fabrication/jlcpcb_2026-07-10_r13/assembly/
 ```
 
 ## Manufacturing Notes
@@ -161,11 +161,13 @@ Before ordering boards, always check:
 - JLCPCB part availability.
 - BOM and CPL alignment in the JLCPCB preview.
 
-Known current status from the latest R12 fabrication pass:
+Known current status from the latest R13 review package:
 
 - ERC reports no errors or warnings.
-- DRC contains known/accepted clearance and silkscreen warnings.
-- The known clearance items are around the battery-management IC package and are small differences from the configured rule.
+- DRC reports 38 known items and 0 unconnected pads.
+- The copper clearance items are around `U1` and are small differences from the configured 0.25 mm rule.
+- The R13 topology audit passes: USB-C ground, charger/system bus, high-side protection FETs, current-sense resistor, and SRP/SRN polarity all match the corrected battery-protection intent.
+- JLC assembly still needs confirmed selections for `Q1`, `Q2`, `R49`, and `R50`; see `fabrication/jlcpcb_2026-07-10_r13/reports/Daughterboard_r13_missing_jlc_parts.csv`.
 - Silkscreen warnings should not normally prevent fabrication.
 - Copper, drill, outline, missing-net, and footprint-orientation issues should be treated as critical.
 
