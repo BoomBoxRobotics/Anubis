@@ -251,7 +251,8 @@ def purchase_link_for(part: Part) -> str:
         "J7": digikey_search("JST XH 3 pin horizontal S3B-XH-A"),
         "U1": digikey_search("BQ25887RGE"),
         "U2": "https://www.digikey.com/en/products/detail/texas-instruments/BQ28Z610DRZR-R1/11625468",
-        "Q1": digikey_search("CSD83325L"),
+        "Q1": "https://jlcpcb.com/partdetail/TexasInstruments-CSD18502Q5B/C473915",
+        "Q2": "https://jlcpcb.com/partdetail/TexasInstruments-CSD18502Q5B/C473915",
         "U3": digikey_search("AP63200WU"),
         "U4": digikey_search("AP63200WU"),
         "U7": digikey_search("MCP23017-E/SO"),
@@ -607,6 +608,26 @@ def make_symbols() -> dict[str, SymbolDef]:
                 Pin("B2", "G2", "R", 5.08),
             ),
         ),
+        "CSD18502Q5B": SymbolDef(
+            "CSD18502Q5B",
+            "Q",
+            "CSD18502Q5B",
+            "Daughterboard:CSD18502Q5B_DNK0008A_VSON-CLIP_5x6mm",
+            "https://www.ti.com/lit/ds/symlink/csd18502q5b.pdf",
+            "40 V single N-channel NexFET in TI DNK/VSON-CLIP-8 package; JLCPCB C473915.",
+            25.4,
+            35.56,
+            (
+                Pin("1", "S", "L", -10.16),
+                Pin("2", "S", "L", -5.08),
+                Pin("3", "S", "L", 0),
+                Pin("4", "G", "L", 7.62, "input"),
+                Pin("5", "D", "R", -10.16),
+                Pin("6", "D", "R", -5.08),
+                Pin("7", "D", "R", 0),
+                Pin("8", "D", "R", 5.08),
+            ),
+        ),
         "TPS61023": SymbolDef(
             "TPS61023",
             "U",
@@ -787,7 +808,13 @@ def make_parts() -> list[Part]:
         "RSENSE": "R46",
         "RSRN": "R47",
         "RSRP": "R48",
+        "RDSG_GS": "R49",
+        "RCHG_GS": "R50",
+        "CCHG_FET": "C32",
+        "CDSG_FET": "C33",
         "LCHG": "L3",
+        "QCHG": "Q1",
+        "QDSG": "Q2",
     }
 
     def part(symbol, ref, value, footprint, x, y, nets, section="", notes="", datasheet="", description="", in_bom=True, on_board=True):
@@ -807,22 +834,22 @@ def make_parts() -> list[Part]:
          {
              "VBUS": "CHG_IN", "PSEL": "GND", "CD": "GND", "SDA": "I2C_SDA", "SCL": "I2C_SCL",
              "~{INT}": None, "~{PG}": "PG_STAT", "STAT": "CHG_STAT", "ILIM": "ILIM",
-             "SNS1": "PACK_P", "SNS2": "PACK_P", "TS": "TS", "CBSET": "CBSET", "REGN": "REGN",
+             "SNS1": "BAT_SYS", "SNS2": "BAT_SYS", "TS": "TS", "CBSET": "CBSET", "REGN": "REGN",
              "BTST": "BTST", "PMID1": "PMID", "PMID2": "PMID", "SW1": "CHG_SW", "SW2": "CHG_SW",
-             "BAT1": "PACK_P", "BAT2": "PACK_P", "MID": "CELL_MID", "GND1": "GND", "GND2": "GND",
+             "BAT1": "BAT_SYS", "BAT2": "BAT_SYS", "MID": "CELL_MID", "GND1": "GND", "GND2": "GND",
              "EP/GND": "GND",
          },
-         "2S charger", "USB 5V boost-mode charger for 2S Li-ion/LiPo with midpoint cell-balance connection.")
+         "2S charger", "USB 5V boost-mode charger connected on the protected/system side of the BQ28Z610 high-side FETs.")
     part(two, "LCHG", "1uH >=4A sat", "Inductor_SMD:L_APV_ANR5040", 174, 22, {"1": "PMID", "2": "CHG_SW"}, "2S charger", "BQ25887 boost-charge SMD inductor; finalize DCR/current from layout and charge limit.")
     part(two, "RILIM", "806R 1% TBD", "Resistor_SMD:R_0603_1608Metric", 174, 34, {"1": "ILIM", "2": "GND"}, "2S charger", "Input-current hardware limit target no more than 1.5A; set charge current in BQ25887 firmware/registers between 500mA and 1.5A.")
     part(two, "RCBSET", "TBD 1%", "Resistor_SMD:R_0603_1608Metric", 174, 46, {"1": "CBSET", "2": "GND"}, "2S charger", "Cell-balance setting resistor; choose from BQ25887 datasheet.")
     part(two, "CPMID1", "22uF 16V X5R", "Capacitor_SMD:C_0805_2012Metric", 174, 58, {"1": "PMID", "2": "GND"}, "2S charger", "PMID bulk capacitor.")
     part(two, "CPMID2", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 174, 70, {"1": "PMID", "2": "GND"}, "2S charger", "PMID HF bypass.")
-    part(two, "CBAT1", "22uF 16V X5R", "Capacitor_SMD:C_0805_2012Metric", 174, 82, {"1": "PACK_P", "2": "GND"}, "2S charger", "2S pack/BAT bulk capacitor.")
+    part(two, "CBAT1", "22uF 16V X5R", "Capacitor_SMD:C_0805_2012Metric", 174, 82, {"1": "BAT_SYS", "2": "GND"}, "2S charger", "2S charger BAT bulk capacitor on protected/system-side pack positive.")
     part(two, "CREGN", "4.7uF 6.3V X5R", "Capacitor_SMD:C_0603_1608Metric", 214, 22, {"1": "REGN", "2": "GND"}, "2S charger", "REGN regulator capacitor.")
     part(two, "CBTST", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 214, 34, {"1": "BTST", "2": "CHG_SW"}, "2S charger", "Bootstrap capacitor.")
     part(two, "CCBSET", "100nF 10V X7R", "Capacitor_SMD:C_0603_1608Metric", 214, 46, {"1": "CBSET", "2": "GND"}, "2S charger", "CBSET filter placeholder; verify final requirement.")
-    part(two, "CBAL1", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 214, 58, {"1": "PACK_P", "2": "CELL_MID"}, "2S charger", "Upper-cell sense bypass; place close to charger sense pins.")
+    part(two, "CBAL1", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 214, 58, {"1": "BATT_RAW_P", "2": "CELL_MID"}, "2S charger", "Upper-cell raw-pack sense bypass; place close to charger/protection sense pins.")
     part(two, "CBAL2", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 214, 70, {"1": "CELL_MID", "2": "BATT_RAW_N"}, "2S charger", "Lower-cell raw-pack sense bypass; place close to charger/protection sense pins.")
     part(two, "NTC1", "10k NTC", "Resistor_SMD:R_0603_1608Metric", 214, 82, {"1": "TS", "2": "GND"}, "2S charger", "0603 NTC; place against or near the selected pack/cells.")
     part(two, "RTSBIAS", "10k 1%", "Resistor_SMD:R_0603_1608Metric", 214, 94, {"1": "REGN", "2": "TS"}, "2S charger", "TS bias; verify with selected NTC curve and BQ25887 TS thresholds.")
@@ -832,12 +859,12 @@ def make_parts() -> list[Part]:
     part(two, "DPGOOD", "LED blue", "LED_SMD:LED_0603_1608Metric", 254, 70, {"1": "LED_PGOOD_A", "2": "PG_STAT"}, "2S charger", "PG open-drain LED.")
 
     part("CONN_3", "BT1", "18650 Cell 1 lower", "", 35, 125, {"1": "CELL1_P", "2": "BATT_RAW_N", "3": None}, "Battery", "Lower series cell holder: negative to raw pack negative, positive through F2 to CELL_MID.")
-    part("CONN_3", "BT2", "18650 Cell 2 upper", "", 35, 150, {"1": "CELL2_P", "2": "CELL_MID", "3": None}, "Battery", "Upper series cell holder: negative to CELL_MID, positive through F3 to PACK_P.")
+    part("CONN_3", "BT2", "18650 Cell 2 upper", "", 35, 150, {"1": "CELL2_P", "2": "CELL_MID", "3": None}, "Battery", "Upper series cell holder: negative to CELL_MID, positive through F3 to BATT_RAW_P.")
     part(two, "F2", "PTC/fuse cell1", "Fuse:Fuse_1206_3216Metric", 75, 125, {"1": "CELL1_P", "2": "CELL_MID"}, "Battery", "SMD cell fuse/PTC; place close to lower cell positive.")
-    part(two, "F3", "PTC/fuse cell2", "Fuse:Fuse_1206_3216Metric", 75, 150, {"1": "CELL2_P", "2": "PACK_P"}, "Battery", "SMD cell fuse/PTC; place close to upper cell positive.")
+    part(two, "F3", "PTC/fuse cell2", "Fuse:Fuse_1206_3216Metric", 75, 150, {"1": "CELL2_P", "2": "BATT_RAW_P"}, "Battery", "SMD cell fuse/PTC; place close to upper cell positive.")
     part("CONN_3", "J7", "2S balance input JST-XH side-entry", "Connector_JST:JST_XH_S3B-XH-A_1x03_P2.50mm_Horizontal", 115, 137,
-         {"1": "BATT_RAW_N", "2": "CELL_MID", "3": "PACK_P"},
-         "Battery", "Top-edge side-entry 2S balance connector pinout: B-, cell midpoint, B+. Pin 1 is raw pack negative before protection FETs.")
+         {"1": "BATT_RAW_N", "2": "CELL_MID", "3": "BATT_RAW_P"},
+         "Battery", "Top-edge side-entry 2S balance connector pinout: B-, cell midpoint, B+. Pin 3 is raw cell-stack positive before high-side protection FETs.")
 
     part("BQ28Z610_DRZ", "U2", "BQ28Z610DRZR-R1", "Daughterboard:BQ28Z610_DRZ0012A_12SON_2.5x4mm_P0.5mm", 155, 137,
          {
@@ -846,27 +873,33 @@ def make_parts() -> list[Part]:
              "CHG": "BQ_CHG", "PBI": "BQ_PBI", "VC2": "PROT_VDD", "VC1": "PROT_VC",
              "PWPD": "BATT_RAW_N",
          },
-         "2S protection", "TI 1S/2S gas gauge and primary protection controller. Requires BQStudio/data-flash setup; verify final FET topology before fabrication.",
+         "2S protection", "TI 1S/2S gas gauge and primary protection controller wired for the high-side N-FET topology from the BQ28Z610 reference design.",
          "https://www.ti.com/lit/ds/symlink/bq28z610.pdf")
-    part(two, "RPROT_TOP", "470R 1%", "Resistor_SMD:R_0603_1608Metric", 195, 113, {"1": "PACK_P", "2": "PROT_VDD"}, "2S protection", "BQ28Z610 VC2 input resistor; place near U2 and verify with cell-balance routing.")
+    part(two, "RPROT_TOP", "470R 1%", "Resistor_SMD:R_0603_1608Metric", 195, 113, {"1": "BATT_RAW_P", "2": "PROT_VDD"}, "2S protection", "BQ28Z610 VC2 input resistor; place near U2 and verify with cell-balance routing.")
     part(two, "RPROT_MID", "470R 1%", "Resistor_SMD:R_0603_1608Metric", 195, 125, {"1": "CELL_MID", "2": "PROT_VC"}, "2S protection", "BQ28Z610 VC1 input resistor; place near U2 and verify with cell-balance routing.")
     part(two, "CPROT_TOP", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 195, 137, {"1": "PROT_VDD", "2": "PROT_VC"}, "2S protection", "BQ28Z610 upper-cell sense filter capacitor.")
     part(two, "CPROT_BOT", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 195, 149, {"1": "PROT_VC", "2": "BATT_RAW_N"}, "2S protection", "BQ28Z610 lower-cell sense filter capacitor.")
-    part(two, "RPROT_VM", "100R", "Resistor_SMD:R_0603_1608Metric", 195, 161, {"1": "BAT_SYS", "2": "BQ_PACK"}, "2S protection", "BQ28Z610 PACK input series resistor; verify final pack/system-side node after FET topology review.")
+    part(two, "RPROT_VM", "100R", "Resistor_SMD:R_0603_1608Metric", 195, 161, {"1": "BAT_SYS", "2": "BQ_PACK"}, "2S protection", "BQ28Z610 PACK input series resistor from protected/system-side pack positive.")
     part(two, "CPBI", "2.2uF 10V X5R", "Capacitor_SMD:C_0603_1608Metric", 195, 173, {"1": "BQ_PBI", "2": "BATT_RAW_N"}, "2S protection", "BQ28Z610 PBI hold-up capacitor; place close to U2.")
-    part(two, "RSENSE", "2mR 1% 50ppm", "Resistor_SMD:R_1206_3216Metric", 195, 185, {"1": "BATT_RAW_N", "2": "GND"}, "2S protection", "BQ28Z610 current-sense resistor placeholder; verify value, power, Kelvin routing, and polarity.")
-    part(two, "RSRN", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 101, {"1": "BATT_RAW_N", "2": "BQ_SRN"}, "2S protection", "BQ28Z610 SRN input filter resistor; Kelvin route from sense resistor.")
-    part(two, "RSRP", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 113, {"1": "GND", "2": "BQ_SRP"}, "2S protection", "BQ28Z610 SRP input filter resistor; Kelvin route from sense resistor.")
+    part(two, "RSENSE", "2mR 1% 50ppm", "Resistor_SMD:R_1206_3216Metric", 195, 185, {"1": "BATT_RAW_N", "2": "GND"}, "2S protection", "BQ28Z610 series current-sense resistor in the pack-negative return path; Kelvin route both ends.")
+    part(two, "RSRN", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 101, {"1": "GND", "2": "BQ_SRN"}, "2S protection", "BQ28Z610 SRN input filter resistor; Kelvin route from system/pack-negative side of R46.")
+    part(two, "RSRP", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 113, {"1": "BATT_RAW_N", "2": "BQ_SRP"}, "2S protection", "BQ28Z610 SRP input filter resistor; Kelvin route from raw-cell-negative side of R46.")
     part(two, "CSRN_SRP", "100nF 16V X7R", "Capacitor_SMD:C_0603_1608Metric", 235, 149, {"1": "BQ_SRN", "2": "BQ_SRP"}, "2S protection", "BQ28Z610 differential SRN/SRP filter capacitor; place close to U2.")
-    part(two, "RDO_GATE", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 125, {"1": "BQ_DSG", "2": "DO_GATE"}, "2S protection", "Small series gate resistor for BQ28Z610 discharge FET control. Final high-side FET topology must be verified.")
-    part(two, "RCO_GATE", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 137, {"1": "BQ_CHG", "2": "CO_GATE"}, "2S protection", "Small series gate resistor for BQ28Z610 charge FET control. Final high-side FET topology must be verified.")
-    part("PROT_FET_PAIR", "Q1", "CSD83325L", "Daughterboard:CSD83325L_YJE0006A", 235, 158,
-         {"S1A": "BATT_RAW_N", "S1B": "BATT_RAW_N", "G1": "DO_GATE",
-          "S2A": "GND", "S2B": "GND", "G2": "CO_GATE"},
-         "2S protection", "Back-to-back low-side N-FET pair; verify 12V VDS margin and thermals for final PCB.")
+    part(two, "RDO_GATE", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 125, {"1": "BQ_DSG", "2": "DO_GATE"}, "2S protection", "Small series gate resistor for BQ28Z610 discharge FET control.")
+    part(two, "RCO_GATE", "100R", "Resistor_SMD:R_0603_1608Metric", 235, 137, {"1": "BQ_CHG", "2": "CO_GATE"}, "2S protection", "Small series gate resistor for BQ28Z610 charge FET control.")
+    part("CSD18502Q5B", "QCHG", "CSD18502Q5B charge FET", "Daughterboard:CSD18502Q5B_DNK0008A_VSON-CLIP_5x6mm", 235, 158,
+         {"D": "BAT_SYS", "S": "FET_SRC_COMMON", "G": "CO_GATE"},
+         "2S protection", "High-side charge-blocking N-FET; drain on protected/system side, source at the common high-side FET node.")
+    part("CSD18502Q5B", "QDSG", "CSD18502Q5B discharge FET", "Daughterboard:CSD18502Q5B_DNK0008A_VSON-CLIP_5x6mm", 275, 158,
+         {"D": "FET_BATT_P", "S": "FET_SRC_COMMON", "G": "DO_GATE"},
+         "2S protection", "High-side discharge-blocking N-FET; drain feeds the raw cell-stack positive through F4.")
+    part(two, "RCHG_GS", "10M", "Resistor_SMD:R_0603_1608Metric", 235, 173, {"1": "CO_GATE", "2": "FET_SRC_COMMON"}, "2S protection", "Gate-source bleed for the high-side charge FET.")
+    part(two, "RDSG_GS", "10M", "Resistor_SMD:R_0603_1608Metric", 275, 173, {"1": "DO_GATE", "2": "FET_SRC_COMMON"}, "2S protection", "Gate-source bleed for the high-side discharge FET.")
+    part(two, "CCHG_FET", "100nF 25V X7R", "Capacitor_SMD:C_0603_1608Metric", 235, 185, {"1": "BAT_SYS", "2": "FET_SRC_COMMON"}, "2S protection", "ESD/transient capacitor across charge FET per BQ28Z610 layout guidance.")
+    part(two, "CDSG_FET", "100nF 25V X7R", "Capacitor_SMD:C_0603_1608Metric", 275, 185, {"1": "FET_BATT_P", "2": "FET_SRC_COMMON"}, "2S protection", "ESD/transient capacitor across discharge FET per BQ28Z610 layout guidance.")
 
-    part(two, "F4", "2A system fuse", "Fuse:Fuse_1206_3216Metric", 275, 137, {"1": "PACK_P", "2": "BAT_SYS"}, "Battery", "SMD pack-to-system fuse feeding both buck regulators.")
-    part("PWR_FLAG", "#FLG1", "PWR_FLAG", "", 315, 125, {"PWR": "BAT_SYS"}, "ERC", "Marks 2S system bus as powered for ERC.", in_bom=False, on_board=False)
+    part(two, "F4", "2A battery path fuse", "Fuse:Fuse_1206_3216Metric", 315, 137, {"1": "FET_BATT_P", "2": "BATT_RAW_P"}, "Battery", "SMD high-side pack fuse between protection FETs and raw cell-stack positive.")
+    part("PWR_FLAG", "#FLG1", "PWR_FLAG", "", 315, 125, {"PWR": "BAT_SYS"}, "ERC", "Marks protected 2S system bus as powered for ERC.", in_bom=False, on_board=False)
     part("PWR_FLAG", "#FLG2", "PWR_FLAG", "", 315, 137, {"PWR": "CHG_IN"}, "ERC", "Marks USB charger input as externally powered for ERC.", in_bom=False, on_board=False)
     part("PWR_FLAG", "#FLG3", "PWR_FLAG", "", 315, 149, {"PWR": "GND"}, "ERC", "Marks protected ground as driven for ERC.", in_bom=False, on_board=False)
     part("PWR_FLAG", "#FLG4", "PWR_FLAG", "", 315, 161, {"PWR": "BATT_RAW_N"}, "ERC", "Marks raw pack negative as powered for ERC.", in_bom=False, on_board=False)
@@ -1043,12 +1076,13 @@ def make_parts() -> list[Part]:
              "GPIO expander", "Individual solder-wire pad for MCP23017 GPIO/utility breakout.")
 
     testpads = [
-        ("TP1", "USB_VBUS", 285, 32), ("TP2", "CHG_IN", 285, 42), ("TP3", "PACK_P", 285, 52),
-        ("TP4", "CELL_MID", 285, 62), ("TP5", "BAT_SYS", 285, 72), ("TP6", "+5V", 285, 82),
-        ("TP7", "+3V3", 285, 92), ("TP8", "+5V_SW", 285, 102), ("TP9", "+3V3_SW", 285, 112),
-        ("TP10", "CHG_STAT", 285, 122), ("TP11", "PG_STAT", 285, 132), ("TP12", "BATT_RAW_N", 285, 142),
-        ("TP14", "GND", 285, 162), ("TP15", "AIN4", 285, 172), ("TP16", "AIN5", 285, 182),
-        ("TP17", "AIN6", 285, 192), ("TP18", "AIN7", 285, 202),
+        ("TP1", "USB_VBUS", 620, 32), ("TP2", "CHG_IN", 620, 42), ("TP3", "BAT_SYS", 620, 52),
+        ("TP4", "CELL_MID", 620, 62), ("TP5", "BAT_SYS", 620, 72), ("TP6", "+5V", 620, 82),
+        ("TP7", "+3V3", 620, 92), ("TP8", "+5V_SW", 620, 102), ("TP9", "+3V3_SW", 620, 112),
+        ("TP10", "CHG_STAT", 620, 122), ("TP11", "PG_STAT", 620, 132), ("TP12", "BATT_RAW_N", 620, 142),
+        ("TP13", "BATT_RAW_P", 620, 152),
+        ("TP14", "GND", 620, 162), ("TP15", "AIN4", 620, 172), ("TP16", "AIN5", 620, 182),
+        ("TP17", "AIN6", 620, 192), ("TP18", "AIN7", 620, 202),
     ]
     for ref, net, x, y in testpads:
         part(tp, ref, f"{net} test pad", "TestPoint:TestPoint_Pad_D1.0mm", x, y, {"PAD": net}, "Test pads", "Debug/access pad.")
@@ -1174,6 +1208,49 @@ def write_project_footprint_library() -> None:
 )
 """
     (pretty / "CSD83325L_YJE0006A.kicad_mod").write_text(footprint, newline="\n")
+    csd18502q5b = """(footprint "CSD18502Q5B_DNK0008A_VSON-CLIP_5x6mm"
+\t(version 20240108)
+\t(generator "codex")
+\t(layer "F.Cu")
+\t(descr "TI CSD18502Q5B, DNK0008A / VSON-CLIP-8, 5x6mm NexFET, JLCPCB C473915")
+\t(tags "CSD18502Q5B DNK0008A VSON-CLIP Q5B NexFET C473915")
+\t(property "Reference" "Q" (at 0 -3.45 0) (layer "F.SilkS") (effects (font (size 0.7 0.7) (thickness 0.1))))
+\t(property "Value" "CSD18502Q5B" (at 0 3.45 0) (layer "F.Fab") (effects (font (size 0.7 0.7) (thickness 0.1))))
+\t(property "Footprint" "" (at 0 0 0) (layer "F.Fab") hide (effects (font (size 1 1) (thickness 0.15))))
+\t(property "Datasheet" "https://www.ti.com/lit/ds/symlink/csd18502q5b.pdf" (at 0 0 0) (layer "F.Fab") hide (effects (font (size 1 1) (thickness 0.15))))
+\t(attr smd)
+\t(duplicate_pad_numbers_are_jumpers no)
+\t(fp_line (start -3.35 -2.6) (end 3.35 -2.6) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+\t(fp_line (start 3.35 -2.6) (end 3.35 2.6) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+\t(fp_line (start 3.35 2.6) (end -3.35 2.6) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+\t(fp_line (start -3.35 2.6) (end -3.35 -2.6) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+\t(fp_line (start -2.5 -3.0) (end -1.8 -3.0) (stroke (width 0.12) (type solid)) (layer "F.SilkS"))
+\t(fp_line (start -2.5 -3.0) (end -2.5 -2.35) (stroke (width 0.12) (type solid)) (layer "F.SilkS"))
+\t(fp_line (start -2.5 3.0) (end 2.5 3.0) (stroke (width 0.12) (type solid)) (layer "F.SilkS"))
+\t(fp_line (start -2.5 -3.0) (end 2.5 -3.0) (stroke (width 0.1) (type solid)) (layer "F.Fab"))
+\t(fp_line (start 2.5 -3.0) (end 2.5 3.0) (stroke (width 0.1) (type solid)) (layer "F.Fab"))
+\t(fp_line (start 2.5 3.0) (end -2.5 3.0) (stroke (width 0.1) (type solid)) (layer "F.Fab"))
+\t(fp_line (start -2.5 3.0) (end -2.5 -3.0) (stroke (width 0.1) (type solid)) (layer "F.Fab"))
+\t(fp_circle (center -2.95 -2.75) (end -2.85 -2.75) (stroke (width 0.12) (type solid)) (fill none) (layer "F.SilkS"))
+\t(fp_text user "${REFERENCE}" (at 0 0 0) (layer "F.Fab") (effects (font (size 0.6 0.6) (thickness 0.08))))
+\t(pad "" smd rect (at -1.15 -1.27) (size 1.20 1.05) (layers "F.Paste"))
+\t(pad "" smd rect (at -1.15 0) (size 1.20 1.05) (layers "F.Paste"))
+\t(pad "" smd rect (at -1.15 1.27) (size 1.20 1.05) (layers "F.Paste"))
+\t(pad "" smd rect (at 0.25 -1.27) (size 1.20 1.05) (layers "F.Paste"))
+\t(pad "" smd rect (at 0.25 0) (size 1.20 1.05) (layers "F.Paste"))
+\t(pad "" smd rect (at 0.25 1.27) (size 1.20 1.05) (layers "F.Paste"))
+\t(pad "5" smd roundrect (at -0.65 0) (size 4.44 4.52) (layers "F.Cu" "F.Mask") (roundrect_rratio 0.03))
+\t(pad "5" smd roundrect (at -2.7 -1.905) (size 0.72 0.72) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+\t(pad "6" smd roundrect (at -2.7 -0.635) (size 0.72 0.72) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+\t(pad "7" smd roundrect (at -2.7 0.635) (size 0.72 0.72) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+\t(pad "8" smd roundrect (at -2.7 1.905) (size 0.72 0.72) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+\t(pad "4" smd roundrect (at 2.55 -1.905) (size 1.10 0.71) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+\t(pad "3" smd roundrect (at 2.55 -0.635) (size 1.10 0.71) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+\t(pad "2" smd roundrect (at 2.55 0.635) (size 1.10 0.71) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+\t(pad "1" smd roundrect (at 2.55 1.905) (size 1.10 0.71) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.15))
+)
+"""
+    (pretty / "CSD18502Q5B_DNK0008A_VSON-CLIP_5x6mm.kicad_mod").write_text(csd18502q5b, newline="\n")
     bq28z610 = """(footprint "BQ28Z610_DRZ0012A_12SON_2.5x4mm_P0.5mm"
 \t(version 20240108)
 \t(generator "codex")

@@ -469,74 +469,86 @@
 			)
 			)
 		)
-		(symbol "PROT_FET_PAIR"
+		(symbol "CSD18502Q5B"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(duplicate_pin_numbers_are_jumpers no)
 			(property "Reference" "Q"
-				(at -15.24 -22.86 0)
+				(at -12.7 -25.4 0)
 				(effects (font (size 1.27 1.27)))
 			)
-			(property "Value" "CSD83325L"
-				(at -15.24 22.86 0)
+			(property "Value" "CSD18502Q5B"
+				(at -12.7 25.4 0)
 				(effects (font (size 1.27 1.27)))
 			)
-			(property "Footprint" "Daughterboard:CSD83325L_YJE0006A"
+			(property "Footprint" "Daughterboard:CSD18502Q5B_DNK0008A_VSON-CLIP_5x6mm"
 				(at 0 0 0)
 				(effects (font (size 1.27 1.27)) (hide yes))
 			)
-			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/csd83325l.pdf"
+			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/csd18502q5b.pdf"
 				(at 0 0 0)
 				(effects (font (size 1.27 1.27)) (hide yes))
 			)
-			(property "Description" "12 V dual common-drain N-channel NexFET in TI YJE0006A PicoStar/LGA package."
+			(property "Description" "40 V single N-channel NexFET in TI DNK/VSON-CLIP-8 package; JLCPCB C473915."
 				(at 0 0 0)
 				(effects (font (size 1.27 1.27)) (hide yes))
 			)
-			(symbol "PROT_FET_PAIR_0_1"
-				(rectangle (start -15.24 -15.24) (end 15.24 15.24) (stroke (width 0.254) (type default)) (fill (type background)))
-				(text "CSD83325L"
+			(symbol "CSD18502Q5B_0_1"
+				(rectangle (start -12.7 -17.78) (end 12.7 17.78) (stroke (width 0.254) (type default)) (fill (type background)))
+				(text "CSD18502Q5B"
 					(at 0 0 0)
 					(effects (font (size 1.27 1.27) (bold yes)))
 				)
 			)
-			(symbol "PROT_FET_PAIR_1_1"
+			(symbol "CSD18502Q5B_1_1"
 			(pin passive line
-				(at -20.32 -10.16 0)
+				(at -17.78 -10.16 0)
 				(length 5.08)
-				(name "S1A" (effects (font (size 1.016 1.016))))
-				(number "A1" (effects (font (size 1.016 1.016))))
+				(name "S" (effects (font (size 1.016 1.016))))
+				(number "1" (effects (font (size 1.016 1.016))))
 			)
 			(pin passive line
-				(at -20.32 -5.08 0)
+				(at -17.78 -5.08 0)
 				(length 5.08)
-				(name "S1B" (effects (font (size 1.016 1.016))))
-				(number "C1" (effects (font (size 1.016 1.016))))
+				(name "S" (effects (font (size 1.016 1.016))))
+				(number "2" (effects (font (size 1.016 1.016))))
 			)
 			(pin passive line
-				(at -20.32 5.08 0)
+				(at -17.78 0 0)
 				(length 5.08)
-				(name "G1" (effects (font (size 1.016 1.016))))
-				(number "B1" (effects (font (size 1.016 1.016))))
+				(name "S" (effects (font (size 1.016 1.016))))
+				(number "3" (effects (font (size 1.016 1.016))))
+			)
+			(pin input line
+				(at -17.78 7.62 0)
+				(length 5.08)
+				(name "G" (effects (font (size 1.016 1.016))))
+				(number "4" (effects (font (size 1.016 1.016))))
 			)
 			(pin passive line
-				(at 20.32 -10.16 180)
+				(at 17.78 -10.16 180)
 				(length 5.08)
-				(name "S2A" (effects (font (size 1.016 1.016))))
-				(number "A2" (effects (font (size 1.016 1.016))))
+				(name "D" (effects (font (size 1.016 1.016))))
+				(number "5" (effects (font (size 1.016 1.016))))
 			)
 			(pin passive line
-				(at 20.32 -5.08 180)
+				(at 17.78 -5.08 180)
 				(length 5.08)
-				(name "S2B" (effects (font (size 1.016 1.016))))
-				(number "C2" (effects (font (size 1.016 1.016))))
+				(name "D" (effects (font (size 1.016 1.016))))
+				(number "6" (effects (font (size 1.016 1.016))))
 			)
 			(pin passive line
-				(at 20.32 5.08 180)
+				(at 17.78 0 180)
 				(length 5.08)
-				(name "G2" (effects (font (size 1.016 1.016))))
-				(number "B2" (effects (font (size 1.016 1.016))))
+				(name "D" (effects (font (size 1.016 1.016))))
+				(number "7" (effects (font (size 1.016 1.016))))
+			)
+			(pin passive line
+				(at 17.78 5.08 180)
+				(length 5.08)
+				(name "D" (effects (font (size 1.016 1.016))))
+				(number "8" (effects (font (size 1.016 1.016))))
 			)
 			)
 		)
@@ -1210,25 +1222,25 @@
 				(at -10.16 -21.59 0)
 				(effects (font (size 1.27 1.27)))
 			)
-			(property "Value" "SRV05-4.TCT / C13612 4ch ESD"
+			(property "Value" "4ch GPIO ESD array"
 				(at -10.16 21.59 0)
 				(effects (font (size 1.27 1.27)))
 			)
-			(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+			(property "Footprint" "Daughterboard:SOT-23-6_NoPad6"
 				(at 0 0 0)
 				(effects (font (size 1.27 1.27)) (hide yes))
 			)
-			(property "Datasheet" "https://www.lcsc.com/datasheet/C13612.pdf"
+			(property "Datasheet" ""
 				(at 0 0 0)
 				(effects (font (size 1.27 1.27)) (hide yes))
 			)
-			(property "Description" "Semtech SRV05-4.TCT four-line low-capacitance ESD/TVS array, C13612, SOT-23-6."
+			(property "Description" "Generic 4-channel low-capacitance TVS/ESD array for exposed 3.3V GPIO pads."
 				(at 0 0 0)
 				(effects (font (size 1.27 1.27)) (hide yes))
 			)
 			(symbol "ESD_ARRAY_4CH_0_1"
 				(rectangle (start -10.16 -13.97) (end 10.16 13.97) (stroke (width 0.254) (type default)) (fill (type background)))
-				(text "SRV05-4.TCT C13612 ESD array"
+				(text "4ch GPIO ESD array"
 					(at 0 0 0)
 					(effects (font (size 1.27 1.27) (bold yes)))
 				)
@@ -1244,13 +1256,13 @@
 				(at -15.24 -2.54 0)
 				(length 5.08)
 				(name "IO2" (effects (font (size 1.016 1.016))))
-				(number "3" (effects (font (size 1.016 1.016))))
+				(number "2" (effects (font (size 1.016 1.016))))
 			)
 			(pin passive line
 				(at 0 19.05 270)
 				(length 5.08)
-				(name "REF1/GND" (effects (font (size 1.016 1.016))))
-				(number "2" (effects (font (size 1.016 1.016))))
+				(name "GND" (effects (font (size 1.016 1.016))))
+				(number "3" (effects (font (size 1.016 1.016))))
 			)
 			(pin passive line
 				(at 15.24 -2.54 180)
@@ -1262,97 +1274,14 @@
 				(at 15.24 -7.62 180)
 				(length 5.08)
 				(name "IO4" (effects (font (size 1.016 1.016))))
-				(number "6" (effects (font (size 1.016 1.016))))
+				(number "5" (effects (font (size 1.016 1.016))))
 			)
-			(pin passive line
+			(pin no_connect line
 				(at 15.24 7.62 180)
 				(length 5.08)
-				(name "REF2/+3V3" (effects (font (size 1.016 1.016))))
-				(number "5" (effects (font (size 1.016 1.016))))
+				(name "NC" (effects (font (size 1.016 1.016))))
+				(number "6" (effects (font (size 1.016 1.016))))
 			)
 			)
 		)
-	(symbol "PT8810_TSSOP8"
-				(exclude_from_sim no)
-				(in_bom yes)
-				(on_board yes)
-				(duplicate_pin_numbers_are_jumpers no)
-				(property "Reference" "Q"
-					(at -15.24 -22.86 0)
-					(effects (font (size 1.27 1.27)))
-				)
-				(property "Value" "PT8810"
-					(at -15.24 22.86 0)
-					(effects (font (size 1.27 1.27)))
-				)
-				(property "Footprint" "Package_SO:TSSOP-8_4.4x3mm_P0.65mm"
-					(at 0 0 0)
-					(effects (font (size 1.27 1.27)) (hide yes))
-				)
-				(property "Datasheet" ""
-					(at 0 0 0)
-					(effects (font (size 1.27 1.27)) (hide yes))
-				)
-				(property "Description" "TSSOP-8 dual N-channel MOSFET used as the 2S protection back-to-back FET pair."
-					(at 0 0 0)
-					(effects (font (size 1.27 1.27)) (hide yes))
-				)
-				(symbol "PT8810_TSSOP8_0_1"
-					(rectangle (start -15.24 -15.24) (end 15.24 15.24) (stroke (width 0.254) (type default)) (fill (type background)))
-					(text "PT8810"
-						(at 0 0 0)
-						(effects (font (size 1.27 1.27) (bold yes)))
-					)
-				)
-				(symbol "PT8810_TSSOP8_1_1"
-				(pin passive line
-					(at -20.32 -10.16 0)
-					(length 5.08)
-					(name "S1" (effects (font (size 1.016 1.016))))
-					(number "1" (effects (font (size 1.016 1.016))))
-				)
-				(pin passive line
-					(at -20.32 -5.08 0)
-					(length 5.08)
-					(name "D1" (effects (font (size 1.016 1.016))))
-					(number "5" (effects (font (size 1.016 1.016))))
-				)
-				(pin passive line
-					(at -20.32 -5.08 0)
-					(length 5.08)
-					(name "D1" (effects (font (size 1.016 1.016))))
-					(number "6" (effects (font (size 1.016 1.016))))
-				)
-				(pin input line
-					(at -20.32 5.08 0)
-					(length 5.08)
-					(name "G1" (effects (font (size 1.016 1.016))))
-					(number "2" (effects (font (size 1.016 1.016))))
-				)
-				(pin passive line
-					(at 20.32 -10.16 180)
-					(length 5.08)
-					(name "S2" (effects (font (size 1.016 1.016))))
-					(number "3" (effects (font (size 1.016 1.016))))
-				)
-				(pin passive line
-					(at 20.32 -5.08 180)
-					(length 5.08)
-					(name "D2" (effects (font (size 1.016 1.016))))
-					(number "7" (effects (font (size 1.016 1.016))))
-				)
-				(pin passive line
-					(at 20.32 -5.08 180)
-					(length 5.08)
-					(name "D2" (effects (font (size 1.016 1.016))))
-					(number "8" (effects (font (size 1.016 1.016))))
-				)
-				(pin input line
-					(at 20.32 5.08 180)
-					(length 5.08)
-					(name "G2" (effects (font (size 1.016 1.016))))
-					(number "4" (effects (font (size 1.016 1.016))))
-				)
-				)
-			)
 )

@@ -17,13 +17,13 @@ Use either the external 2S pack on `J7` or installed 18650 cells, not both at th
 flowchart LR
     USBC["USB-C receptacle\n5 V sink"] --> INPROT["VBUS fuse, TVS,\nCC1/CC2 Rd"]
     INPROT --> CHG["BQ25887RGE\n2S boost charger"]
-    CHG <--> PROT["BQ28Z610 + CSD83325L\n2S gauge/protection"]
-    PROT <--> PACK["2S pack nets\nBATT_RAW_N / CELL_MID / PACK_P"]
+    CHG <--> PROT["BQ28Z610 + 2x CSD18502Q5B\nhigh-side 2S protection"]
+    PROT <--> PACK["Raw 2S pack nets\nBATT_RAW_N / CELL_MID / BATT_RAW_P"]
     CELLS["2x 18650 in series"] <--> PACK
     BAL["J7 2S balance lead"] <--> PACK
-    PROT --> FUSE["F4 system fuse\nBAT_SYS"]
-    FUSE --> BUCK5["AP63200WU\n5 V buck"]
-    FUSE --> BUCK3["AP63200WU\n3.3 V buck"]
+    PROT --> SYS["+BAT_SYS protected\nsystem/charger positive"]
+    SYS --> BUCK5["AP63200WU\n5 V buck"]
+    SYS --> BUCK3["AP63200WU\n3.3 V buck"]
     BUCK5 --> SW5["Pololu #2808\n5 V switch"]
     BUCK3 --> SW3["Pololu #2808\n3.3 V switch"]
     ESP["Hosyond ESP32-S3\nGPIO2/GPIO3"] --> SW5
@@ -39,7 +39,7 @@ flowchart LR
 |---|---|---|
 | USB-C 5 V sink | USB-C receptacle plus 5.1 kOhm CC pulldowns | Power-only Type-C input, no USB-PD. |
 | 2S charger | TI `BQ25887RGE` | 5 V boost-mode charger for 2-cell Li-ion/LiPo packs with midpoint/balance connection. |
-| 2S gauge/protection | TI `BQ28Z610DRZR-R1` + TI `CSD83325L` | 1S/2S Impedance Track gauge/protection controller with external FET drive and current sense. Requires BQStudio/data-flash setup. |
+| 2S gauge/protection | TI `BQ28Z610DRZR-R1` + 2x TI `CSD18502Q5B` | 1S/2S Impedance Track gauge/protection controller with high-side N-FET charge/discharge control and current sense. Requires BQStudio/data-flash setup. |
 | 5 V regulator | Diodes Inc. `AP63200WU` | 2S-to-5 V buck, target load 1 A max. |
 | 3.3 V regulator | Diodes Inc. `AP63200WU` | 2S-to-3.3 V buck, target load 500 mA max. |
 | Rail switches | Pololu #2808 modules | Switches are after the regulators; ESP32 GPIO2 controls 5 V, GPIO3 controls 3.3 V. |
@@ -48,33 +48,40 @@ flowchart LR
 
 ## Battery Nets
 
-- `BATT_RAW_N`: raw 2S pack negative / lower cell negative.
-- `GND`: protected board/load/charger negative after the low-side protection FETs.
+- `BATT_RAW_N`: raw 2S pack negative / lower cell negative before the current-sense resistor.
+- `GND`: protected board/load/charger negative after the current-sense resistor.
 - `CELL_MID`: lower cell positive and upper cell negative.
-- `PACK_P`: upper cell positive / 2S pack positive.
-- `BAT_SYS`: fused 2S system bus feeding both buck regulators.
+- `BATT_RAW_P`: raw upper-cell positive / raw 2S pack positive.
+- `FET_SRC_COMMON`: common source node between the high-side charge/discharge FETs.
+- `FET_BATT_P`: battery-side drain of the high-side discharge FET.
+- `BAT_SYS`: protected 2S system/charger positive bus feeding the charger BAT/SNS pins and both buck regulators.
 
 The two 18650 holders are now series-connected:
 
 - `BT1`: lower cell, negative to `BATT_RAW_N`, positive through `F2` to `CELL_MID`.
-- `BT2`: upper cell, negative to `CELL_MID`, positive through `F3` to `PACK_P`.
-- `J7`: external 2S balance input, pin 1 `BATT_RAW_N`, pin 2 `CELL_MID`, pin 3 `PACK_P`.
+- `BT2`: upper cell, negative to `CELL_MID`, positive through `F3` to `BATT_RAW_P`.
+- `J7`: external 2S balance input, pin 1 `BATT_RAW_N`, pin 2 `CELL_MID`, pin 3 `BATT_RAW_P`.
 
 ## 2S Protection
 
 The old single-cell `BQ297xy` protection IC is not valid for a 2S pack, and the ABLIC `S-8252AAH-M6T1U` was replaced because the available purchasing terms were not practical for prototypes. The active schematic now uses TI `BQ28Z610DRZR-R1`, which combines 1S/2S fuel gauging, programmable protection, I2C communication, current sensing, and external charge/discharge FET control.
 
-Rev-A BQ28Z610 support parts:
+R14 BQ28Z610 support parts:
 
 - `R14`, `R15`: 470 ohm cell-sense input resistors for `VC2` and `VC1`.
 - `C25`, `C26`: 100 nF cell-sense filter capacitors.
 - `R16`: 100 ohm `PACK` input series resistor from `BAT_SYS` to `BQ_PACK`.
 - `C30`: 2.2 uF `PBI` hold-up capacitor to `BATT_RAW_N`.
-- `R46`: 2 milliohm current-sense resistor placeholder between `BATT_RAW_N` and protected `GND`; verify power rating, polarity, and Kelvin routing.
-- `R47`, `R48`, `C31`: 100 ohm / 100 nF `SRN`/`SRP` differential input filter.
+- `R46`: 2 milliohm current-sense resistor in series between `BATT_RAW_N` and protected `GND`; Kelvin route both ends.
+- `R47`, `R48`, `C31`: 100 ohm / 100 nF `SRN`/`SRP` differential input filter. `SRP` now Kelvin-senses the raw-cell-negative side of `R46`; `SRN` senses the protected/system-ground side.
 - `R21`, `R22`: 100 ohm gate-drive series resistors from `BQ_DSG` and `BQ_CHG`.
+- `Q1`: `CSD18502Q5B` high-side charge FET, source pins 1-3 on `FET_SRC_COMMON`, gate pin 4 on `CO_GATE`, and drain pins 5-8 plus the main drain island on `BAT_SYS`.
+- `Q2`: `CSD18502Q5B` high-side discharge FET, source pins 1-3 on `FET_SRC_COMMON`, gate pin 4 on `DO_GATE`, and drain pins 5-8 plus the main drain island on `FET_BATT_P`.
+- `R49`, `R50`: 10 Mohm gate-source bleed resistors for the high-side FETs.
+- `C32`, `C33`: 100 nF capacitors across the high-side FETs for ESD/transient handling per TI layout guidance.
+- `F4`: high-side battery path fuse between `FET_BATT_P` and `BATT_RAW_P`.
 
-Important release note: BQ28Z610 is designed around high-side N-channel charge/discharge FET drive. The current schematic keeps `Q1`/`CSD83325L` and the gate nets routeable, but the final FET power-path topology must be reviewed before fabrication so the charger, load, pack, sense resistor, and FETs match the TI reference topology.
+R14 release note: the previous low-side dual-FET topology was removed because it was incompatible with the BQ28Z610 high-side gate driver. R14 keeps the corrected high-side topology and swaps Q1/Q2 to JLC-available `CSD18502Q5B` FETs using the project-local TI DNK/VSON-CLIP footprint. The charger `BAT/SNS` pins and the buck-regulator input bus are on `BAT_SYS`, so charge and discharge current pass through the high-side protection FETs and through `R46`.
 
 The protector does not set the normal charge current. The BQ25887 charger should be configured so USB-C charging is firmware-limited from 500 mA minimum up to 1.5 A maximum, with the hardware input-current limit also held at or below 1.5 A.
 
@@ -139,7 +146,7 @@ The intentional exceptions are mechanical/interface parts: USB-C, 18650 holders,
 
 - TI BQ25887 product/datasheet: https://www.ti.com/product/BQ25887
 - TI BQ28Z610 product/datasheet: https://www.ti.com/product/BQ28Z610
-- TI CSD83325L product/datasheet: https://www.ti.com/product/CSD83325L
+- TI CSD18502Q5B product/datasheet: https://www.ti.com/product/CSD18502Q5B
 - Diodes Inc. AP63200/AP63201/AP63203/AP63205 datasheet: https://www.diodes.com/assets/Datasheets/AP63200-AP63201-AP63203-AP63205.pdf
 - Microchip MCP23017 datasheet: https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP23017-Data-Sheet-DS20001952.pdf
 - Pololu #2808 Mini Pushbutton Power Switch LV: https://www.pololu.com/product/2808
