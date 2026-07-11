@@ -1,10 +1,19 @@
 R14 fabrication package - 2026-07-10
+Review notes updated - 2026-07-11
 
 Major R14 changes:
 - Q1 and Q2 changed to TI CSD18502Q5B using project-local DNK/VSON-CLIP footprint.
 - Q1/Q2 JLC/LCSC part number is C473915.
 - PCB was rerouted after the Q1/Q2 footprint swap.
 - GND copper zone was refilled before DRC and Gerber export.
+
+Stock-availability substitutions:
+- R9 and R12 use RMC0603100K1%N, 100k 1% 0603, JLC/LCSC C269699.
+  This replaces TD03H1003BT / C2961368 because of the available-stock shortfall.
+- R42, R43, and R44 use RCT0310KFLF, 10k 1% 0603, JLC/LCSC C177644.
+  This replaces 0603WAF1002T5E / C25804 because of the available-stock shortfall.
+- Both substitutions retain the original resistance, tolerance, and 0603 footprint, so no PCB placement or routing change was required.
+- The replacement LCSC numbers are present in the R14 JLCPCB BOM CSV/XLSX and part-audit files.
 
 Checks:
 - ERC: 0 errors, 0 warnings.
@@ -17,5 +26,6 @@ Known DRC items:
 
 Assembly notes:
 - Q1/Q2 are selected as CSD18502Q5B, JLC/LCSC C473915.
+- R9/R12 are selected as C269699; R42/R43/R44 are selected as C177644.
 - Missing-parts report still lists J5/J6 through-hole headers and R49/R50 10M gate-source bleed resistors.
 - If J5/J6 are not being assembled by JLC, remove them from the assembly upload or mark them user-installed.
