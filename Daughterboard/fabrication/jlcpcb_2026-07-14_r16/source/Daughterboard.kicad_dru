@@ -1,0 +1,14 @@
+(version 1)
+
+(rule "U1 internal package and CHG_IN escape clearance"
+    (condition "(A.Reference == 'U1' && B.Reference == 'U1') || ((A.Reference == 'U1' || B.Reference == 'U1') && ((A.NetName == 'CHG_IN' && B.NetName == 'PMID') || (A.NetName == 'PMID' && B.NetName == 'CHG_IN')))")
+    (constraint clearance (min 0.18mm)))
+
+(rule "Battery path minimum track width"
+    (condition "A.Type == 'Track' && (A.NetName == 'FET_BATT_P' || A.NetName == 'FET_SRC_COMMON')")
+    (constraint track_width (min 1.0mm)))
+
+(rule "Battery path minimum via size"
+    (condition "A.Type == 'Via' && (A.NetName == 'FET_BATT_P' || A.NetName == 'FET_SRC_COMMON')")
+    (constraint via_diameter (min 1.0mm))
+    (constraint hole_size (min 0.5mm)))

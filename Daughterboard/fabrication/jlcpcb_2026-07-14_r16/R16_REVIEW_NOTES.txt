@@ -1,0 +1,46 @@
+ANUBIS DAUGHTERBOARD R16 FABRICATION REVIEW
+Generated: 2026-07-14
+
+RELEASE STATUS
+- PCB DRC: 0 errors and 0 unconnected items.
+- Schematic ERC: 0 violations.
+- Schematic-to-PCB parity: no reported mismatches.
+- Remaining PCB DRC items are non-blocking silkscreen/text warnings only:
+  17 silkscreen-over-copper, 13 text-height, and 8 silkscreen-overlap warnings.
+
+R16 HARDWARE
+- Four copper layers: F.Cu, In1.Cu, In2.Cu, and B.Cu.
+- BATT_RAW_P J7.3-to-F4.2 route is 1.0 mm throughout with 1.0/0.5 mm power vias.
+- BATT_RAW_P F3.2-to-F4.2 route is 1.0 mm throughout.
+- FET_BATT_P and FET_SRC_COMMON routes are 1.0 mm throughout with 1.0/0.5 mm vias.
+- The narrow BATT_RAW_P branches are limited to voltage-sense and test-point connections.
+- USB-C ground pins and shield are on GND.
+- Charger BAT/SNS pins connect to protected BAT_SYS.
+- R46 is series-connected between BATT_RAW_N and GND.
+- Q1/Q2 use the CSD18502Q5B common-source high-side protection topology.
+- BQ28Z610 SRP/SRN polarity matches the intended current-sense convention.
+
+R16 JLCPCB FOOTPRINT/PART UPDATES
+- L1: CKST0402-4.7uH/M, C3002596, matched to the current R16 footprint.
+- L2: MDA4020-4R7M, C2847471, matched to the current R16 footprint.
+- U2: BQ28Z610DRZR-R1, C2876556, TI DRZ 12-pin SON footprint.
+- Q1/Q2: CSD18502Q5B, C473915, TI DNK/VSON-CLIP footprint.
+- R49/R50 remain existing 10M gate-source bleed resistors. The assembly BOM maps
+  them to 0603WAF1005T5E, JLCPCB C7250. No PCB component was added or moved.
+- J5 remains the existing straight 1x4 2.54mm through-hole header and maps to
+  X6511WV-04H-C60D30, JLCPCB C706876.
+- J6 remains the existing straight 1x2 2.54mm through-hole header and maps to
+  P6E02A-002550-B1P, JLCPCB C49375797.
+- C8 remains the existing optional CBSET filter footprint and is marked DNP on
+  the PCB. It is intentionally excluded from both the JLC assembly BOM and CPL.
+
+UPLOAD FILES
+- Upload Daughterboard_jlcpcb_gerber_drill.zip for PCB fabrication.
+- Upload assembly/Daughterboard_jlcpcb_bom_template_filled.csv as the assembly BOM.
+- Upload assembly/Daughterboard_jlcpcb_cpl.csv as the component placement file.
+
+FINAL ORDER-SCREEN CHECK
+- Confirm a four-layer stackup is selected.
+- Confirm JLC recognizes both plated and non-plated drill files if separate files are shown.
+- Review orientation markers for U1, U2, Q1, Q2, D4-D7, and all polarized connectors.
+- Confirm every intended assembly BOM line is matched before payment.
