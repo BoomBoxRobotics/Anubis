@@ -12,8 +12,12 @@
 #include <driver/rtc_io.h>
 #include <esp32-hal-rgb-led.h>
 #include <Preferences.h>
-#include <ESP_I2S.h>
 #include <AudioBoard.h>
+#include <AudioTools.h>
+#include <AudioTools/AudioLibs/AudioBoardStream.h>
+
+using namespace audio_driver;
+using namespace audio_tools;
 
 #include "anubis_rgb565.h"
 #include "menu_icons_rgb565.h"
@@ -99,6 +103,7 @@
   SCREEN_GAMES_MENU,
   SCREEN_20Q_GAME,
   SCREEN_ASTEROIDS_GAME,
+  SCREEN_STAR_SWARM_GAME,
   SCREEN_DUNGEON_RUN,
   SCREEN_SPACE_GAME
   };
@@ -515,6 +520,46 @@ enum StickCalibrationState {
   bool active;
   };
 
+  struct StarSwarmEnemy {
+  float x;
+  float y;
+  float homeX;
+  float homeY;
+  float startX;
+  float startY;
+  float t;
+  int oldX;
+  int oldY;
+  unsigned long spawnAt;
+  bool active;
+  bool wasDrawn;
+  uint8_t row;
+  uint8_t path;
+  uint8_t state; // 0 entering, 1 formation, 2 diving
+  };
+
+  struct StarSwarmShot {
+  float x;
+  float y;
+  float vx;
+  float vy;
+  int oldX;
+  int oldY;
+  bool active;
+  bool wasDrawn;
+  };
+
+  struct StarSwarmPowerup {
+  float x;
+  float y;
+  float vy;
+  int oldX;
+  int oldY;
+  bool active;
+  bool wasDrawn;
+  uint8_t type; // 0 spread shot, 1 speed boost
+  };
+
   ModelData models[MAX_MODELS];
   int activeModel = 0;
 
@@ -675,7 +720,6 @@ enum StickCalibrationState {
   bool elrsAutoDetectLocked = (ELRS_MODULE_PROFILE != ELRS_MODULE_PROFILE_AUTO);
   bool elrsNoModuleDetected = false;
   unsigned long elrsProfileDetectStartTime = 0;
-  unsigned long elrsNoModuleRetryTime = 0;
   uint32_t elrsProfileDetectStartResponses = 0;
   bool elrsRxInterruptAttached = false;
   enum ElrsReceiverConfigState : uint8_t {
@@ -843,6 +887,9 @@ enum StickCalibrationState {
 
   unsigned long lastActivityTime = 0;
   unsigned long splashStartTime = 0;
+  unsigned long startupDeviceDiscoveryStartTime = 0;
+  bool startupDeviceDiscoveryComplete = false;
+  bool startupDiscoveryScreenCleared = false;
   bool startupThrottleSafetyCleared = false;
   bool startupThrottleSafetyScreenDrawn = false;
   bool startupThrottleBypassTouchActive = false;
@@ -877,7 +924,7 @@ enum StickCalibrationState {
   #define STARTUP_THROTTLE_SCREEN_REFRESH_MS 150UL
   #define STARTUP_THROTTLE_BYPASS_TAPS 8
   #define STARTUP_THROTTLE_BYPASS_Y_MIN 232
-  #define ELRS_AUTO_RETRY_NO_MODULE_MS 30000UL
+  #define ELRS_MODULE_PROBE_TIMEOUT_MS 5000UL
   #define POWER_BUTTON_ENABLED true
   #define POWER_BUTTON_SENSE_PIN 14
   #define POWER_BUTTON_REF_PIN 21
@@ -898,20 +945,28 @@ enum StickCalibrationState {
   #define STATUS_RGB_LED_REPEAT_GAP_MS 500UL
   #define STATUS_RGB_LED_CODE_PAUSE_MS 2000UL
   #define STATUS_RGB_DPAD_DIAGNOSTICS true
+  #define STATUS_RGB_PERIPHERAL_ERRORS_ENABLED 0
   #define SOFT_POWER_PREF_NAMESPACE "power"
   #define SOFT_POWER_PREF_KEY "softOff"
   #define AUDIO_ENABLED true
   #define AUDIO_CODEC_I2C_ADDR 0x18
-  #define AUDIO_SAMPLE_RATE 44100
-  #define AUDIO_CODEC_RATE RATE_44K
-  #define AUDIO_VOLUME_PERCENT 100
+  #define AUDIO_SAMPLE_RATE 48000
+  #define AUDIO_DEFAULT_USER_VOLUME_PERCENT 55
+  #define AUDIO_PCM_HEADROOM_PERCENT 85
+  #define AUDIO_PREF_NAMESPACE "audio"
+  #define AUDIO_PREF_VOLUME_KEY "volume"
+  #define AUDIO_PREF_MUTED_KEY "muted"
+  #define AUDIO_PREF_PRE_MUTE_KEY "preMute"
   #define AUDIO_CLICK_AMPLITUDE 30000
   #define AUDIO_TONE_AMPLITUDE 32000
   #define AUDIO_PA_ENABLE_PIN 1
   #define AUDIO_PA_ENABLE_LEVEL LOW
   #define AUDIO_I2S_MCLK_PIN 4
   #define AUDIO_I2S_BCLK_PIN 5
-  #define AUDIO_I2S_DOUT_PIN 6
+  // Playback feeds the ES8311 DSDIN input on GPIO8. GPIO6 is the codec's
+  // microphone/ADC output and must not be used as the ESP32 playback output.
+  #define AUDIO_I2S_PLAYBACK_DATA_PIN 8
+  #define AUDIO_I2S_MIC_DATA_PIN 6
   #define AUDIO_I2S_WS_PIN 7
   #define AUDIO_CLICK_MIN_INTERVAL_MS 35UL
   #define AUDIO_STARTUP_TEST_TONE false
@@ -921,9 +976,9 @@ enum StickCalibrationState {
   #define AUDIO_DRAIN_SILENCE_MS 30
   #define AUDIO_RETEST_DELAY_MS 3000UL
   #define STARTUP_AUDIO_ENABLED true
-  #define STARTUP_AUDIO_SAMPLE_REPEAT 2
   #define STARTUP_AUDIO_CHUNK_FRAMES 512
   #define STARTUP_SPLASH_DURATION_MS CAVE_JOHNSON_STARTUP_DURATION_MS
+  #define STARTUP_DEVICE_DISCOVERY_MS 5000UL
 
   const uint8_t displayBrightnessOptions[] = {48, 80, 112, 144, 176, 208, 232, 255};
   const uint8_t displaySleepBrightnessOptions[] = {0, 12, 24, 40, 56, 72, 96, 128};
@@ -950,7 +1005,7 @@ enum StickCalibrationState {
 #if AUDIO_ENABLED
   DriverPins hosyondAudioPins;
   AudioBoard hosyondAudioBoard(AudioDriverES8311, hosyondAudioPins);
-  I2SClass hosyondAudioI2S;
+  AudioBoardStream hosyondAudioOutput(hosyondAudioBoard);
   bool audioReady = false;
   bool audioCodecReady = false;
   bool audioI2sReady = false;
@@ -959,7 +1014,12 @@ enum StickCalibrationState {
   bool startupAudioPlaying = false;
   bool startupAudioStarted = false;
   uint32_t startupAudioSampleIndex = 0;
-  uint8_t startupAudioRepeatIndex = 0;
+  uint32_t startupAudioSourcePhase = 0;
+  uint8_t audioUserVolumePercent = AUDIO_DEFAULT_USER_VOLUME_PERCENT;
+  uint8_t audioVolumeBeforeMutePercent = AUDIO_DEFAULT_USER_VOLUME_PERCENT;
+  bool audioUserMuted = false;
+  bool audioVolumePanelVisible = false;
+  bool audioSettingsDirty = false;
   unsigned long lastAudioClickMs = 0;
 #endif
 
@@ -989,6 +1049,9 @@ enum StickCalibrationState {
   #define ADS1115_PRIMARY_ANALOG_COUNT 4
   #define MCP23017_I2C_ADDR 0x20
   #define MCP23017_RECONNECT_INTERVAL_MS 1000UL
+  #define MCP23017_PROBE_TIMEOUT_MS 5000UL
+  #define MCP23017_SAMPLE_INTERVAL_MS 10UL
+  #define I2C_TRANSACTION_TIMEOUT_MS 10U
   #define I2C_STARTUP_SCAN_ENABLED false
   #define MCP23017_IODIRA_REG 0x00
   #define MCP23017_IODIRB_REG 0x01
@@ -1012,6 +1075,7 @@ enum StickCalibrationState {
   #define ADS1115_JOYSTICK_MAX_COUNT 26400
   #define STICK_SAMPLE_INTERVAL_MS 20
   #define ADS1115_RECONNECT_INTERVAL_MS 1000
+  #define ADS1115_PROBE_TIMEOUT_MS 5000UL
   #define ADS1115_MAX_CONSECUTIVE_READ_FAILS 4
   #define ADS1115_DEFAULT_MIN_COUNT 0
   #define ADS1115_DEFAULT_MAX_COUNT ADS1115_JOYSTICK_MAX_COUNT
@@ -1063,6 +1127,24 @@ enum StickCalibrationState {
   #define MENU_BTN_Y (FOOTER_Y + NAV_BTN_Y_OFFSET)
   #define MENU_BTN_W 120
   #define MENU_BTN_H NAV_BTN_HEIGHT
+
+  // Main-screen audio control beside the centered Menu button.
+  #define VOLUME_BTN_X 190
+  #define VOLUME_BTN_Y MENU_BTN_Y
+  #define VOLUME_BTN_W 40
+  #define VOLUME_BTN_H MENU_BTN_H
+  #define VOLUME_PANEL_X 18
+  #define VOLUME_PANEL_Y 222
+  #define VOLUME_PANEL_W 204
+  #define VOLUME_PANEL_H 54
+  #define VOLUME_MUTE_X 26
+  #define VOLUME_MUTE_Y 232
+  #define VOLUME_MUTE_W 32
+  #define VOLUME_MUTE_H 34
+  #define VOLUME_SLIDER_X 72
+  #define VOLUME_SLIDER_Y 244
+  #define VOLUME_SLIDER_W 134
+  #define VOLUME_SLIDER_H 12
 
   // Back button
   #define BACK_BTN_X 10
@@ -1210,6 +1292,40 @@ enum StickCalibrationState {
   #define ASTEROIDS_BULLET_TTL_MS 850UL
   #define ASTEROIDS_FIRE_COOLDOWN_MS 190UL
   #define ASTEROIDS_RESPAWN_MS 1200UL
+
+  #define STAR_SWARM_EXIT_X 8
+  #define STAR_SWARM_EXIT_Y 6
+  #define STAR_SWARM_EXIT_W 56
+  #define STAR_SWARM_EXIT_H 20
+  #define STAR_SWARM_STATUS_H 28
+  #define STAR_SWARM_VIEW_TOP (STAR_SWARM_STATUS_H + 14)
+  #define STAR_SWARM_VIEW_BOTTOM 318
+  #define STAR_SWARM_ENEMY_W 20
+  #define STAR_SWARM_ENEMY_H 14
+  #define STAR_SWARM_PLAYER_W 24
+  #define STAR_SWARM_PLAYER_H 24
+  #define STAR_SWARM_PLAYER_HIT_W 12
+  #define STAR_SWARM_PLAYER_HIT_H 12
+  #define STAR_SWARM_ENEMY_HIT_W 14
+  #define STAR_SWARM_ENEMY_HIT_H 10
+  #define STAR_SWARM_SHOT_W 7
+  #define STAR_SWARM_SHOT_H 18
+  #define STAR_SWARM_FRAME_INTERVAL_MS 33UL
+  #define STAR_SWARM_MAX_ENEMIES 24
+  #define STAR_SWARM_MAX_PLAYER_SHOTS 8
+  #define STAR_SWARM_MAX_ENEMY_SHOTS 5
+  #define STAR_SWARM_MAX_POWERUPS 3
+  #define STAR_SWARM_PLAYER_START_Y 292
+  #define STAR_SWARM_PLAYER_MIN_Y 222
+  #define STAR_SWARM_PLAYER_MAX_Y 304
+  #define STAR_SWARM_FIRE_COOLDOWN_MS 165UL
+  #define STAR_SWARM_ENEMY_FIRE_MS 1350UL
+  #define STAR_SWARM_DIVE_INTERVAL_MS 2600UL
+  #define STAR_SWARM_FIRST_DIVE_GRACE_MS 3500UL
+  #define STAR_SWARM_SPEED_RAMP_MS 35000UL
+  #define STAR_SWARM_POWERUP_DROP_PCT 14
+  #define STAR_SWARM_RESPAWN_SAFE_MS 2000UL
+  #define STAR_SWARM_FLASH_MS 140UL
 
   #define DUNGEON_EXIT_X 8
   #define DUNGEON_EXIT_Y 6
@@ -1467,7 +1583,15 @@ enum StickCalibrationState {
   uint16_t mcp23017LastValue = 0xFFFF;
   uint8_t adsConsecutiveReadFails = 0;
   unsigned long lastAdsReconnectAttemptMs = 0;
+  unsigned long lastAdsAuxReconnectAttemptMs = 0;
   unsigned long lastMcpReconnectAttemptMs = 0;
+  unsigned long lastMcpSampleMs = 0;
+  unsigned long adsPrimaryProbeStartMs = 0;
+  unsigned long adsAuxProbeStartMs = 0;
+  unsigned long mcp23017ProbeStartMs = 0;
+  bool adsPrimaryProbeAbandoned = false;
+  bool adsAuxProbeAbandoned = false;
+  bool mcp23017ProbeAbandoned = false;
   unsigned long lastBatterySampleTime = 0;
   unsigned long lastStickSampleTime = 0;
   float batteryFilteredVoltage = 0.0f;
@@ -1564,6 +1688,38 @@ enum StickCalibrationState {
   unsigned long lastAsteroidsFrameTime = 0;
   unsigned long lastAsteroidsShotTime = 0;
   unsigned long asteroidsInvulnerableUntil = 0;
+  StarSwarmEnemy starSwarmEnemies[STAR_SWARM_MAX_ENEMIES];
+  StarSwarmShot starSwarmPlayerShots[STAR_SWARM_MAX_PLAYER_SHOTS];
+  StarSwarmShot starSwarmEnemyShots[STAR_SWARM_MAX_ENEMY_SHOTS];
+  StarSwarmPowerup starSwarmPowerups[STAR_SWARM_MAX_POWERUPS];
+  float starSwarmPlayerX = 120.0f;
+  float starSwarmPlayerY = STAR_SWARM_PLAYER_START_Y;
+  int starSwarmOldPlayerX = 120;
+  int starSwarmOldPlayerY = STAR_SWARM_PLAYER_START_Y;
+  bool starSwarmPlayerWasDrawn = false;
+  int starSwarmScore = 0;
+  int starSwarmLives = 3;
+  int starSwarmWave = 1;
+  int starSwarmDir = 1;
+  bool starSwarmGameOver = false;
+  bool starSwarmStarted = false;
+  bool starSwarmTouchControl = false;
+  int starSwarmTouchTargetX = 120;
+  int starSwarmTouchTargetY = STAR_SWARM_PLAYER_START_Y;
+  bool starSwarmFireQueued = false;
+  uint8_t starSwarmWeaponLevel = 0;
+  unsigned long starSwarmSpeedBoostUntil = 0;
+  unsigned long lastStarSwarmFrameTime = 0;
+  unsigned long lastStarSwarmShotTime = 0;
+  unsigned long lastStarSwarmEnemyShotTime = 0;
+  unsigned long lastStarSwarmDiveTime = 0;
+  unsigned long starSwarmWaveStartTime = 0;
+  unsigned long starSwarmInvulnerableUntil = 0;
+  int lastStarSwarmScore = -1;
+  int lastStarSwarmLives = -1;
+  int lastStarSwarmWave = -1;
+  bool lastStarSwarmGameOver = false;
+  bool lastStarSwarmStarted = false;
   float dungeonPlayerX = 2.5f;
   float dungeonPlayerY = 2.5f;
   float dungeonPlayerHeading = 1.5707963f;
@@ -1649,10 +1805,17 @@ enum StickCalibrationState {
   void silenceAudioOutput(bool stopI2s);
   void updateAudioDiagnostics(unsigned long now);
   void writeAudioStereoSample(int16_t sample);
+  int16_t scaleAudioSampleForUserVolume(int16_t sample);
+  void applyAudioUserMuteState();
+  void loadAudioSettings();
+  void saveAudioSettings();
   void startStartupAudioClip();
   void updateStartupAudioClip();
   void playAudioTone(uint16_t frequency, uint16_t durationMs, uint16_t amplitude, bool gated);
   void playAudioClick(uint16_t frequency = 1800, uint16_t durationMs = 32);
+  void drawMainVolumeButton();
+  void drawMainVolumePanel();
+  bool handleMainVolumeTouch(int x, int y);
   void getStatusRgbLedPatternColor(StatusRgbDiagCode code, uint8_t step, uint8_t &red, uint8_t &green, uint8_t &blue);
   void setStatusRgbLedPattern(StatusRgbDiagCode code, uint8_t step, unsigned long stepElapsed);
   bool isElrsModuleMissingForStatus(unsigned long now);
@@ -1790,6 +1953,11 @@ enum StickCalibrationState {
   void drawEscChannelSetupScreen();
   void drawSpaceGameStatic();
   void drawSpaceGameDynamic();
+  void resetStarSwarmGame();
+  void updateStarSwarmGame(unsigned long now, bool firePressed, bool exitPressed);
+  void handleStarSwarmTouch(int x, int y);
+  void drawStarSwarmStatic();
+  void drawStarSwarmDynamic();
   void resetAsteroidsGame();
   void updateAsteroidsGame(unsigned long now, bool firePressed, bool exitPressed);
   void handleAsteroidsTouch(int x, int y);
@@ -1847,6 +2015,7 @@ enum StickCalibrationState {
   bool handleStartupThrottleSafetyBypass(uint8_t touchCount, int rawX, int rawY, unsigned long now);
   void updateStartupThrottleSafetyScreen(unsigned long now);
   bool updateAutoDeepSleep(unsigned long now, bool inputDetected, bool powerButtonInput);
+  bool isAutoDeepSleepHardwareMissing(unsigned long now);
   void drawAutoDeepSleepWarningScreen(unsigned long now);
   bool updateBatterySafety(unsigned long now, bool userDismiss);
   void drawBatterySafetyScreen(bool critical, unsigned long now);
@@ -2792,22 +2961,75 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
 #endif
   }
 
+  int16_t scaleAudioSampleForUserVolume(int16_t sample) {
+#if AUDIO_ENABLED
+    if (audioUserMuted || audioUserVolumePercent == 0) return 0;
+    int32_t scaled = ((int32_t)sample * (int32_t)audioUserVolumePercent *
+                      (int32_t)AUDIO_PCM_HEADROOM_PERCENT) / 10000L;
+    return (int16_t)constrain(scaled, (int32_t)-32768, (int32_t)32767);
+#else
+    return sample;
+#endif
+  }
+
+  void applyAudioUserMuteState() {
+#if AUDIO_ENABLED
+    if (!audioReady) return;
+    float codecVolume = (float)audioUserVolumePercent / 100.0f;
+    hosyondAudioOutput.setVolume(codecVolume);
+    hosyondAudioOutput.setMute(audioUserMuted || audioUserVolumePercent == 0);
+    setAudioAmpEnabled(!audioUserMuted && audioUserVolumePercent > 0);
+#endif
+  }
+
+  void loadAudioSettings() {
+#if AUDIO_ENABLED
+    Preferences preferences;
+    if (!preferences.begin(AUDIO_PREF_NAMESPACE, true)) return;
+    audioUserVolumePercent = constrain(
+      preferences.getUChar(AUDIO_PREF_VOLUME_KEY, AUDIO_DEFAULT_USER_VOLUME_PERCENT),
+      0, 100);
+    audioUserMuted = preferences.getBool(AUDIO_PREF_MUTED_KEY, false);
+    audioVolumeBeforeMutePercent = constrain(
+      preferences.getUChar(AUDIO_PREF_PRE_MUTE_KEY, AUDIO_DEFAULT_USER_VOLUME_PERCENT),
+      1, 100);
+    preferences.end();
+    if (audioUserVolumePercent == 0) audioUserMuted = true;
+    audioSettingsDirty = false;
+#endif
+  }
+
+  void saveAudioSettings() {
+#if AUDIO_ENABLED
+    if (!audioSettingsDirty) return;
+    Preferences preferences;
+    if (!preferences.begin(AUDIO_PREF_NAMESPACE, false)) return;
+    preferences.putUChar(AUDIO_PREF_VOLUME_KEY, audioUserVolumePercent);
+    preferences.putBool(AUDIO_PREF_MUTED_KEY, audioUserMuted);
+    preferences.putUChar(AUDIO_PREF_PRE_MUTE_KEY, audioVolumeBeforeMutePercent);
+    preferences.end();
+    audioSettingsDirty = false;
+    Serial.printf("AUDIO: saved volume=%u%% muted=%u\n",
+                  audioUserVolumePercent, audioUserMuted ? 1 : 0);
+#endif
+  }
+
   void silenceAudioOutput(bool stopI2s) {
 #if AUDIO_ENABLED
     audioStartupRetestPending = false;
     setAudioAmpEnabled(false);
     if (audioCodecReady) {
-      hosyondAudioBoard.setMute(true);
+      hosyondAudioOutput.setMute(true);
     }
     if (audioI2sReady) {
       int silentFrames = (int)(((uint32_t)AUDIO_SAMPLE_RATE * AUDIO_DRAIN_SILENCE_MS) / 1000U);
       if (silentFrames < AUDIO_ZERO_FLUSH_FRAMES) silentFrames = AUDIO_ZERO_FLUSH_FRAMES;
       int16_t zeroFrame[2] = {0, 0};
       for (int i = 0; i < silentFrames; i++) {
-        hosyondAudioI2S.write((const uint8_t*)zeroFrame, sizeof(zeroFrame));
+        hosyondAudioOutput.write((const uint8_t*)zeroFrame, sizeof(zeroFrame));
       }
       if (stopI2s) {
-        hosyondAudioI2S.end();
+        hosyondAudioOutput.end();
         audioI2sReady = false;
         audioReady = false;
       }
@@ -2841,55 +3063,43 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
                             AUDIO_I2S_MCLK_PIN,
                             AUDIO_I2S_BCLK_PIN,
                             AUDIO_I2S_WS_PIN,
-                            AUDIO_I2S_DOUT_PIN,
-                            -1);
-
-    CodecConfig audioConfig;
-    audioConfig.input_device = ADC_INPUT_NONE;
-    audioConfig.output_device = DAC_OUTPUT_ALL;
-    audioConfig.i2s.mode = MODE_SLAVE;
-    audioConfig.i2s.fmt = I2S_NORMAL;
-    audioConfig.i2s.rate = AUDIO_CODEC_RATE;
-    audioConfig.i2s.bits = BIT_LENGTH_16BITS;
-    audioConfig.i2s.channels = CHANNELS2;
-
-    audioCodecReady = hosyondAudioBoard.begin(audioConfig);
-    Serial.printf("AUDIO: codec begin result=%u\n", audioCodecReady ? 1 : 0);
-    if (audioCodecReady) {
-      hosyondAudioBoard.setVolume(AUDIO_VOLUME_PERCENT);
-      hosyondAudioBoard.setMute(false);
-    }
-
-    hosyondAudioI2S.setPins(AUDIO_I2S_BCLK_PIN,
-                            AUDIO_I2S_WS_PIN,
-                            AUDIO_I2S_DOUT_PIN,
+                            AUDIO_I2S_PLAYBACK_DATA_PIN,
                             -1,
-                            AUDIO_I2S_MCLK_PIN);
-    audioI2sReady = hosyondAudioI2S.begin(I2S_MODE_STD,
-                                          AUDIO_SAMPLE_RATE,
-                                          I2S_DATA_BIT_WIDTH_16BIT,
-                                          I2S_SLOT_MODE_STEREO);
-    Serial.printf("AUDIO: i2s begin result=%u sampleRate=%u square=%u\n",
-                  audioI2sReady ? 1 : 0,
+                            0);
+
+    auto audioConfig = hosyondAudioOutput.defaultConfig(TX_MODE);
+    audioConfig.sample_rate = AUDIO_SAMPLE_RATE;
+    audioConfig.channels = 2;
+    audioConfig.bits_per_sample = 16;
+    audioReady = hosyondAudioOutput.begin(audioConfig);
+    audioCodecReady = audioReady;
+    audioI2sReady = audioReady;
+    Serial.printf("AUDIO: stream begin result=%u sampleRate=%u square=%u\n",
+                  audioReady ? 1 : 0,
                   AUDIO_SAMPLE_RATE,
                   AUDIO_USE_SQUARE_TEST_TONE ? 1 : 0);
+    if (audioCodecReady) {
+      hosyondAudioOutput.setVolume((float)audioUserVolumePercent / 100.0f);
+      hosyondAudioOutput.setMute(audioUserMuted);
+    }
 
-    audioReady = audioCodecReady && audioI2sReady;
-    setAudioAmpEnabled(audioReady);
+    setAudioAmpEnabled(audioReady && !audioUserMuted);
     if (audioReady) {
       delay(AUDIO_AMP_SETTLE_MS);
     }
-    Serial.printf("AUDIO: ES8311=%u i2s=%u amp=%s ampPin=%d active=%d level=%d volume=%u%% pins mclk=%d bclk=%d dout=%d ws=%d\n",
+    Serial.printf("AUDIO: ES8311=%u i2s=%u amp=%s ampPin=%d active=%d level=%d userVolume=%u%% muted=%u pins mclk=%d bclk=%d playback=%d mic=%d ws=%d\n",
                   audioCodecReady ? 1 : 0,
                   audioI2sReady ? 1 : 0,
                   audioReady ? "on" : "off",
                   AUDIO_PA_ENABLE_PIN,
                   AUDIO_PA_ENABLE_LEVEL,
                   digitalRead(AUDIO_PA_ENABLE_PIN),
-                  AUDIO_VOLUME_PERCENT,
+                  audioUserVolumePercent,
+                  audioUserMuted ? 1 : 0,
                   AUDIO_I2S_MCLK_PIN,
                   AUDIO_I2S_BCLK_PIN,
-                  AUDIO_I2S_DOUT_PIN,
+                  AUDIO_I2S_PLAYBACK_DATA_PIN,
+                  AUDIO_I2S_MIC_DATA_PIN,
                   AUDIO_I2S_WS_PIN);
 
     if (audioReady && AUDIO_STARTUP_TEST_TONE) {
@@ -2921,12 +3131,9 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
 
   void writeAudioStereoSample(int16_t sample) {
 #if AUDIO_ENABLED
-    uint8_t lo = (uint8_t)(sample & 0xFF);
-    uint8_t hi = (uint8_t)((sample >> 8) & 0xFF);
-    hosyondAudioI2S.write(lo);
-    hosyondAudioI2S.write(hi);
-    hosyondAudioI2S.write(lo);
-    hosyondAudioI2S.write(hi);
+    sample = scaleAudioSampleForUserVolume(sample);
+    int16_t stereoFrame[2] = { sample, sample };
+    hosyondAudioOutput.write((const uint8_t*)stereoFrame, sizeof(stereoFrame));
 #else
     (void)sample;
 #endif
@@ -2938,16 +3145,12 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
     startupAudioStarted = true;
     startupAudioPlaying = true;
     startupAudioSampleIndex = 0;
-    startupAudioRepeatIndex = 0;
-    if (audioCodecReady) {
-      hosyondAudioBoard.setVolume(AUDIO_VOLUME_PERCENT);
-      hosyondAudioBoard.setMute(false);
-    }
-    setAudioAmpEnabled(true);
-    Serial.printf("AUDIO: startup clip start samples=%lu sourceRate=%lu repeat=%u duration=%lums\n",
+    startupAudioSourcePhase = 0;
+    applyAudioUserMuteState();
+    Serial.printf("AUDIO: startup clip start samples=%lu sourceRate=%lu targetRate=%u duration=%lums\n",
                   (unsigned long)CAVE_JOHNSON_STARTUP_SAMPLE_COUNT,
                   (unsigned long)CAVE_JOHNSON_STARTUP_SAMPLE_RATE,
-                  STARTUP_AUDIO_SAMPLE_REPEAT,
+                  AUDIO_SAMPLE_RATE,
                   (unsigned long)CAVE_JOHNSON_STARTUP_DURATION_MS);
 #endif
   }
@@ -2956,16 +3159,48 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
 #if AUDIO_ENABLED
     if (!startupAudioPlaying || !audioReady) return;
 
+    int16_t stereoFrames[STARTUP_AUDIO_CHUNK_FRAMES * 2];
     uint16_t framesWritten = 0;
     while (framesWritten < STARTUP_AUDIO_CHUNK_FRAMES &&
            startupAudioSampleIndex < CAVE_JOHNSON_STARTUP_SAMPLE_COUNT) {
-      int16_t sample = (int16_t)pgm_read_word(&CAVE_JOHNSON_STARTUP_PCM[startupAudioSampleIndex]);
-      writeAudioStereoSample(sample);
+      uint32_t nextIndex = (startupAudioSampleIndex + 1U < CAVE_JOHNSON_STARTUP_SAMPLE_COUNT)
+        ? startupAudioSampleIndex + 1U
+        : startupAudioSampleIndex;
+      int32_t sample0 = (int16_t)pgm_read_word(&CAVE_JOHNSON_STARTUP_PCM[startupAudioSampleIndex]);
+      int32_t sample1 = (int16_t)pgm_read_word(&CAVE_JOHNSON_STARTUP_PCM[nextIndex]);
+      int32_t interpolated = sample0 + (int32_t)(
+        ((int64_t)(sample1 - sample0) * (int64_t)startupAudioSourcePhase) /
+        (int64_t)AUDIO_SAMPLE_RATE);
+      int16_t sample = (int16_t)interpolated;
+      sample = scaleAudioSampleForUserVolume(sample);
+      stereoFrames[framesWritten * 2] = sample;
+      stereoFrames[framesWritten * 2 + 1] = sample;
       framesWritten++;
-      startupAudioRepeatIndex++;
-      if (startupAudioRepeatIndex >= STARTUP_AUDIO_SAMPLE_REPEAT) {
-        startupAudioRepeatIndex = 0;
+
+      startupAudioSourcePhase += CAVE_JOHNSON_STARTUP_SAMPLE_RATE;
+      while (startupAudioSourcePhase >= AUDIO_SAMPLE_RATE) {
+        startupAudioSourcePhase -= AUDIO_SAMPLE_RATE;
         startupAudioSampleIndex++;
+      }
+    }
+
+    if (framesWritten > 0) {
+      const uint8_t *audioBytes = (const uint8_t*)stereoFrames;
+      size_t totalBytes = (size_t)framesWritten * 2U * sizeof(int16_t);
+      size_t bytesWritten = 0;
+      unsigned long writeStartedAt = millis();
+      while (bytesWritten < totalBytes && millis() - writeStartedAt < 100UL) {
+        size_t written = hosyondAudioOutput.write(audioBytes + bytesWritten,
+                                                  totalBytes - bytesWritten);
+        if (written == 0) {
+          delay(1);
+        } else {
+          bytesWritten += written;
+        }
+      }
+      if (bytesWritten < totalBytes) {
+        Serial.printf("AUDIO: short startup write %u/%u bytes\n",
+                      (unsigned int)bytesWritten, (unsigned int)totalBytes);
       }
     }
 
@@ -2979,12 +3214,8 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
 
   void playAudioTone(uint16_t frequency, uint16_t durationMs, uint16_t amplitude, bool gated) {
 #if AUDIO_ENABLED
-    if (!audioReady) return;
-    if (audioCodecReady) {
-      hosyondAudioBoard.setVolume(AUDIO_VOLUME_PERCENT);
-      hosyondAudioBoard.setMute(false);
-    }
-    setAudioAmpEnabled(true);
+    if (!audioReady || audioUserMuted || audioUserVolumePercent == 0) return;
+    applyAudioUserMuteState();
     unsigned long now = millis();
     if (gated) {
       if (now - lastAudioClickMs < AUDIO_CLICK_MIN_INTERVAL_MS) return;
@@ -3015,12 +3246,14 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
         float phase = (2.0f * 3.14159265f * (float)frequency * (float)i) / (float)AUDIO_SAMPLE_RATE;
         sample = (int16_t)(sinf(phase) * (float)amplitude * envelope);
       }
+      sample = scaleAudioSampleForUserVolume(sample);
       if (AUDIO_USE_SQUARE_TEST_TONE) {
-        writeAudioStereoSample(sample);
+        int16_t scaledFrame[2] = { sample, sample };
+        hosyondAudioOutput.write((const uint8_t*)scaledFrame, sizeof(scaledFrame));
       } else {
         stereoFrame[0] = sample;
         stereoFrame[1] = sample;
-        hosyondAudioI2S.write((const uint8_t*)stereoFrame, sizeof(stereoFrame));
+        hosyondAudioOutput.write((const uint8_t*)stereoFrame, sizeof(stereoFrame));
       }
     }
 
@@ -3030,7 +3263,7 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
       if (AUDIO_USE_SQUARE_TEST_TONE) {
         writeAudioStereoSample(0);
       } else {
-        hosyondAudioI2S.write((const uint8_t*)stereoFrame, sizeof(stereoFrame));
+        hosyondAudioOutput.write((const uint8_t*)stereoFrame, sizeof(stereoFrame));
       }
     }
 #else
@@ -3150,25 +3383,29 @@ void setModelEndpointHighValue(int modelIndex, int channel, int value) {
 
     // Ordered by severity. Each active code gets its own full blink window.
     if (!batteryPresent) addCode(STATUS_RGB_NO_BATTERY);
+#if STATUS_RGB_PERIPHERAL_ERRORS_ENABLED
     if (!ads1115Ready) addCode(STATUS_RGB_NO_ADS);
     if (isElrsModuleMissingForStatus(millis())) addCode(STATUS_RGB_NO_ELRS);
     if (!mcp23017Ready) {
       addCode(STATUS_RGB_NO_MCP23017);
       return count;
     }
+#endif
 
 #if STATUS_RGB_DPAD_DIAGNOSTICS
-    bool selectPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_SELECT_BIT)) == 0);
-    bool leftPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_LEFT_BIT)) == 0);
-    bool upPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_UP_BIT)) == 0);
-    bool downPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_DOWN_BIT)) == 0);
-    bool rightPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_RIGHT_BIT)) == 0);
+    if (mcp23017Ready) {
+      bool selectPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_SELECT_BIT)) == 0);
+      bool leftPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_LEFT_BIT)) == 0);
+      bool upPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_UP_BIT)) == 0);
+      bool downPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_DOWN_BIT)) == 0);
+      bool rightPressed = ((mcp23017LastValue & (1U << MCP23017_DPAD_RIGHT_BIT)) == 0);
 
-    if (selectPressed) addCode(STATUS_RGB_DPAD_SELECT);
-    else if (leftPressed) addCode(STATUS_RGB_DPAD_LEFT);
-    else if (upPressed) addCode(STATUS_RGB_DPAD_UP);
-    else if (downPressed) addCode(STATUS_RGB_DPAD_DOWN);
-    else if (rightPressed) addCode(STATUS_RGB_DPAD_RIGHT);
+      if (selectPressed) addCode(STATUS_RGB_DPAD_SELECT);
+      else if (leftPressed) addCode(STATUS_RGB_DPAD_LEFT);
+      else if (upPressed) addCode(STATUS_RGB_DPAD_UP);
+      else if (downPressed) addCode(STATUS_RGB_DPAD_DOWN);
+      else if (rightPressed) addCode(STATUS_RGB_DPAD_RIGHT);
+    }
 #endif
     return count;
   }
@@ -7179,15 +7416,31 @@ void updateElrsProfileAutoDetect(unsigned long now) {
     return;
   }
 
+  if (now - elrsProfileDetectStartTime >= ELRS_MODULE_PROBE_TIMEOUT_MS) {
+    elrsAutoDetectLocked = true;
+    elrsNoModuleDetected = true;
+    elrsProtocolActive = false;
+    elrsModulePresent = false;
+    elrsLinkActive = false;
+    signalStrength = 0;
+    elrsSerial.flush();
+    elrsSerial.end();
+    elrsHostSniffSerial.end();
+    if (elrsRxInterruptAttached) {
+      detachInterrupt(digitalPinToInterrupt(elrsActiveRxPin));
+      elrsRxInterruptAttached = false;
+    }
+    pinMode(elrsActiveTxPin, INPUT);
+    pinMode(elrsActiveRxPin, INPUT_PULLUP);
+    if (shouldLogElrsSerialStatus()) {
+      Serial.println("ELRS auto-detect: no module after 5 seconds; UART disabled until reboot or protocol reset");
+    }
+    return;
+  }
+
   if (elrsActiveModuleProfile == ELRS_MODULE_PROFILE_INTERNAL &&
       now - elrsProfileDetectStartTime >= ELRS_PROFILE_DETECT_SWITCH_MS) {
 #if !ELRS_AUTO_PROBE_RANGER_ON_SILENT_INTERNAL
-    elrsAutoDetectLocked = true;
-    elrsNoModuleDetected = true;
-    elrsNoModuleRetryTime = now + ELRS_AUTO_RETRY_NO_MODULE_MS;
-    if (shouldLogElrsSerialStatus()) {
-      Serial.println("ELRS auto-detect: internal profile silent; ELRS output paused");
-    }
     return;
 #else
     if (shouldLogElrsSerialStatus()) {
@@ -7201,12 +7454,7 @@ void updateElrsProfileAutoDetect(unsigned long now) {
 
   if (elrsActiveModuleProfile == ELRS_MODULE_PROFILE_RANGER_NANO &&
       now - elrsProfileDetectStartTime >= ELRS_PROFILE_DETECT_ACTIVE_MS) {
-    elrsAutoDetectLocked = true;
-    elrsNoModuleDetected = true;
-    elrsNoModuleRetryTime = now + ELRS_AUTO_RETRY_NO_MODULE_MS;
-    if (shouldLogElrsSerialStatus()) {
-      Serial.println("ELRS auto-detect: no module response; ELRS output paused until retry");
-    }
+    return;
   }
 }
 
@@ -7292,6 +7540,12 @@ void updateElrsLink(unsigned long now) {
     return;
   }
 
+  if (elrsNoModuleDetected) {
+    elrsProtocolActive = false;
+    signalStrength = 0;
+    return;
+  }
+
   if (!elrsInitialized) {
     initElrsUart();
   }
@@ -7302,24 +7556,9 @@ void updateElrsLink(unsigned long now) {
   return;
 #endif
 
-  if (ELRS_MODULE_PROFILE == ELRS_MODULE_PROFILE_AUTO && elrsNoModuleDetected) {
-    if (now >= elrsNoModuleRetryTime) {
-      if (shouldLogElrsSerialStatus()) {
-        Serial.println("ELRS auto-detect: retrying module detection");
-      }
-      elrsAutoDetectLocked = false;
-      elrsNoModuleDetected = false;
-      applyElrsModuleProfile(ELRS_MODULE_PROFILE_INTERNAL, true);
-      restartElrsUart(elrsBaudCandidates[elrsBaudIndex]);
-    } else {
-      elrsProtocolActive = false;
-      signalStrength = 0;
-    }
-    return;
-  }
-
   readElrsSerial(now);
   updateElrsProfileAutoDetect(now);
+  if (elrsNoModuleDetected) return;
 
   elrsModulePresent = (lastElrsSerialRxTime > 0) &&
     ((now - lastElrsSerialRxTime) <= ELRS_MODULE_TIMEOUT_MS);
@@ -7588,6 +7827,7 @@ void updateTopBarDirtyState(unsigned long now) {
       currentScreen == SCREEN_SPACE_GAME ||
       currentScreen == SCREEN_20Q_GAME ||
       currentScreen == SCREEN_ASTEROIDS_GAME ||
+      currentScreen == SCREEN_STAR_SWARM_GAME ||
       currentScreen == SCREEN_DUNGEON_RUN) return;
 
   static bool initialized = false;
@@ -7704,15 +7944,22 @@ void setup() {
   tft.invertDisplay(true);
     
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+  Wire.setTimeOut(I2C_TRANSACTION_TIMEOUT_MS);
+  unsigned long peripheralProbeStartMs = millis();
+  adsPrimaryProbeStartMs = peripheralProbeStartMs;
+  adsAuxProbeStartMs = peripheralProbeStartMs;
+  mcp23017ProbeStartMs = peripheralProbeStartMs;
+  startupDeviceDiscoveryStartTime = peripheralProbeStartMs;
   printI2cStartupScan();
   initBq25887Charger();
   loadStickCalibration();
   touchPanel.begin();
   initAds1115();
   initMcp23017();
+  loadAudioSettings();
   initAudio();
   lastActivityTime = millis();
-  splashStartTime = millis();
+  splashStartTime = 0;
 
   bool displaySettingsRepaired = loadDisplaySettings();
   applyThemePalette();
@@ -7897,6 +8144,15 @@ void loop() {
     lastScreen = currentScreen;
   }
 
+  // Once discovery is complete, keep the splash audio stream fed without
+  // interleaving touch, ADS, battery, or radio transactions between buffers.
+  if (startupDeviceDiscoveryComplete && currentScreen == SCREEN_SPLASH) {
+    drawSplash();
+    fullRedraw = true;
+    applyDisplayBacklight();
+    return;
+  }
+
   static int rawX = 0;
   static int rawY = 0;
   static uint8_t touchCount = 0;
@@ -7917,8 +8173,24 @@ void loop() {
     lastTouchPollTime = now;
   }
 
+#if AUDIO_ENABLED
+  if (touchCount == 0 && touchActive && audioSettingsDirty) {
+    saveAudioSettings();
+  }
+#endif
+
   // The D-pad is active-low through the daughterboard MCP23017.
-  if (mcp23017Ready) {
+  if (!mcp23017Ready && !mcp23017ProbeAbandoned) {
+    if (now - mcp23017ProbeStartMs >= MCP23017_PROBE_TIMEOUT_MS) {
+      mcp23017ProbeAbandoned = true;
+      Serial.println("MCP23017 not detected after 5 seconds; stopping reconnect attempts.");
+    } else if (now - lastMcpReconnectAttemptMs >= MCP23017_RECONNECT_INTERVAL_MS) {
+      lastMcpReconnectAttemptMs = now;
+      initMcp23017();
+    }
+  }
+  if (mcp23017Ready && now - lastMcpSampleMs >= MCP23017_SAMPLE_INTERVAL_MS) {
+    lastMcpSampleMs = now;
     uint16_t mcpValue = 0xFFFF;
     readMcp23017(mcpValue);
   }
@@ -7952,6 +8224,12 @@ void loop() {
       userActive = true;
     }
   }
+  else if (currentScreen == SCREEN_STAR_SWARM_GAME) {
+    updateStarSwarmGame(now, select, down);
+    if (select || down || left || right) {
+      userActive = true;
+    }
+  }
 
   // Sample hardware inputs and power telemetry before any protocol packet is
   // built or any safety overlay is evaluated.
@@ -7968,6 +8246,41 @@ void loop() {
     return;
   }
 
+  // Keep the logo and startup clip behind the finite device-discovery phase.
+  // This lets missing daughterboard/UART devices time out before audio begins,
+  // so their startup traffic cannot starve the splash audio stream.
+  if (!startupDeviceDiscoveryComplete) {
+#if !ELRS_PASSIVE_SNIFF_MODE
+    updateEspNowLink(now);
+#endif
+    updateElrsLink(now);
+
+    if (!startupDiscoveryScreenCleared) {
+      tft.fillScreen(TFT_BLACK);
+      startupDiscoveryScreenCleared = true;
+    }
+
+    if (now - startupDeviceDiscoveryStartTime < STARTUP_DEVICE_DISCOVERY_MS) {
+      applyDisplayBacklight();
+      return;
+    }
+
+    startupDeviceDiscoveryComplete = true;
+    splashStartTime = 0;
+    fullRedraw = true;
+    uiNeedsRedraw = true;
+    Serial.println("Startup device discovery complete; beginning splash audio.");
+  }
+
+  // Present the startup logo/audio after discovery even when stick hardware is
+  // absent. Throttle safety still gates entry to the operational screens.
+  if (currentScreen == SCREEN_SPLASH) {
+    drawSplash();
+    fullRedraw = true;
+    applyDisplayBacklight();
+    return;
+  }
+
   // Block normal operation until throttle is safe or the user deliberately
   // bypasses the startup warning.
   if (!startupThrottleSafetyCleared) {
@@ -7976,7 +8289,6 @@ void loop() {
       startupThrottleSafetyScreenDrawn = false;
       startupThrottleBypassTapCount = 0;
       startupThrottleBypassTouchActive = false;
-      splashStartTime = now;
       fullRedraw = true;
       uiNeedsRedraw = true;
       topBarNeedsRedraw = true;
@@ -7985,7 +8297,6 @@ void loop() {
       startupThrottleSafetyScreenDrawn = false;
       startupThrottleBypassTapCount = 0;
       startupThrottleBypassTouchActive = false;
-      splashStartTime = now;
       fullRedraw = true;
       uiNeedsRedraw = true;
       topBarNeedsRedraw = true;
@@ -8144,13 +8455,9 @@ void loop() {
   // while the body of the screen is static.
   updateTopBarDirtyState(now);
 
-  if (currentScreen == SCREEN_SPLASH) {
-    drawSplash();
-    fullRedraw = true;
-    return;
-  }
-
-  if (currentScreen != SCREEN_SPACE_GAME && millis() - lastDpadTime > 150) {
+  if (currentScreen != SCREEN_SPACE_GAME &&
+      currentScreen != SCREEN_STAR_SWARM_GAME &&
+      millis() - lastDpadTime > 150) {
 
     bool didInput = false;
 
@@ -9878,6 +10185,8 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
       }
 
     drawMainScreenDynamic();
+    drawMainVolumeButton();
+    drawMainVolumePanel();
     lastMainFrameTime = millis();
     }
     else if (currentScreen == SCREEN_SPACE_GAME) {
@@ -9899,6 +10208,13 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
         fullRedraw = false;
       }
       drawAsteroidsDynamic();
+    }
+    else if (currentScreen == SCREEN_STAR_SWARM_GAME) {
+      if (fullRedraw) {
+        drawStarSwarmStatic();
+        fullRedraw = false;
+      }
+      drawStarSwarmDynamic();
     }
     else if (currentScreen == SCREEN_DUNGEON_RUN) {
       if (fullRedraw) {
@@ -10106,6 +10422,7 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
       currentScreen != SCREEN_SPACE_GAME &&
       currentScreen != SCREEN_20Q_GAME &&
       currentScreen != SCREEN_ASTEROIDS_GAME &&
+      currentScreen != SCREEN_STAR_SWARM_GAME &&
       currentScreen != SCREEN_DUNGEON_RUN) {
     tft.startWrite();
     drawTopBarDynamic();
@@ -10248,6 +10565,7 @@ if (currentScreen == SCREEN_ELRS_RX_CONFIG && elrsReceiverConfigTouchLocked) {
 bool initAds1115() {
   ads1115PrimaryReady = isAds1115Present(ADS1115_PRIMARY_I2C_ADDR);
   ads1115AuxReady = isAds1115Present(ADS1115_AUX_I2C_ADDR);
+  if (ads1115AuxReady) adsAuxProbeAbandoned = false;
 
   if (!ads1115PrimaryReady) {
     if (!ads1115StatusLogged || ads1115LastLoggedReady) {
@@ -10260,6 +10578,7 @@ bool initAds1115() {
   }
 
   ads1115Ready = true;
+  adsPrimaryProbeAbandoned = false;
   stickFilterInitialized = false;
   adsConsecutiveReadFails = 0;
   lastStickSampleTime = 0;
@@ -10282,6 +10601,8 @@ bool initAds1115() {
           ads1115StatusLogged = true;
           ads1115LastLoggedReady = false;
           ads1115Ready = false;
+          adsPrimaryProbeStartMs = millis();
+          adsPrimaryProbeAbandoned = false;
           return false;
         }
         sums[channel] += rawValue;
@@ -10595,7 +10916,10 @@ bool initMcp23017() {
   }
 
   mcp23017Ready = true;
-  readMcp23017(mcp23017LastValue);
+  if (!readMcp23017(mcp23017LastValue)) {
+    return false;
+  }
+  mcp23017ProbeAbandoned = false;
   Serial.printf("MCP23017 ready at 0x%02X for GPIO expander inputs\n", mcp23017Address);
   return true;
 }
@@ -10629,6 +10953,8 @@ bool readMcp23017(uint16_t &value) {
       !readMcp23017Reg(MCP23017_GPIOB_REG, gpioB)) {
     mcp23017Ready = false;
     mcp23017LastValue = 0xFFFF;
+    mcp23017ProbeStartMs = millis();
+    mcp23017ProbeAbandoned = false;
     Serial.println("MCP23017 read failed, retrying later.");
     return false;
   }
@@ -10757,13 +11083,15 @@ void updateAccessoryInputs(unsigned long now) {
   accessoryInputChannels[0] = 0.0f;
   accessoryInputChannels[1] = 0.0f;
 
-  if (!mcp23017Ready && now - lastMcpReconnectAttemptMs >= MCP23017_RECONNECT_INTERVAL_MS) {
-    lastMcpReconnectAttemptMs = now;
-    initMcp23017();
-  }
-
-  if (!ads1115AuxReady && now - lastAdsReconnectAttemptMs >= ADS1115_RECONNECT_INTERVAL_MS) {
-    ads1115AuxReady = isAds1115Present(ADS1115_AUX_I2C_ADDR);
+  if (!ads1115AuxReady && !adsAuxProbeAbandoned) {
+    if (now - adsAuxProbeStartMs >= ADS1115_PROBE_TIMEOUT_MS) {
+      adsAuxProbeAbandoned = true;
+      Serial.println("Auxiliary ADS1115 not detected after 5 seconds; stopping reconnect attempts.");
+    } else if (now - lastAdsAuxReconnectAttemptMs >= ADS1115_RECONNECT_INTERVAL_MS) {
+      lastAdsAuxReconnectAttemptMs = now;
+      ads1115AuxReady = isAds1115Present(ADS1115_AUX_I2C_ADDR);
+      if (ads1115AuxReady) adsAuxProbeAbandoned = false;
+    }
   }
 
   if (ads1115AuxReady) {
@@ -10788,8 +11116,8 @@ void updateAccessoryInputs(unsigned long now) {
     }
   }
 
-  uint16_t mcpValue = 0xFFFF;
-  if (readMcp23017(mcpValue)) {
+  if (mcp23017Ready) {
+    uint16_t mcpValue = mcp23017LastValue;
     bool lowSide = ((mcpValue & (1U << MCP23017_SWITCH_LOW_BIT)) == 0);
     bool highSide = ((mcpValue & (1U << MCP23017_SWITCH_HIGH_BIT)) == 0);
     if (lowSide && !highSide) accessoryInputChannels[1] = -1.0f;
@@ -10801,7 +11129,12 @@ void updateAccessoryInputs(unsigned long now) {
 // applies the physical wiring map, then rebuilds the output channel state.
 void updateStickInputs(unsigned long now) {
   if (!ads1115Ready) {
-    if (now - lastAdsReconnectAttemptMs >= ADS1115_RECONNECT_INTERVAL_MS) {
+    if (!adsPrimaryProbeAbandoned &&
+        now - adsPrimaryProbeStartMs >= ADS1115_PROBE_TIMEOUT_MS) {
+      adsPrimaryProbeAbandoned = true;
+      Serial.println("Primary ADS1115 not detected after 5 seconds; stopping reconnect attempts.");
+    } else if (!adsPrimaryProbeAbandoned &&
+               now - lastAdsReconnectAttemptMs >= ADS1115_RECONNECT_INTERVAL_MS) {
       lastAdsReconnectAttemptMs = now;
       initAds1115();
     }
@@ -10840,6 +11173,8 @@ void updateStickInputs(unsigned long now) {
         ads1115StatusLogged = true;
         ads1115LastLoggedReady = false;
         ads1115Ready = false;
+        adsPrimaryProbeStartMs = now;
+        adsPrimaryProbeAbandoned = false;
       }
       return;
     }
@@ -11339,7 +11674,18 @@ bool updateAutoDeepSleep(unsigned long now, bool inputDetected, bool powerButton
   }
 
   unsigned long idleMs = now - lastActivityTime;
+  bool blockDeepSleep = isAutoDeepSleepHardwareMissing(now);
   if (idleMs >= AUTO_DEEP_SLEEP_TIMEOUT_MS) {
+    if (blockDeepSleep) {
+      autoDeepSleepWarningVisible = true;
+      screenAwake = true;
+      displayDimmed = false;
+      screenOffManual = false;
+      suppressWakeUntilRelease = false;
+      applyDisplayBacklight();
+      drawAutoDeepSleepWarningScreen(now);
+      return true;
+    }
     Serial.println("Auto sleep: inactivity timeout, entering deep sleep");
     enterDeepSleepPowerOff();
     return true;
@@ -11369,15 +11715,37 @@ bool updateAutoDeepSleep(unsigned long now, bool inputDetected, bool powerButton
   return false;
 }
 
+bool isAutoDeepSleepHardwareMissing(unsigned long now) {
+  bool anyDaughterboardI2c =
+    ads1115PrimaryReady ||
+    ads1115AuxReady ||
+    mcp23017Ready ||
+    bq25887Ready;
+
+  bool anyUartTraffic =
+    elrsInitialized &&
+    (elrsModulePresent || lastElrsSerialRxTime > 0 || hasElrsModuleFrames());
+
+  bool anyGpioExpander = mcp23017Ready;
+  return !anyDaughterboardI2c && !anyUartTraffic && !anyGpioExpander;
+}
+
 void drawAutoDeepSleepWarningScreen(unsigned long now) {
   unsigned long idleMs = now - lastActivityTime;
   unsigned long remainingMs = (idleMs >= AUTO_DEEP_SLEEP_TIMEOUT_MS)
     ? 0
     : (AUTO_DEEP_SLEEP_TIMEOUT_MS - idleMs);
   int remainingSec = (int)((remainingMs + 999UL) / 1000UL);
+  bool hardwareMissing = isAutoDeepSleepHardwareMissing(now);
+  int warningKey = hardwareMissing ? -2 : remainingSec;
+  static bool lastHardwareMissing = false;
+
+  if (autoDeepSleepWarningScreenDrawn && hardwareMissing != lastHardwareMissing) {
+    autoDeepSleepWarningScreenDrawn = false;
+  }
 
   if (autoDeepSleepWarningScreenDrawn &&
-      remainingSec == autoDeepSleepLastWarningSeconds) {
+      warningKey == autoDeepSleepLastWarningSeconds) {
     return;
   }
 
@@ -11388,19 +11756,30 @@ void drawAutoDeepSleepWarningScreen(unsigned long now) {
     tft.setTextColor(TFT_ORANGE, COLOR_PANEL);
     tft.drawCentreString("INACTIVITY", 120, 88, 2);
     tft.setTextColor(COLOR_TEXT, COLOR_PANEL);
-    tft.drawCentreString("Auto shutdown soon", 120, 126, 2);
-    tft.drawCentreString("Touch, D-pad, button,", 120, 184, 2);
-    tft.drawCentreString("or move sticks to cancel", 120, 204, 2);
+    tft.drawCentreString(hardwareMissing ? "Shutdown disabled" : "Auto shutdown soon", 120, 126, 2);
+    if (hardwareMissing) {
+      tft.drawCentreString("Reconnect hardware", 120, 184, 2);
+      tft.drawCentreString("or power cycle to exit", 120, 204, 2);
+    } else {
+      tft.drawCentreString("Touch, D-pad, button,", 120, 184, 2);
+      tft.drawCentreString("or move sticks to cancel", 120, 204, 2);
+    }
     autoDeepSleepWarningScreenDrawn = true;
   }
 
-  tft.fillRect(44, 146, 152, 30, COLOR_PANEL);
-  char countdownText[32];
-  snprintf(countdownText, sizeof(countdownText), "Sleeping in %ds", remainingSec);
+  tft.fillRect(28, 140, 184, 42, COLOR_PANEL);
   tft.setTextFont(2);
   tft.setTextColor(TFT_WHITE, COLOR_PANEL);
-  tft.drawCentreString(countdownText, 120, 150, 2);
-  autoDeepSleepLastWarningSeconds = remainingSec;
+  if (hardwareMissing) {
+    tft.drawCentreString("NO I2C, UART,", 120, 142, 2);
+    tft.drawCentreString("OR GPIO DETECTED", 120, 160, 2);
+  } else {
+    char countdownText[32];
+    snprintf(countdownText, sizeof(countdownText), "Sleeping in %ds", remainingSec);
+    tft.drawCentreString(countdownText, 120, 150, 2);
+  }
+  autoDeepSleepLastWarningSeconds = warningKey;
+  lastHardwareMissing = hardwareMissing;
 }
 
 // !!!---- DRAWING ----!!!
@@ -11969,6 +12348,12 @@ void activateGameMenuButton(ButtonID button) {
     return;
   }
 
+  if (button == BTN_GAME_STAR_SWARM) {
+    setScreen(SCREEN_STAR_SWARM_GAME);
+    selectedButton = BTN_NONE;
+    return;
+  }
+
   if (button == BTN_GAME_DUNGEON_RUN) {
     setScreen(SCREEN_DUNGEON_RUN);
     selectedButton = BTN_NONE;
@@ -12030,6 +12415,7 @@ void drawGamesMenuScreen() {
       selectedButton != BTN_GAME_BATTLEZONE &&
       selectedButton != BTN_GAME_20Q &&
       selectedButton != BTN_GAME_ASTEROIDS &&
+      selectedButton != BTN_GAME_STAR_SWARM &&
       selectedButton != BTN_GAME_DUNGEON_RUN) {
     tft.setTextColor(COLOR_ACCENT_HI, COLOR_BG);
     tft.drawCentreString("Coming soon", 120, 258, 2);
@@ -13132,6 +13518,672 @@ void drawSpaceGameDynamic() {
     tft.setTextColor(COLOR_TEXT, COLOR_BG);
     tft.drawCentreString("RX turn  RY drive", 120, 264, 2);
     tft.drawCentreString("Tap screen to fire", 120, 282, 2);
+  }
+}
+
+int countActiveStarSwarmEnemies() {
+  int count = 0;
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) {
+    if (starSwarmEnemies[i].active) count++;
+  }
+  return count;
+}
+
+void spawnStarSwarmWave() {
+  unsigned long now = millis();
+  starSwarmWaveStartTime = now;
+  lastStarSwarmDiveTime = now;
+  lastStarSwarmEnemyShotTime = now;
+  int index = 0;
+  for (int row = 0; row < 4; row++) {
+    for (int col = 0; col < 6 && index < STAR_SWARM_MAX_ENEMIES; col++, index++) {
+      StarSwarmEnemy &enemy = starSwarmEnemies[index];
+      enemy.homeX = 32.0f + (col * 35.0f);
+      enemy.homeY = 66.0f + (row * 20.0f);
+      enemy.path = (row + col + starSwarmWave) % 4;
+      if (enemy.path == 0) {
+        enemy.startX = -28.0f - (col * 8.0f);
+        enemy.startY = 62.0f + (row * 18.0f);
+      } else if (enemy.path == 1) {
+        enemy.startX = 268.0f + (col * 8.0f);
+        enemy.startY = 58.0f + (row * 18.0f);
+      } else if (enemy.path == 2) {
+        enemy.startX = 40.0f + (col * 26.0f);
+        enemy.startY = -34.0f - (row * 12.0f);
+      } else {
+        enemy.startX = 200.0f - (col * 26.0f);
+        enemy.startY = -52.0f - (row * 14.0f);
+      }
+      enemy.x = enemy.startX;
+      enemy.y = enemy.startY;
+      enemy.t = 0.0f;
+      enemy.oldX = (int)enemy.x;
+      enemy.oldY = (int)enemy.y;
+      enemy.spawnAt = now + (index * 120UL);
+      enemy.active = true;
+      enemy.wasDrawn = false;
+      enemy.row = row;
+      enemy.state = 0;
+    }
+  }
+  starSwarmDir = 1;
+}
+
+void resetStarSwarmGame() {
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) {
+    starSwarmEnemies[i].active = false;
+    starSwarmEnemies[i].wasDrawn = false;
+  }
+  for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) {
+    starSwarmPlayerShots[i].active = false;
+    starSwarmPlayerShots[i].wasDrawn = false;
+  }
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) {
+    starSwarmEnemyShots[i].active = false;
+    starSwarmEnemyShots[i].wasDrawn = false;
+  }
+  for (int i = 0; i < STAR_SWARM_MAX_POWERUPS; i++) {
+    starSwarmPowerups[i].active = false;
+    starSwarmPowerups[i].wasDrawn = false;
+  }
+
+  starSwarmPlayerX = 120.0f;
+  starSwarmPlayerY = STAR_SWARM_PLAYER_START_Y;
+  starSwarmOldPlayerX = 120;
+  starSwarmOldPlayerY = STAR_SWARM_PLAYER_START_Y;
+  starSwarmPlayerWasDrawn = false;
+  starSwarmScore = 0;
+  starSwarmLives = 3;
+  starSwarmWave = 1;
+  starSwarmGameOver = false;
+  starSwarmStarted = false;
+  starSwarmTouchControl = false;
+  starSwarmTouchTargetX = 120;
+  starSwarmTouchTargetY = STAR_SWARM_PLAYER_START_Y;
+  starSwarmFireQueued = false;
+  starSwarmWeaponLevel = 0;
+  starSwarmSpeedBoostUntil = 0;
+  lastStarSwarmFrameTime = millis();
+  lastStarSwarmShotTime = 0;
+  lastStarSwarmEnemyShotTime = millis();
+  lastStarSwarmDiveTime = millis();
+  starSwarmInvulnerableUntil = millis() + STAR_SWARM_RESPAWN_SAFE_MS;
+  lastStarSwarmScore = -1;
+  lastStarSwarmLives = -1;
+  lastStarSwarmWave = -1;
+  lastStarSwarmGameOver = false;
+  lastStarSwarmStarted = false;
+  spawnStarSwarmWave();
+}
+
+void fireStarSwarmPlayerShot() {
+  if (starSwarmGameOver) return;
+  unsigned long now = millis();
+  if (now - lastStarSwarmShotTime < STAR_SWARM_FIRE_COOLDOWN_MS) return;
+
+  int needed = (starSwarmWeaponLevel >= 2) ? 3 : (starSwarmWeaponLevel >= 1) ? 2 : 1;
+  int freeCount = 0;
+  for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) {
+    if (!starSwarmPlayerShots[i].active) freeCount++;
+  }
+  if (freeCount < needed) return;
+
+  float offsets[3] = { 0.0f, -6.0f, 6.0f };
+  float vx[3] = { 0.0f, -1.15f, 1.15f };
+  for (int s = 0; s < needed; s++) {
+    for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) {
+      StarSwarmShot &shot = starSwarmPlayerShots[i];
+      if (shot.active) continue;
+      int shotIndex = (needed == 1) ? 0 : (needed == 2) ? (s + 1) : s;
+      shot.x = starSwarmPlayerX + offsets[shotIndex];
+      shot.y = starSwarmPlayerY - 12.0f;
+      shot.vx = vx[shotIndex];
+      shot.vy = -6.3f;
+      shot.oldX = (int)shot.x;
+      shot.oldY = (int)shot.y;
+      shot.active = true;
+      shot.wasDrawn = false;
+      break;
+    }
+  }
+
+  lastStarSwarmShotTime = now;
+  starSwarmStarted = true;
+}
+
+void spawnStarSwarmPowerup(float x, float y) {
+  for (int i = 0; i < STAR_SWARM_MAX_POWERUPS; i++) {
+    StarSwarmPowerup &powerup = starSwarmPowerups[i];
+    if (powerup.active) continue;
+    powerup.x = x;
+    powerup.y = y;
+    powerup.vy = 1.35f;
+    powerup.oldX = (int)x;
+    powerup.oldY = (int)y;
+    powerup.active = true;
+    powerup.wasDrawn = false;
+    powerup.type = random(0, 2);
+    return;
+  }
+}
+
+void startStarSwarmDive(unsigned long now) {
+  int candidates[STAR_SWARM_MAX_ENEMIES];
+  int count = 0;
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) {
+    if (starSwarmEnemies[i].active && starSwarmEnemies[i].state == 1) {
+      candidates[count++] = i;
+    }
+  }
+  if (count <= 0) return;
+
+  StarSwarmEnemy &enemy = starSwarmEnemies[candidates[random(0, count)]];
+  enemy.state = 2;
+  enemy.t = 0.0f;
+  enemy.startX = enemy.x;
+  enemy.startY = enemy.y;
+  enemy.path = (enemy.path + starSwarmWave + enemy.row + 1) % 4;
+  lastStarSwarmDiveTime = now;
+}
+
+float starSwarmEase(float t) {
+  t = constrain(t, 0.0f, 1.0f);
+  return t * t * (3.0f - 2.0f * t);
+}
+
+float getStarSwarmSpeedRamp(unsigned long now) {
+  unsigned long elapsed = (starSwarmWaveStartTime == 0 || now < starSwarmWaveStartTime)
+    ? 0
+    : (now - starSwarmWaveStartTime);
+  float timeRamp = constrain((float)elapsed / (float)STAR_SWARM_SPEED_RAMP_MS, 0.0f, 1.0f);
+  float waveRamp = min(0.55f, (float)(starSwarmWave - 1) * 0.075f);
+  return 0.55f + (timeRamp * 0.55f) + waveRamp;
+}
+
+void updateStarSwarmEnemyPath(StarSwarmEnemy &enemy, unsigned long now) {
+  if (!enemy.active || now < enemy.spawnAt) return;
+  float speedRamp = getStarSwarmSpeedRamp(now);
+
+  if (enemy.state == 0) {
+    enemy.t += (0.0105f + (starSwarmWave * 0.00075f)) * speedRamp;
+    float t = starSwarmEase(enemy.t);
+    float arc = sinf(t * 3.14159f);
+    float wobble = sinf((t * 6.28318f) + enemy.path) * 34.0f * arc;
+    enemy.x = enemy.startX + ((enemy.homeX - enemy.startX) * t) + wobble;
+    enemy.y = enemy.startY + ((enemy.homeY - enemy.startY) * t) + (arc * 28.0f);
+    if (enemy.t >= 1.0f) {
+      enemy.state = 1;
+      enemy.t = 0.0f;
+      enemy.x = enemy.homeX;
+      enemy.y = enemy.homeY;
+    }
+    return;
+  }
+
+  if (enemy.state == 1) {
+    float phase = (now * 0.0022f) + (enemy.homeX * 0.035f) + enemy.row;
+    enemy.x = enemy.homeX + (sinf(phase) * 9.0f);
+    enemy.y = enemy.homeY + (sinf(phase * 0.7f) * 4.0f);
+    return;
+  }
+
+  enemy.t += (0.0115f + (starSwarmWave * 0.0007f)) * speedRamp;
+  float t = enemy.t;
+  if (t < 0.70f) {
+    float u = t / 0.70f;
+    float targetX = starSwarmPlayerX;
+    float sideArc = sinf(u * 6.28318f + enemy.path) * (36.0f + enemy.row * 9.0f);
+    enemy.x = enemy.startX + ((targetX - enemy.startX) * u) + sideArc;
+    float attackY = max(starSwarmPlayerY + 34.0f, (float)STAR_SWARM_VIEW_BOTTOM + 18.0f);
+    enemy.y = enemy.startY + ((attackY - enemy.startY) * u);
+  } else {
+    float u = (t - 0.70f) / 0.30f;
+    float topX = (enemy.path & 1) ? 255.0f : -15.0f;
+    enemy.x = topX + ((enemy.homeX - topX) * starSwarmEase(u));
+    enemy.y = -18.0f + ((enemy.homeY + 2.0f) * starSwarmEase(u));
+  }
+
+  if (enemy.t >= 1.0f) {
+    enemy.state = 1;
+    enemy.t = 0.0f;
+    enemy.x = enemy.homeX;
+    enemy.y = enemy.homeY;
+  }
+}
+
+bool starSwarmOnScreen(float x, float y, int margin) {
+  return x >= -margin && x <= 240 + margin &&
+         y >= STAR_SWARM_VIEW_TOP - margin &&
+         y <= STAR_SWARM_VIEW_BOTTOM + margin;
+}
+
+bool isStarSwarmPlayerInvulnerable(unsigned long now) {
+  return !starSwarmGameOver && now < starSwarmInvulnerableUntil;
+}
+
+void destroyStarSwarmPlayer(unsigned long now) {
+  if (starSwarmGameOver || isStarSwarmPlayerInvulnerable(now)) return;
+
+  if (starSwarmLives > 0) starSwarmLives--;
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) {
+    starSwarmEnemyShots[i].active = false;
+  }
+
+  if (starSwarmLives <= 0) {
+    starSwarmGameOver = true;
+    return;
+  }
+
+  starSwarmPlayerX = 120.0f;
+  starSwarmPlayerY = STAR_SWARM_PLAYER_START_Y;
+  starSwarmTouchTargetX = (int)starSwarmPlayerX;
+  starSwarmTouchTargetY = (int)starSwarmPlayerY;
+  starSwarmTouchControl = false;
+  starSwarmWeaponLevel = 0;
+  starSwarmSpeedBoostUntil = 0;
+  starSwarmInvulnerableUntil = now + STAR_SWARM_RESPAWN_SAFE_MS;
+}
+
+void fireStarSwarmEnemyShot() {
+  if (starSwarmGameOver || countActiveStarSwarmEnemies() == 0) return;
+
+  int openSlot = -1;
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) {
+    if (!starSwarmEnemyShots[i].active) {
+      openSlot = i;
+      break;
+    }
+  }
+  if (openSlot < 0) return;
+
+  int start = random(0, STAR_SWARM_MAX_ENEMIES);
+  for (int tries = 0; tries < STAR_SWARM_MAX_ENEMIES; tries++) {
+    int i = (start + tries) % STAR_SWARM_MAX_ENEMIES;
+    if (!starSwarmEnemies[i].active || !starSwarmOnScreen(starSwarmEnemies[i].x, starSwarmEnemies[i].y, 16)) continue;
+    StarSwarmShot &shot = starSwarmEnemyShots[openSlot];
+    shot.x = starSwarmEnemies[i].x;
+    shot.y = starSwarmEnemies[i].y + 10;
+    float dx = constrain(starSwarmPlayerX - shot.x, -70.0f, 70.0f);
+    float speedRamp = getStarSwarmSpeedRamp(millis());
+    shot.vx = dx * 0.012f * speedRamp;
+    shot.vy = (1.45f + (starSwarmWave * 0.08f)) * speedRamp;
+    shot.oldX = (int)shot.x;
+    shot.oldY = (int)shot.y;
+    shot.active = true;
+    shot.wasDrawn = false;
+    return;
+  }
+}
+
+void updateStarSwarmGame(unsigned long now, bool firePressed, bool exitPressed) {
+  if (currentScreen != SCREEN_STAR_SWARM_GAME) return;
+  if (exitPressed) {
+    setScreen(SCREEN_GAMES_MENU);
+    return;
+  }
+
+  if (now - lastStarSwarmFrameTime < STAR_SWARM_FRAME_INTERVAL_MS) return;
+  lastStarSwarmFrameTime = now;
+  bool playerInvulnerable = isStarSwarmPlayerInvulnerable(now);
+
+  if (starSwarmGameOver) {
+    if (firePressed) {
+      resetStarSwarmGame();
+      fullRedraw = true;
+      uiNeedsRedraw = true;
+    }
+    return;
+  }
+
+  if (starSwarmFireQueued || firePressed) {
+    fireStarSwarmPlayerShot();
+    starSwarmFireQueued = false;
+  }
+
+  float stickMoveX = inputChannels[0];
+  float stickMoveY = inputChannels[1];
+  float playerSpeed = (now < starSwarmSpeedBoostUntil) ? 7.2f : 4.9f;
+  if (fabs(stickMoveX) > 0.08f || fabs(stickMoveY) > 0.08f) {
+    starSwarmPlayerX += stickMoveX * playerSpeed;
+    starSwarmPlayerY += stickMoveY * playerSpeed;
+    starSwarmTouchControl = false;
+    starSwarmStarted = true;
+  } else if (starSwarmTouchControl) {
+    // Touch is direct-control: the ship should stay under the player's finger.
+    starSwarmPlayerX = starSwarmTouchTargetX;
+    starSwarmPlayerY = starSwarmTouchTargetY;
+  }
+  starSwarmPlayerX = constrain(starSwarmPlayerX, 16.0f, 224.0f);
+  starSwarmPlayerY = constrain(starSwarmPlayerY, (float)STAR_SWARM_PLAYER_MIN_Y, (float)STAR_SWARM_PLAYER_MAX_Y);
+
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) {
+    updateStarSwarmEnemyPath(starSwarmEnemies[i], now);
+  }
+
+  unsigned long diveInterval = STAR_SWARM_DIVE_INTERVAL_MS;
+  unsigned long diveReduction = min(1000UL, (unsigned long)(starSwarmWave - 1) * 90UL);
+  diveInterval = max(1100UL, diveInterval - diveReduction);
+  bool diveGraceElapsed = starSwarmWaveStartTime > 0 &&
+    now - starSwarmWaveStartTime >= STAR_SWARM_FIRST_DIVE_GRACE_MS;
+  if (!starSwarmGameOver && diveGraceElapsed && now - lastStarSwarmDiveTime >= diveInterval) {
+    startStarSwarmDive(now);
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) {
+    StarSwarmShot &shot = starSwarmPlayerShots[i];
+    if (!shot.active) continue;
+    shot.x += shot.vx;
+    shot.y += shot.vy;
+    if (shot.y < STAR_SWARM_VIEW_TOP + 8 || shot.x < -8.0f || shot.x > 248.0f) {
+      shot.active = false;
+      continue;
+    }
+
+    for (int e = 0; e < STAR_SWARM_MAX_ENEMIES; e++) {
+      StarSwarmEnemy &enemy = starSwarmEnemies[e];
+      if (!enemy.active || !starSwarmOnScreen(enemy.x, enemy.y, 18)) continue;
+      if (fabs(shot.x - enemy.x) <= 11.0f && fabs(shot.y - enemy.y) <= 9.0f) {
+        if (random(0, 100) < STAR_SWARM_POWERUP_DROP_PCT) {
+          spawnStarSwarmPowerup(enemy.x, enemy.y);
+        }
+        enemy.active = false;
+        shot.active = false;
+        starSwarmScore += (enemy.state == 2) ? 140 : (50 + (enemy.row * 15));
+        break;
+      }
+    }
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) {
+    StarSwarmShot &shot = starSwarmEnemyShots[i];
+    if (!shot.active) continue;
+    shot.x += shot.vx;
+    shot.y += shot.vy;
+    if (shot.y > STAR_SWARM_VIEW_BOTTOM - 8 || shot.x < -8.0f || shot.x > 248.0f) {
+      shot.active = false;
+      continue;
+    }
+    if (!playerInvulnerable &&
+        fabs(shot.x - starSwarmPlayerX) <= (STAR_SWARM_PLAYER_HIT_W / 2.0f) &&
+        fabs(shot.y - starSwarmPlayerY) <= (STAR_SWARM_PLAYER_HIT_H / 2.0f)) {
+      shot.active = false;
+      destroyStarSwarmPlayer(now);
+    }
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_POWERUPS; i++) {
+    StarSwarmPowerup &powerup = starSwarmPowerups[i];
+    if (!powerup.active) continue;
+    powerup.y += powerup.vy;
+    if (powerup.y > STAR_SWARM_VIEW_BOTTOM) {
+      powerup.active = false;
+      continue;
+    }
+    if (fabs(powerup.x - starSwarmPlayerX) <= 16.0f &&
+        fabs(powerup.y - starSwarmPlayerY) <= 14.0f) {
+      if (powerup.type == 0) {
+        if (starSwarmWeaponLevel < 2) starSwarmWeaponLevel++;
+      } else {
+        starSwarmSpeedBoostUntil = now + 9000UL;
+      }
+      powerup.active = false;
+      starSwarmScore += 75;
+    }
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) {
+    StarSwarmEnemy &enemy = starSwarmEnemies[i];
+    if (enemy.active &&
+        enemy.state == 2 &&
+        starSwarmOnScreen(enemy.x, enemy.y, 18) &&
+        !playerInvulnerable &&
+        fabs(enemy.x - starSwarmPlayerX) <= ((STAR_SWARM_ENEMY_HIT_W + STAR_SWARM_PLAYER_HIT_W) / 2.0f) &&
+        fabs(enemy.y - starSwarmPlayerY) <= ((STAR_SWARM_ENEMY_HIT_H + STAR_SWARM_PLAYER_HIT_H) / 2.0f)) {
+      enemy.active = false;
+      destroyStarSwarmPlayer(now);
+      break;
+    }
+  }
+
+  if (!starSwarmGameOver && now - lastStarSwarmEnemyShotTime >= STAR_SWARM_ENEMY_FIRE_MS) {
+    lastStarSwarmEnemyShotTime = now;
+    fireStarSwarmEnemyShot();
+  }
+
+  if (!starSwarmGameOver && countActiveStarSwarmEnemies() == 0) {
+    starSwarmWave++;
+    for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) starSwarmPlayerShots[i].active = false;
+    for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) starSwarmEnemyShots[i].active = false;
+    for (int i = 0; i < STAR_SWARM_MAX_POWERUPS; i++) starSwarmPowerups[i].active = false;
+    spawnStarSwarmWave();
+  }
+
+  uiNeedsRedraw = true;
+}
+
+void handleStarSwarmTouch(int x, int y) {
+  if (isInside(x, y, STAR_SWARM_EXIT_X, STAR_SWARM_EXIT_Y, STAR_SWARM_EXIT_W, STAR_SWARM_EXIT_H)) {
+    queueScreenButton(BTN_BACK, SCREEN_GAMES_MENU);
+    return;
+  }
+
+  if (starSwarmGameOver) {
+    resetStarSwarmGame();
+    fullRedraw = true;
+    waitingForRelease = true;
+    uiNeedsRedraw = true;
+    return;
+  }
+
+  if (y >= STAR_SWARM_PLAYER_MIN_Y - 18) {
+    starSwarmTouchTargetX = constrain(x, 16, 224);
+    starSwarmTouchTargetY = constrain(y, STAR_SWARM_PLAYER_MIN_Y, STAR_SWARM_PLAYER_MAX_Y);
+    starSwarmTouchControl = true;
+    starSwarmStarted = true;
+  }
+  if (y < starSwarmPlayerY - 34) {
+    starSwarmFireQueued = true;
+  }
+
+  uiNeedsRedraw = true;
+}
+
+void drawStarSwarmEnemy(int x, int y, uint8_t row) {
+  uint16_t body = (row == 0) ? TFT_MAGENTA : (row == 1) ? TFT_CYAN : (row == 2) ? TFT_ORANGE : TFT_GREEN;
+  uint16_t wing = (row == 0) ? TFT_YELLOW : (row == 1) ? TFT_SKYBLUE : (row == 2) ? TFT_RED : COLOR_ACCENT_HI;
+  tft.fillRect(x - 4, y - 4, 8, 8, body);
+  tft.fillTriangle(x - 10, y + 1, x - 4, y - 4, x - 4, y + 6, wing);
+  tft.fillTriangle(x + 10, y + 1, x + 4, y - 4, x + 4, y + 6, wing);
+  tft.drawPixel(x - 2, y - 1, TFT_BLACK);
+  tft.drawPixel(x + 2, y - 1, TFT_BLACK);
+}
+
+void drawStarSwarmPlayer(int x, int y) {
+  tft.fillTriangle(x, y - 11, x - 11, y + 10, x + 11, y + 10, COLOR_SIG);
+  tft.fillTriangle(x, y - 6, x - 6, y + 8, x + 6, y + 8, COLOR_ACCENT_HI);
+  tft.fillRect(x - 2, y + 7, 5, 4, TFT_ORANGE);
+}
+
+void clearStarSwarmEnemyRect(int x, int y) {
+  tft.fillRect(x - ((STAR_SWARM_ENEMY_W / 2) + 2),
+               y - ((STAR_SWARM_ENEMY_H / 2) + 2),
+               STAR_SWARM_ENEMY_W + 4,
+               STAR_SWARM_ENEMY_H + 5,
+               TFT_BLACK);
+}
+
+void clearStarSwarmPlayerRect(int x, int y) {
+  tft.fillRect(x - ((STAR_SWARM_PLAYER_W / 2) + 3),
+               y - ((STAR_SWARM_PLAYER_H / 2) + 3),
+               STAR_SWARM_PLAYER_W + 6,
+               STAR_SWARM_PLAYER_H + 7,
+               TFT_BLACK);
+}
+
+void clearStarSwarmShotRect(int x, int y) {
+  tft.fillRect(x - (STAR_SWARM_SHOT_W / 2),
+               y - (STAR_SWARM_SHOT_H / 2),
+               STAR_SWARM_SHOT_W,
+               STAR_SWARM_SHOT_H,
+               TFT_BLACK);
+}
+
+void clearStarSwarmPowerupRect(int x, int y) {
+  tft.fillRect(x - 8, y - 8, 17, 17, TFT_BLACK);
+}
+
+void drawStarSwarmShot(const StarSwarmShot &shot, bool playerShot) {
+  int x = (int)roundf(shot.x);
+  int y = (int)roundf(shot.y);
+  uint16_t color = playerShot ? TFT_YELLOW : TFT_RED;
+  tft.fillRect(x - 1, y - 5, 3, 10, color);
+  tft.drawPixel(x, y - 6, playerShot ? TFT_WHITE : TFT_ORANGE);
+}
+
+void drawStarSwarmPowerup(const StarSwarmPowerup &powerup) {
+  int x = (int)roundf(powerup.x);
+  int y = (int)roundf(powerup.y);
+  uint16_t color = (powerup.type == 0) ? TFT_CYAN : TFT_GREEN;
+  tft.fillCircle(x, y, 6, color);
+  tft.drawCircle(x, y, 7, TFT_WHITE);
+  tft.setTextFont(1);
+  tft.setTextColor(TFT_BLACK, color);
+  tft.drawCentreString((powerup.type == 0) ? "W" : "S", x, y - 3, 1);
+}
+
+void drawStarSwarmStatic() {
+  tft.fillScreen(TFT_BLACK);
+  drawGameExitButton(STAR_SWARM_EXIT_X, STAR_SWARM_EXIT_Y,
+                     STAR_SWARM_EXIT_W, STAR_SWARM_EXIT_H,
+                     "EXIT", false, false);
+  tft.drawFastHLine(0, STAR_SWARM_STATUS_H, 240, COLOR_ACCENT);
+  tft.setTextFont(2);
+  tft.setTextColor(COLOR_TEXT, TFT_BLACK);
+  tft.drawString("STAR SWARM", 76, 8, 2);
+  lastStarSwarmScore = -1;
+  lastStarSwarmLives = -1;
+  lastStarSwarmWave = -1;
+  lastStarSwarmGameOver = !starSwarmGameOver;
+  lastStarSwarmStarted = !starSwarmStarted;
+  starSwarmPlayerWasDrawn = false;
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) starSwarmEnemies[i].wasDrawn = false;
+  for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) starSwarmPlayerShots[i].wasDrawn = false;
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) starSwarmEnemyShots[i].wasDrawn = false;
+  for (int i = 0; i < STAR_SWARM_MAX_POWERUPS; i++) starSwarmPowerups[i].wasDrawn = false;
+}
+
+void drawStarSwarmDynamic() {
+  if (starSwarmScore != lastStarSwarmScore ||
+      starSwarmLives != lastStarSwarmLives ||
+      starSwarmWave != lastStarSwarmWave) {
+    tft.fillRect(70, 4, 168, 20, TFT_BLACK);
+    tft.setTextFont(2);
+    tft.setTextColor(COLOR_TEXT, TFT_BLACK);
+    tft.drawString(String(starSwarmScore), 76, 8, 2);
+    tft.drawString("L:" + String(starSwarmLives), 142, 8, 2);
+    tft.drawString("W:" + String(starSwarmWave), 186, 8, 2);
+    lastStarSwarmScore = starSwarmScore;
+    lastStarSwarmLives = starSwarmLives;
+    lastStarSwarmWave = starSwarmWave;
+  }
+
+  if (starSwarmPlayerWasDrawn) clearStarSwarmPlayerRect(starSwarmOldPlayerX, starSwarmOldPlayerY);
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) {
+    if (starSwarmEnemies[i].wasDrawn) clearStarSwarmEnemyRect(starSwarmEnemies[i].oldX, starSwarmEnemies[i].oldY);
+  }
+  for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) {
+    if (starSwarmPlayerShots[i].wasDrawn) clearStarSwarmShotRect(starSwarmPlayerShots[i].oldX, starSwarmPlayerShots[i].oldY);
+  }
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) {
+    if (starSwarmEnemyShots[i].wasDrawn) clearStarSwarmShotRect(starSwarmEnemyShots[i].oldX, starSwarmEnemyShots[i].oldY);
+  }
+  for (int i = 0; i < STAR_SWARM_MAX_POWERUPS; i++) {
+    if (starSwarmPowerups[i].wasDrawn) clearStarSwarmPowerupRect(starSwarmPowerups[i].oldX, starSwarmPowerups[i].oldY);
+  }
+
+  if (lastStarSwarmGameOver != starSwarmGameOver) {
+    tft.fillRect(26, 112, 188, 82, TFT_BLACK);
+    lastStarSwarmGameOver = starSwarmGameOver;
+  }
+
+  if (lastStarSwarmStarted != starSwarmStarted) {
+    tft.fillRect(28, 240, 184, 42, TFT_BLACK);
+    lastStarSwarmStarted = starSwarmStarted;
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMIES; i++) {
+    StarSwarmEnemy &enemy = starSwarmEnemies[i];
+    if (enemy.active &&
+        starSwarmOnScreen(enemy.x, enemy.y, 12) &&
+        enemy.y >= STAR_SWARM_VIEW_TOP + (STAR_SWARM_ENEMY_H / 2)) {
+      int x = (int)roundf(enemy.x);
+      int y = (int)roundf(enemy.y);
+      drawStarSwarmEnemy(x, y, enemy.row);
+      enemy.oldX = x;
+      enemy.oldY = y;
+      enemy.wasDrawn = true;
+    } else {
+      enemy.wasDrawn = false;
+    }
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_PLAYER_SHOTS; i++) {
+    StarSwarmShot &shot = starSwarmPlayerShots[i];
+    if (shot.active) {
+      drawStarSwarmShot(shot, true);
+      shot.oldX = (int)roundf(shot.x);
+      shot.oldY = (int)roundf(shot.y);
+      shot.wasDrawn = true;
+    } else {
+      shot.wasDrawn = false;
+    }
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_ENEMY_SHOTS; i++) {
+    StarSwarmShot &shot = starSwarmEnemyShots[i];
+    if (shot.active) {
+      drawStarSwarmShot(shot, false);
+      shot.oldX = (int)roundf(shot.x);
+      shot.oldY = (int)roundf(shot.y);
+      shot.wasDrawn = true;
+    } else {
+      shot.wasDrawn = false;
+    }
+  }
+
+  for (int i = 0; i < STAR_SWARM_MAX_POWERUPS; i++) {
+    StarSwarmPowerup &powerup = starSwarmPowerups[i];
+    if (powerup.active) {
+      drawStarSwarmPowerup(powerup);
+      powerup.oldX = (int)roundf(powerup.x);
+      powerup.oldY = (int)roundf(powerup.y);
+      powerup.wasDrawn = true;
+    } else {
+      powerup.wasDrawn = false;
+    }
+  }
+
+  bool drawPlayer = !isStarSwarmPlayerInvulnerable(millis()) ||
+    (((millis() / STAR_SWARM_FLASH_MS) & 1UL) == 0);
+  if (drawPlayer) {
+    drawStarSwarmPlayer((int)roundf(starSwarmPlayerX), (int)roundf(starSwarmPlayerY));
+  }
+  starSwarmOldPlayerX = (int)roundf(starSwarmPlayerX);
+  starSwarmOldPlayerY = (int)roundf(starSwarmPlayerY);
+  starSwarmPlayerWasDrawn = drawPlayer;
+
+  if (starSwarmGameOver) {
+    tft.fillRoundRect(28, 116, 184, 72, 10, TFT_BLACK);
+    tft.drawRoundRect(28, 116, 184, 72, 10, TFT_RED);
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+    tft.drawCentreString("GAME OVER", 120, 126, 4);
+    tft.setTextColor(COLOR_TEXT, TFT_BLACK);
+    tft.drawCentreString("Tap or SELECT restart", 120, 166, 2);
+  } else if (!starSwarmStarted) {
+    tft.setTextFont(2);
+    tft.setTextColor(COLOR_TEXT, TFT_BLACK);
+    tft.drawCentreString("Drag to move", 120, 244, 2);
+    tft.drawCentreString("Tap high to fire", 120, 262, 2);
   }
 }
 
@@ -15739,6 +16791,12 @@ void setScreen(Screen screen) {
   Screen previousScreen = currentScreen;
   if (previousScreen == screen) return;
 
+#if AUDIO_ENABLED
+  if (screen != SCREEN_MAIN) {
+    audioVolumePanelVisible = false;
+  }
+#endif
+
   if (previousScreen == SCREEN_TX_UPDATE &&
       screen != SCREEN_TX_UPDATE &&
       screen != SCREEN_OTA_SETTINGS &&
@@ -15875,6 +16933,9 @@ void setScreen(Screen screen) {
   else if (screen == SCREEN_ASTEROIDS_GAME) {
     resetAsteroidsGame();
   }
+  else if (screen == SCREEN_STAR_SWARM_GAME) {
+    resetStarSwarmGame();
+  }
   else if (screen == SCREEN_DUNGEON_RUN) {
     resetDungeonRun();
   }
@@ -15910,6 +16971,7 @@ bool isBackHoldEligibleScreen(Screen screen) {
          screen != SCREEN_SPACE_GAME &&
          screen != SCREEN_20Q_GAME &&
          screen != SCREEN_ASTEROIDS_GAME &&
+         screen != SCREEN_STAR_SWARM_GAME &&
          screen != SCREEN_DUNGEON_RUN;
 }
 
@@ -15922,6 +16984,7 @@ Screen getBackButtonShortTargetForScreen(Screen screen) {
     case SCREEN_SPACE_GAME:
     case SCREEN_20Q_GAME:
     case SCREEN_ASTEROIDS_GAME:
+    case SCREEN_STAR_SWARM_GAME:
     case SCREEN_DUNGEON_RUN:
       return SCREEN_GAMES_MENU;
     case SCREEN_PROTOCOL:
@@ -16159,6 +17222,10 @@ void handleTouch(int x, int y) {
     return;
   }
 
+  if (handleMainVolumeTouch(x, y)) {
+    return;
+  }
+
   // ===== MAIN =====
   if (currentScreen == SCREEN_MAIN) {
     updateMainModelPanelBounds();
@@ -16336,6 +17403,10 @@ void handleTouch(int x, int y) {
           nextScreen = SCREEN_ASTEROIDS_GAME;
           screenChangePending = true;
           uiNeedsRedraw = true;
+        } else if (button == BTN_GAME_STAR_SWARM) {
+          nextScreen = SCREEN_STAR_SWARM_GAME;
+          screenChangePending = true;
+          uiNeedsRedraw = true;
         } else if (button == BTN_GAME_DUNGEON_RUN) {
           nextScreen = SCREEN_DUNGEON_RUN;
           screenChangePending = true;
@@ -16489,6 +17560,12 @@ void handleTouch(int x, int y) {
   // ===== ASTEROIDS =====
   else if (currentScreen == SCREEN_ASTEROIDS_GAME) {
     handleAsteroidsTouch(x, y);
+    return;
+  }
+
+  // ===== STAR SWARM =====
+  else if (currentScreen == SCREEN_STAR_SWARM_GAME) {
+    handleStarSwarmTouch(x, y);
     return;
   }
 
@@ -17847,6 +18924,7 @@ void drawSplash() {
 
   // draw ONCE only
   if (!drawn) {
+    splashStartTime = millis();
     tft.fillScreen(COLOR_BG);
 
     tft.setSwapBytes(true);
@@ -17859,7 +18937,8 @@ void drawSplash() {
   updateStartupAudioClip();
 
   // wait, then switch screens
-  if (millis() - splashStartTime > STARTUP_SPLASH_DURATION_MS) {
+  if (!startupAudioPlaying &&
+      millis() - splashStartTime > STARTUP_SPLASH_DURATION_MS) {
     setScreen(SCREEN_MAIN);
   }
 }
@@ -18200,6 +19279,143 @@ void handleTimerTouch(int x, int y) {
 
 }
 
+void drawSpeakerGlyph(int x, int y, bool muted, uint16_t color) {
+  tft.fillRect(x, y + 7, 5, 8, color);
+  tft.fillTriangle(x + 5, y + 7, x + 12, y + 2, x + 12, y + 20, color);
+
+  if (muted) {
+    tft.drawLine(x + 15, y + 5, x + 22, y + 17, TFT_RED);
+    tft.drawLine(x + 22, y + 5, x + 15, y + 17, TFT_RED);
+  } else {
+    tft.drawLine(x + 16, y + 7, x + 19, y + 10, color);
+    tft.drawLine(x + 19, y + 10, x + 16, y + 14, color);
+    tft.drawLine(x + 19, y + 4, x + 23, y + 10, color);
+    tft.drawLine(x + 23, y + 10, x + 19, y + 17, color);
+  }
+}
+
+void drawMainVolumeButton() {
+#if AUDIO_ENABLED
+  uint16_t fill = audioVolumePanelVisible ? COLOR_ACCENT : COLOR_PANEL;
+  uint16_t border = audioUserMuted ? TFT_RED : COLOR_ACCENT_HI;
+  tft.fillRoundRect(VOLUME_BTN_X, VOLUME_BTN_Y, VOLUME_BTN_W, VOLUME_BTN_H, 6, fill);
+  tft.drawRoundRect(VOLUME_BTN_X, VOLUME_BTN_Y, VOLUME_BTN_W, VOLUME_BTN_H, 6, border);
+  drawSpeakerGlyph(VOLUME_BTN_X + 8, VOLUME_BTN_Y + 4,
+                   audioUserMuted || audioUserVolumePercent == 0,
+                   audioVolumePanelVisible ? COLOR_BG : COLOR_TEXT);
+#endif
+}
+
+void drawMainVolumePanel() {
+#if AUDIO_ENABLED
+  if (!audioVolumePanelVisible) return;
+
+  tft.fillRoundRect(VOLUME_PANEL_X, VOLUME_PANEL_Y,
+                    VOLUME_PANEL_W, VOLUME_PANEL_H, 7, COLOR_PANEL);
+  tft.drawRoundRect(VOLUME_PANEL_X, VOLUME_PANEL_Y,
+                    VOLUME_PANEL_W, VOLUME_PANEL_H, 7, COLOR_ACCENT);
+
+  uint16_t muteFill = audioUserMuted ? TFT_RED : COLOR_BG;
+  tft.fillRoundRect(VOLUME_MUTE_X, VOLUME_MUTE_Y,
+                    VOLUME_MUTE_W, VOLUME_MUTE_H, 5, muteFill);
+  tft.drawRoundRect(VOLUME_MUTE_X, VOLUME_MUTE_Y,
+                    VOLUME_MUTE_W, VOLUME_MUTE_H, 5,
+                    audioUserMuted ? TFT_ORANGE : COLOR_ACCENT_HI);
+  drawSpeakerGlyph(VOLUME_MUTE_X + 5, VOLUME_MUTE_Y + 6,
+                   audioUserMuted, audioUserMuted ? COLOR_TEXT : COLOR_ACCENT_HI);
+
+  tft.fillRoundRect(VOLUME_SLIDER_X, VOLUME_SLIDER_Y,
+                    VOLUME_SLIDER_W, VOLUME_SLIDER_H, 6, TFT_DARKGREY);
+  int fillW = map(audioUserVolumePercent, 0, 100, 0, VOLUME_SLIDER_W);
+  if (fillW > 0) {
+    tft.fillRoundRect(VOLUME_SLIDER_X, VOLUME_SLIDER_Y,
+                      fillW, VOLUME_SLIDER_H, 6,
+                      audioUserMuted ? TFT_DARKGREY : COLOR_ACCENT);
+  }
+  int knobX = VOLUME_SLIDER_X + map(audioUserVolumePercent, 0, 100, 0, VOLUME_SLIDER_W - 1);
+  tft.fillCircle(knobX, VOLUME_SLIDER_Y + (VOLUME_SLIDER_H / 2), 7, COLOR_TEXT);
+  tft.drawCircle(knobX, VOLUME_SLIDER_Y + (VOLUME_SLIDER_H / 2), 7, COLOR_ACCENT_HI);
+
+  char volumeText[8];
+  snprintf(volumeText, sizeof(volumeText), "%u%%", audioUserVolumePercent);
+  tft.setTextFont(1);
+  tft.setTextColor(COLOR_TEXT, COLOR_PANEL);
+  tft.drawRightString(volumeText, VOLUME_SLIDER_X + VOLUME_SLIDER_W,
+                      VOLUME_SLIDER_Y + 17, 1);
+#endif
+}
+
+bool handleMainVolumeTouch(int x, int y) {
+#if AUDIO_ENABLED
+  if (currentScreen != SCREEN_MAIN) return false;
+
+  if (isInside(x, y, VOLUME_BTN_X, VOLUME_BTN_Y, VOLUME_BTN_W, VOLUME_BTN_H)) {
+    if (!touchActive) {
+      audioVolumePanelVisible = !audioVolumePanelVisible;
+      if (!audioVolumePanelVisible) fullRedraw = true;
+      uiNeedsRedraw = true;
+    }
+    return true;
+  }
+
+  if (!audioVolumePanelVisible) return false;
+
+  if (isInside(x, y, VOLUME_MUTE_X, VOLUME_MUTE_Y, VOLUME_MUTE_W, VOLUME_MUTE_H)) {
+    if (!touchActive) {
+      if (audioUserMuted || audioUserVolumePercent == 0) {
+        audioUserMuted = false;
+        if (audioUserVolumePercent == 0) {
+          audioUserVolumePercent = (audioVolumeBeforeMutePercent > 0)
+            ? audioVolumeBeforeMutePercent
+            : 1;
+        }
+      } else {
+        audioVolumeBeforeMutePercent = audioUserVolumePercent;
+        audioUserMuted = true;
+      }
+      applyAudioUserMuteState();
+      audioSettingsDirty = true;
+      uiNeedsRedraw = true;
+    }
+    return true;
+  }
+
+  if (isInside(x, y,
+               VOLUME_SLIDER_X - 8, VOLUME_SLIDER_Y - 14,
+               VOLUME_SLIDER_W + 16, VOLUME_SLIDER_H + 28)) {
+    int sliderX = constrain(x, VOLUME_SLIDER_X, VOLUME_SLIDER_X + VOLUME_SLIDER_W);
+    uint8_t nextVolume = (uint8_t)map(sliderX,
+                                     VOLUME_SLIDER_X,
+                                     VOLUME_SLIDER_X + VOLUME_SLIDER_W,
+                                     0, 100);
+    if (nextVolume != audioUserVolumePercent || audioUserMuted) {
+      if (nextVolume == 0 && audioUserVolumePercent > 0) {
+        audioVolumeBeforeMutePercent = audioUserVolumePercent;
+      } else if (nextVolume > 0) {
+        audioVolumeBeforeMutePercent = nextVolume;
+      }
+      audioUserVolumePercent = nextVolume;
+      audioUserMuted = (nextVolume == 0);
+      applyAudioUserMuteState();
+      audioSettingsDirty = true;
+      uiNeedsRedraw = true;
+    }
+    return true;
+  }
+
+  if (!touchActive) {
+    audioVolumePanelVisible = false;
+    fullRedraw = true;
+    uiNeedsRedraw = true;
+  }
+  return true;
+#else
+  (void)x;
+  (void)y;
+  return false;
+#endif
+}
+
 // ==== STATIC MAIN SCREEN ====
 void drawMainScreenStatic() {
   updateMainModelPanelBounds();
@@ -18236,6 +19452,7 @@ void drawMainScreenStatic() {
     selectedButton == BTN_MENU,
     -1
   );
+  drawMainVolumeButton();
 }
 
 void drawModelPanelSemiStatic() {
